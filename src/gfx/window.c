@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include "window.h"
+#include "../global.h"
+
+struct window window;
+
+void window_init(void) {
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+}
+
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+static void key_callback(GLFWwindow* gwindow, int key, int scancode, int action, int mods) {
+    switch (action) {
+        case GLFW_PRESS: window.keyboard.keys[key].down = true; break;
+        case GLFW_RELEASE: window.keyboard.keys[key].down = false;
+    }
+}
+
+static void mouse_button_callback(GLFWwindow *gwindow, int button, int action, int mods) {
+    if (button < 0) {
+        return;
+    }
+
+    switch (action) {
+        case GLFW_PRESS: window.mouse.buttons[button].down = true; break;
+        case GLFW_RELEASE: window.mouse.buttons[button].down = false;
+    }
+}
+
+static void cursor_pos_callback(GLFWwindow *gwindow, double x, double y) {
+    window.mouse.x = x;
+    window.mouse.y = y;
+    window.mouse.moved = true;
+}
+
+void window_create(
+    const char *title, int width, int height,
+    WindowCallback init,
+    WindowCallback destroy,
+    WindowCallback tick,
+    WindowCallback render     
+) {
+    GLFWwindow *gwindow = glfwCreateWindow(width, height, title, NULL, NULL);
+    if (!gwindow) {
+        app_error("Failed to create window\n");
+    }
+    glfwMakeContextCurrent(gwindow);
+    window.handle = gwindow;
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        app_error("Failed to load OpenGL\n");
+    }
+
+    glfwSetFramebufferSizeCallback(gwindow, framebuffer_size_callback);
+    glfwSetKeyCallback(gwindow, key_callback);
+    glfwSetMouseButtonCallback(gwindow, mouse_button_callback);
+    glfwSetCursorPosCallback(gwindow, cursor_pos_callback);
+
+    window.init = init;
+    window.destroy = destroy;
+    window.tick = tick;
+    window.render = render;
+}
+
+void window_loop(void) {
+    window.init();
+    while (!glfwWindowShouldClose(window.handle)) {
+        window.tick();
+        window.render();
+
+        glfwSwapBuffers(window.handle);
+        glfwPollEvents();
+    }
+    window.destroy();
+}
