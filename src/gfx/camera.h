@@ -13,6 +13,7 @@ typedef struct {
 typedef struct {
     vec3 origin;
     vec3 target;
+    vec3 rotation;
     vec3 up;
     vec3 front;
     perspective_t perspective;
