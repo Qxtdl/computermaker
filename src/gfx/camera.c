@@ -38,12 +38,12 @@ void camera_move(camera_t *camera, enum CameraDirection direction) {
 }
 
 void rotate(vec3 vec, vec3 rot) {
-    double sa = sin(rot[0]),
-           sb = sin(rot[1]),
-           sg = sin(rot[2]),
-           ca = cos(rot[0]),
-           cb = cos(rot[1]),
-           cg = cos(rot[2]);
+    double sa = sin(rot[2]),
+           sb = sin(rot[0]),
+           sg = sin(rot[1]),
+           ca = cos(rot[2]),
+           cb = cos(rot[0]),
+           cg = cos(rot[1]);
     double x = vec[0],
            y = vec[1],
            z = vec[2];
@@ -56,10 +56,11 @@ void rotate(vec3 vec, vec3 rot) {
 vec3 scratch_buf;
 vec3 pmouse = (vec3){0, 0, 0};
 void camera_mouse_cb(camera_t *camera, double mouseX, double mouseY) {
-    camera->rotation[1] += (mouseX - pmouse[0]) * PI / 180;
-    camera->rotation[0] -= (mouseY - pmouse[1]) * PI / 180;
-    // if (camera->rotation[1] > PI) camera->rotation[1] = PI;
-    // if (camera->rotation[1] < -PI) camera->rotation[1] = -PI;
+    camera->rotation[0] += (mouseX - pmouse[0]) * PI / 180;
+    camera->rotation[1] -= (mouseY - pmouse[1]) * PI / 180;
+    // TODO: idk man, clamp camera Y rotation [89; -89] deg
+    if (camera->rotation[1] < PI / 2) camera->rotation[1] = PI / 2;
+    if (camera->rotation[1] > PI) camera->rotation[1] = PI;
 
     // scratch = rotate(front, rotation)
     memcpy(scratch_buf, camera->front, sizeof(vec3));
