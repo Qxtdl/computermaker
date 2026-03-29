@@ -10,7 +10,7 @@ CC = gcc
 INCLUDES = -Isrc/include \
 	-Idep/cglm/include
 
-CFLAGS = -Wall \
+CFLAGS = -Wall -Wno-unused-result \
 	-g \
 	$(INCLUDES)
 
