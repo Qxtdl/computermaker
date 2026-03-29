@@ -13,6 +13,7 @@ typedef struct {
 typedef struct {
     vec3 origin;
     vec3 target;
+    vec3 rotation;
     vec3 up;
     vec3 front;
     perspective_t perspective;
@@ -28,5 +29,5 @@ enum CameraDirection {
 void camera_init(camera_t *camera, vec3 origin, vec3 target, vec3 up, vec3 front);
 void camera_perspective_init(camera_t *camera, float fov, float aspect, float nearZ, float farZ);
 void camera_move(camera_t *camera, enum CameraDirection direction);
-void camera_curse(camera_t *camera, double x, double y);
+void camera_mouse_cb(camera_t *camera, double mouseX, double mouseY);
 

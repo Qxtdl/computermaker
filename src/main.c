@@ -9,7 +9,7 @@
 
 void init(void) {
     renderer_init(&state.renderer);
-    state.renderer.wireframe = true;
+    state.renderer.wireframe = 0;
 }
 
 void destroy(void) {
@@ -18,8 +18,8 @@ void destroy(void) {
 
 void tick(void) {
     if (window.mouse.moved) {
-        camera_curse(&state.renderer.camera, window.mouse.x, window.mouse.y);
-        window.mouse.moved = false;
+        camera_mouse_cb(&state.renderer.camera, window.mouse.x, window.mouse.y);
+        window.mouse.moved = true;
     }
 
     if (window.keyboard.keys[GLFW_KEY_W].down) {
