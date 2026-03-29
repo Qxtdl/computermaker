@@ -35,6 +35,6 @@ void camera_move(camera_t *camera, enum CameraDirection direction) {
     glm_vec3_add(camera->target, camera->front, camera->target);
 }
 
-void camera_curse(camera_t *camera, double x, double y) {
+void camera_mouse_cb(camera_t *camera, double mouseX, double mouseY) {
     glm_vec3_add(camera->target, (vec3){x, 0, y}, camera->target);
 }

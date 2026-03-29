@@ -18,7 +18,7 @@ void destroy(void) {
 
 void tick(void) {
     if (window.mouse.moved) {
-        camera_curse(&state.renderer.camera, window.mouse.x, window.mouse.y);
+        camera_mouse_cb(&state.renderer.camera, window.mouse.x, window.mouse.y);
         window.mouse.moved = false;
     }
 
