@@ -30,7 +30,6 @@ void vao_attribute(vao_t vao, vbo_t vbo, GLuint index, GLint size, GLenum type, 
             break;
         default:
             glVertexAttribPointer(index, size, type, GL_FALSE, stride, offset);
-            break;
     }
-    glEnableVertexAttribArray(index);    
+    glEnableVertexAttribArray(index);
 }

@@ -13,7 +13,7 @@ void renderer_init(struct renderer *renderer) {
     memset(renderer, 0, sizeof(*renderer));
 
     camera_init(&renderer->camera, (vec3){0, 3, 0}, (vec3){0, 0, 0}, (vec3){0, 1, 0}, (vec3){0, 0, -1});
-    camera_perspective_init(&renderer->camera, glm_rad(64.0f), 1, 0.5, 1000);
+    camera_perspective_init(&renderer->camera, glm_rad(128.0f), 1, 0.5, 1000);
 
     renderer->vao = vao_create();
     renderer->vbo = vbo_create(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
@@ -48,6 +48,13 @@ void renderer_prepare(struct renderer *renderer) {
         renderer->camera.perspective.farZ, 
         renderer->p
     );
+
+    glm_lookat(
+        renderer->camera.origin,
+        renderer->camera.target,
+        renderer->camera.up,
+        renderer->v
+    );    
 }
 
 void renderer_box(struct renderer *renderer, vec3 translation, enum RendererTextureType texture) {
@@ -106,13 +113,6 @@ void renderer_box(struct renderer *renderer, vec3 translation, enum RendererText
 
     mat4 model;
     glm_mat4_identity(model);
-
-    glm_lookat(
-        renderer->camera.origin,
-        renderer->camera.target,
-        renderer->camera.up,
-        renderer->v
-    );
 
     glm_translate(model, translation);
 

@@ -1,15 +1,16 @@
 #include <stdlib.h>
 #include <string.h>
     
-#include "cglm/cglm.h"
-#include "gfx/camera.h"
 #include "state.h"
+#include "gfx/camera.h"
 #include "gfx/renderer.h"
-#include "gfx/texture.h"
+#include "world/chunk.h"
 
 void init(void) {
     renderer_init(&state.renderer);
     state.renderer.wireframe = 0;
+
+    world_worldgen(&state.world);
 }
 
 void destroy(void) {
@@ -23,19 +24,15 @@ void tick(void) {
     }
 
     if (window.keyboard.keys[GLFW_KEY_W].down) {
-        //glm_vec3_add(state.renderer.camera.origin, (vec3){1.0, 0, 0.0f}, state.renderer.camera.origin);
         camera_move(&state.renderer.camera, CAMERA_DIRECTION_FORWARD);
     }
     if (window.keyboard.keys[GLFW_KEY_A].down) {
-        //glm_vec3_add(state.renderer.camera.origin, (vec3){-1.0f, 0.0f, 0.0f}, state.renderer.camera.origin);
         camera_move(&state.renderer.camera, CAMERA_DIRECTION_LEFT);
     }
     if (window.keyboard.keys[GLFW_KEY_S].down) {
-        //glm_vec3_add(state.renderer.camera.origin, (vec3){0.0f, 0.0f, -1.0f}, state.renderer.camera.origin);
         camera_move(&state.renderer.camera, CAMERA_DIRECTION_BACK);
     }
     if (window.keyboard.keys[GLFW_KEY_D].down) {
-        //glm_vec3_add(state.renderer.camera.origin, (vec3){0.0f, 0.0f, 1.0f}, state.renderer.camera.origin);
         camera_move(&state.renderer.camera, CAMERA_DIRECTION_RIGHT);
     }
 
@@ -49,12 +46,27 @@ void tick(void) {
 }
 
 void render(void) {
-    renderer_prepare(&state.renderer);
-    for (int i = 0; i < 50; i++) {
-        for (int j = 0; j < 50; j++) {
-            renderer_box(&state.renderer, (vec3){i, 0, j}, RENDERER_TEXTURE_STUD);
-        }
-    }
+    world_draw(&state.world);
+    
+    // for (int i = 0; i < state.world.chunks_size; i++) {
+    //     for (int x = 0; x < CHUNK_X; x++) {
+    //         for (int y = 0; y < CHUNK_Y; y++) {
+    //             for (int z = 0; z < CHUNK_Z; z++) {
+    //                 renderer_box(&state.renderer, (vec3){
+    //                     state.world.chunks[i].x + x,
+    //                     y,
+    //                     state.world.chunks[i].z + z
+    //                 }, state.world.chunks[i].blocks[x][y][z].texture);
+    //             }
+    //         }
+    //     }
+    // }
+
+    // for (int i = 0; i < 50; i++) {
+    //     for (int j = 0; j < 50; j++) {
+    //         renderer_box(&state.renderer, (vec3){i, 0, j}, RENDERER_TEXTURE_STUD);
+    //     }
+    // }
 }
 
 int main() {    
