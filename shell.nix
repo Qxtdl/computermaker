@@ -2,11 +2,12 @@
 pkgs.mkShell {
   name = "devshell";
   packages = with pkgs; [
+    # one time use
+    # bear
+
     glfw
     cglm
     gnumake
-
-    # one time use
-    # bear
+    # gcc
   ];
 }

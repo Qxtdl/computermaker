@@ -6,8 +6,9 @@ We have no idea of computer graphics.
 
 ## Quickstart (Linux)
 
--# a nice [shell.nix](https://github.com/Qxtdl/computermaker/blob/master/shell.nix) has been provided for nixos users.
 Requirements:
+- GCC
+- GNUMake
 - [GLFW](https://www.glfw.org)
 - [cglm](https://github.com/recp/cglm)
 
@@ -16,5 +17,4 @@ To run the app:
 ./build.sh
 ```
 
-Your IDE is complaning about includes? \
-Try `bear -- make`, that should fix it.
+If your IDE complans about includes, try `bear -- make`.
