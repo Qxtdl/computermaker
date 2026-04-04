@@ -43,6 +43,13 @@ static void cursor_pos_callback(GLFWwindow *gwindow, double x, double y) {
     window.mouse.moved = true;
 }
 
+static void scroll_callback(GLFWwindow *gwindow, double x, double y)
+{
+    window.mouse.scroll.x = x;
+    window.mouse.scroll.y = y;
+    window.mouse.scrolled = true;
+}
+
 void window_create(
     const char *title, int width, int height,
     WindowCallback init,
@@ -65,6 +72,7 @@ void window_create(
     glfwSetKeyCallback(gwindow, key_callback);
     glfwSetMouseButtonCallback(gwindow, mouse_button_callback);
     glfwSetCursorPosCallback(gwindow, cursor_pos_callback);
+    glfwSetScrollCallback(gwindow, scroll_callback);
 
     window.init = init;
     window.destroy = destroy;

@@ -21,6 +21,10 @@ extern struct window {
         } buttons[GLFW_MOUSE_BUTTON_LAST];
         double x, y;
         bool moved;
+        struct {
+            double x, y;
+        } scroll;
+        bool scrolled;
     } mouse;
 } window;
 

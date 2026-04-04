@@ -35,16 +35,16 @@ void camera_move(camera_t *camera, enum CameraDirection direction) {
     vec3 offset = {0};
     switch (direction) {
         case CAMERA_DIRECTION_FORWARD:
-            offset[2] = -1;
+            offset[2] = -0.1;
             break;
         case CAMERA_DIRECTION_LEFT:
-            offset[0] = 1;
+            offset[0] = 0.1;
             break;
         case CAMERA_DIRECTION_BACK:
-            offset[2] = 1;
+            offset[2] = 0.1;
             break;
         case CAMERA_DIRECTION_RIGHT:
-            offset[0] = -1;
+            offset[0] = -0.1;
     }
 
     rotate(offset, camera->rotation);
@@ -72,3 +72,6 @@ void camera_mouse_cb(camera_t *camera, double mouseX, double mouseY) {
     pmouse[1] = mouseY;
 }
 
+void camera_fov(camera_t *camera, double fov) {
+    
+}

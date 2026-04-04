@@ -9,6 +9,11 @@
 #include "vao.h"
 #include "vbo.h"
 
+enum RendererPass {
+    RENDERER_PASS_2D,
+    RENDERER_PASS_3D
+};
+
 enum RendererShaderType {
     RENDERER_SHADER_2D,
     RENDERER_SHADER_3D,
@@ -26,12 +31,12 @@ struct renderer {
     texture_t textures[RENDERER_TEXTURE_LAST];
     camera_t camera;
     vao_t vao;
-    vbo_t vbo;
+    vbo_t vbo, ebo;
     mat4 m, v, p;
     bool wireframe;
 };
 
 void renderer_init(struct renderer *renderer);
 void renderer_use_shader(struct renderer *renderer, enum RendererShaderType shader);
-void renderer_prepare(struct renderer *renderer);
-void renderer_box(struct renderer *renderer, vec3 translation, enum RendererTextureType texture);
+void renderer_prepare(struct renderer *renderer, enum RendererPass pass);
+void renderer_box(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, vec3 translation, enum RendererTextureType texture);

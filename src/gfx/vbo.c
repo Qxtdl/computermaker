@@ -16,7 +16,8 @@ void vbo_bind(vbo_t vbo) {
     glBindBuffer(vbo.type, vbo.handle);
 }
 
-void vbo_buffer(vbo_t vbo, void *data, size_t offset, size_t count) {
-    vbo_bind(vbo);
-    glBufferData(vbo.type, count - offset, data, vbo.attribute);
+void vbo_buffer(vbo_t *vbo, void *data, size_t offset, size_t count) {
+    vbo_bind(*vbo);
+    glBufferData((*vbo).type, count - offset, data, (*vbo).attribute);
+    (*vbo).size = count;
 }

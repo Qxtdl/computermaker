@@ -5,8 +5,8 @@
 #include "chunk.h"
 
 void world_worldgen(struct world *world) {
-    for (int x = 0; x < 1; x++) {
-        for (int z = 0; z < 1; z++) {
+    for (int x = 0; x < 4; x++) {
+        for (int z = 0; z < 4; z++) {
             world_add_chunk(world, chunk_gen(x * CHUNK_X, z * CHUNK_Z));
         }
     }
@@ -18,7 +18,7 @@ void world_add_chunk(struct world *world, chunk_t chunk) {
 }
 
 void world_draw(struct world *world) {
-    renderer_prepare(&state.renderer);
+    renderer_prepare(&state.renderer, RENDERER_PASS_3D);
     for (size_t i = 0; i < world->chunks_size; i++) {
         chunk_draw(&world->chunks[i]);
     }

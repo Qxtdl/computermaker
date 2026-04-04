@@ -17,6 +17,7 @@ void renderer_init(struct renderer *renderer) {
 
     renderer->vao = vao_create();
     renderer->vbo = vbo_create(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
+    renderer->ebo = vbo_create(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
 
     // shaders
     renderer->shaders[RENDERER_SHADER_2D] = shader_load("res/shader/shader.vert", "res/shader/shader.frag");
@@ -36,89 +37,47 @@ void renderer_use_texture(struct renderer *renderer, enum RendererTextureType te
     texture_bind(renderer->textures[texture]);
 }
 
-void renderer_prepare(struct renderer *renderer) {
-    glEnable(GL_DEPTH_TEST);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glPolygonMode(GL_FRONT_AND_BACK, renderer->wireframe ? GL_LINE : GL_FILL);
-    
-    glm_perspective(
-        renderer->camera.perspective.fovy,
-        renderer->camera.perspective.aspect, 
-        renderer->camera.perspective.nearZ,
-        renderer->camera.perspective.farZ, 
-        renderer->p
-    );
+void renderer_prepare(struct renderer *renderer, enum RendererPass pass) {
+    switch (pass) {
+        case RENDERER_PASS_2D:
+        break;
+        case RENDERER_PASS_3D:
+            glEnable(GL_DEPTH_TEST);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glPolygonMode(GL_FRONT_AND_BACK, renderer->wireframe ? GL_LINE : GL_FILL);
+            // glEnable(GL_CULL_FACE);
+            
+            glm_perspective(
+                renderer->camera.perspective.fovy,
+                renderer->camera.perspective.aspect, 
+                renderer->camera.perspective.nearZ,
+                renderer->camera.perspective.farZ, 
+                renderer->p
+            );
 
-    glm_lookat(
-        renderer->camera.origin,
-        renderer->camera.target,
-        renderer->camera.up,
-        renderer->v
-    );    
+            glm_lookat(
+                renderer->camera.origin,
+                renderer->camera.target,
+                renderer->camera.up,
+                renderer->v
+            );
+    }
 }
 
-void renderer_box(struct renderer *renderer, vec3 translation, enum RendererTextureType texture) {
-    float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
-    
+void renderer_box(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, vec3 translation, enum RendererTextureType texture) {
     renderer_use_shader(renderer, RENDERER_SHADER_3D);
     renderer_use_texture(renderer, RENDERER_TEXTURE_LAST);
 
-    vbo_buffer(renderer->vbo, vertices, 0, sizeof(vertices));
-
-    vao_bind(renderer->vao);
-    vao_attribute(renderer->vao, renderer->vbo, shader_attribute(renderer->current_shader, "aPos"), 3, GL_FLOAT, sizeof(float) * 5, (void*)0);
-    vao_attribute(renderer->vao, renderer->vbo, shader_attribute(renderer->current_shader, "aTexCoord"), 2, GL_FLOAT, sizeof(float) * 5, (void*)(sizeof(float) * 3));
+    vao_attribute(vao, vbo, shader_attribute(renderer->current_shader, "aPos"), 3, GL_FLOAT, sizeof(float) * 5, (void*)0);
+    vao_attribute(vao, vbo, shader_attribute(renderer->current_shader, "aTexCoord"), 2, GL_FLOAT, sizeof(float) * 5, (void*)(sizeof(float) * 3));
 
     mat4 model;
     glm_mat4_identity(model);
-
     glm_translate(model, translation);
 
     sendUniformM4FV(renderer->current_shader, "model", model);
     sendUniformM4FV(renderer->current_shader, "view", renderer->v);
     sendUniformM4FV(renderer->current_shader, "projection", renderer->p);
 
-    glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices)/(sizeof(float) * 3));
+    glDrawElements(GL_TRIANGLES, ebo.size, GL_UNSIGNED_INT, 0);
 }

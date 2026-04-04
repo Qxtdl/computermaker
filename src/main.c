@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
     
+#include "cglm/util.h"
 #include "state.h"
 #include "gfx/camera.h"
 #include "gfx/renderer.h"
@@ -8,8 +9,7 @@
 
 void init(void) {
     renderer_init(&state.renderer);
-    state.renderer.wireframe = 0;
-
+    state.renderer.wireframe = false;
     world_worldgen(&state.world);
 }
 
@@ -36,6 +36,11 @@ void tick(void) {
         camera_move(&state.renderer.camera, CAMERA_DIRECTION_RIGHT);
     }
 
+    if (window.mouse.scrolled) {
+        state.renderer.camera.perspective.fovy += glm_rad(window.mouse.scroll.y);
+        window.mouse.scrolled = false;
+    }
+
     if (window.keyboard.keys[GLFW_KEY_O].down) {
         state.renderer.wireframe = !state.renderer.wireframe;
         window.keyboard.keys[GLFW_KEY_O].down = false;
@@ -47,26 +52,6 @@ void tick(void) {
 
 void render(void) {
     world_draw(&state.world);
-    
-    // for (int i = 0; i < state.world.chunks_size; i++) {
-    //     for (int x = 0; x < CHUNK_X; x++) {
-    //         for (int y = 0; y < CHUNK_Y; y++) {
-    //             for (int z = 0; z < CHUNK_Z; z++) {
-    //                 renderer_box(&state.renderer, (vec3){
-    //                     state.world.chunks[i].x + x,
-    //                     y,
-    //                     state.world.chunks[i].z + z
-    //                 }, state.world.chunks[i].blocks[x][y][z].texture);
-    //             }
-    //         }
-    //     }
-    // }
-
-    // for (int i = 0; i < 50; i++) {
-    //     for (int j = 0; j < 50; j++) {
-    //         renderer_box(&state.renderer, (vec3){i, 0, j}, RENDERER_TEXTURE_STUD);
-    //     }
-    // }
 }
 
 int main() {    
