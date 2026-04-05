@@ -1,6 +1,7 @@
 #pragma once
 
-#include "block.h"
+#include "block/block.h"
+#include "../gfx/renderer.h"
 
 #define CHUNK_X 16
 #define CHUNK_Y 16

@@ -71,7 +71,3 @@ void camera_mouse_cb(camera_t *camera, double mouseX, double mouseY) {
     pmouse[0] = mouseX;
     pmouse[1] = mouseY;
 }
-
-void camera_fov(camera_t *camera, double fov) {
-    
-}

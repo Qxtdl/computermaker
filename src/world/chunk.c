@@ -2,16 +2,16 @@
 #include "../util.h"
 #include "../state.h"
 #include "../gfx/renderer.h"
-#include "block.h"
+#include "block/block.h"
 
 chunk_t chunk_gen(int x, int z) {
     chunk_t chunk = {0};
     chunk.x = x;
     chunk.z = z;
     for (int x = 0; x < CHUNK_X; x++) {
-        for (int y = 0; y < CHUNK_Y; y ++) {
+        for (int y = 0; y < 1; y ++) {
             for (int z = 0; z < CHUNK_Z; z++) {
-                chunk.blocks[x][y][z] = (block_t){.type = BLOCK_TYPE_VISIBLE, .texture = RENDERER_TEXTURE_STUD};
+                chunk.blocks[x][y][z] = (block_t){.id = STUD};
             }
         }
     }
@@ -91,6 +91,9 @@ static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
 }
 
 void chunk_bake(chunk_t *chunk) {
+    vao_destroy(chunk->vao);
+    vbo_destroy(chunk->vbo);
+    vbo_destroy(chunk->ebo);
     chunk->vao = vao_create();
     chunk->vbo = vbo_create(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
     chunk->ebo = vbo_create(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
@@ -98,20 +101,20 @@ void chunk_bake(chunk_t *chunk) {
     for (int x = 0; x < CHUNK_X; x++) {
         for (int y = 0; y < CHUNK_Y; y++) {
             for (int z = 0; z < CHUNK_Z; z++) {
-                if (chunk->blocks[x][y][z].type == BLOCK_TYPE_INVISIBLE)
+                if (chunk->blocks[x][y][z].id == AIR)
                     continue;
 
-                if (x == CHUNK_X - 1 || chunk->blocks[x + 1][y][z].type == BLOCK_TYPE_INVISIBLE) // right
+                if (x == CHUNK_X - 1 || chunk->blocks[x + 1][y][z].id == AIR) // right
                     set_face(chunk, x, y, z, FACE_RIGHT);
-                if (x == 0 || chunk->blocks[x - 1][y][z].type == BLOCK_TYPE_INVISIBLE) // left
+                if (x == 0 || chunk->blocks[x - 1][y][z].id == AIR) // left
                     set_face(chunk, x, y, z, FACE_LEFT);
-                if (y == CHUNK_Y - 1 || chunk->blocks[x][y + 1][z].type == BLOCK_TYPE_INVISIBLE) // top
+                if (y == CHUNK_Y - 1 || chunk->blocks[x][y + 1][z].id == AIR) // top
                     set_face(chunk, x, y, z, FACE_TOP);
-                if (y == 0 || chunk->blocks[x][y - 1][z].type == BLOCK_TYPE_INVISIBLE) // bottom
+                if (y == 0 || chunk->blocks[x][y - 1][z].id == AIR) // bottom
                     set_face(chunk, x, y, z, FACE_BOTTOM);
-                if (z == CHUNK_Z - 1 || chunk->blocks[x][y][z + 1].type == BLOCK_TYPE_INVISIBLE) // front
+                if (z == CHUNK_Z - 1 || chunk->blocks[x][y][z + 1].id == AIR) // front
                     set_face(chunk, x, y, z, FACE_FRONT);
-                if (z == 0 || chunk->blocks[x][y][z - 1].type == BLOCK_TYPE_INVISIBLE) // back
+                if (z == 0 || chunk->blocks[x][y][z - 1].id == AIR) // back
                     set_face(chunk, x, y, z, FACE_BACK);
             }
         }
@@ -123,13 +126,13 @@ void chunk_bake(chunk_t *chunk) {
 }
 
 void chunk_draw(chunk_t *chunk) {
-    renderer_box(&state.renderer, 
+    renderer_mesh(&state.renderer, 
         chunk->vao,
         chunk->vbo,
         chunk->ebo,
         (vec3){
-        chunk->x,
-        0,
-        chunk->z
-    }, RENDERER_TEXTURE_STUD);
+            chunk->x,
+            0,
+            chunk->z
+    }, RENDERER_TEXTURE_BLOCKATLAS);
 }
