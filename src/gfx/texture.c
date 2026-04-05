@@ -14,6 +14,7 @@ texture_t texture_load(const char *filename, TextureSetup setup) {
     glGenTextures(1, &handle);
 
     if (setup == NULL) {
+        glBindTexture(GL_TEXTURE_2D, handle);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
@@ -29,6 +30,7 @@ texture_t texture_load(const char *filename, TextureSetup setup) {
         app_error("Failed to load a texture: %s\n", filename);
     }
 
+    glBindTexture(GL_TEXTURE_2D, handle);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 
     stbi_image_free(image);

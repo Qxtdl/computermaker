@@ -10,7 +10,8 @@ static void texture_setup(void) {
 }
 
 void skybox_init(skybox_t *skybox) {
-    skybox->shader = shader_load("res/shader/skybox.vert", "res/shader/skybox.frag");
+    // moony: NOTE: I get shader compilation errors: unexpected EOF.
+    // skybox->shader = shader_load("res/shader/skybox.vert", "res/shader/skybox.frag");
     skybox->faces[CUBEMAP_FACE_TOP] = texture_load("res/texture/sky512_up.png", texture_setup);
     skybox->faces[CUBEMAP_FACE_BOTTOM] = texture_load("res/texture/sky512_dn.png", texture_setup);
     skybox->faces[CUBEMAP_FACE_RIGHT] = texture_load("res/texture/sky512_rt.png", texture_setup);
