@@ -8,6 +8,8 @@ chunk_t chunk_gen(int x, int z) {
     chunk_t chunk = {0};
     chunk.x = x;
     chunk.z = z;
+    chunk.indices_count = 1;
+    chunk.vertecies_count = 1;
     for (int x = 0; x < CHUNK_X; x++) {
         for (int y = 0; y < 1; y ++) {
             for (int z = 0; z < CHUNK_Z; z++) {
@@ -20,12 +22,20 @@ chunk_t chunk_gen(int x, int z) {
 }
 
 static void push_vertex(chunk_t *chunk, vertex_t vertex) {
-    chunk->vertices = srealloc(chunk->vertices, ++chunk->vertices_size * sizeof(vertex_t));
+    chunk->vertices_size++;
+    while (chunk->vertecies_count <= chunk->vertices_size) {
+        chunk->vertecies_count <<= 1;
+        chunk->vertices = srealloc(chunk->vertices, chunk->vertecies_count * sizeof(vertex_t));
+    }
     chunk->vertices[chunk->vertices_size - 1] = vertex;
 }
 
 static void push_indice(chunk_t *chunk, unsigned int indice) {
-    chunk->indices = srealloc(chunk->indices, ++chunk->indices_size * sizeof(unsigned int));
+    chunk->indices_size++;
+    while (chunk->indices_size >= chunk->indices_count) {
+        chunk->indices_count <<= 1;
+        chunk->indices = srealloc(chunk->indices, chunk->indices_count * sizeof(unsigned int));
+    }
     chunk->indices[chunk->indices_size - 1] = indice;
 }
 
@@ -90,6 +100,8 @@ static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
 void chunk_bake(chunk_t *chunk) {
     free((chunk->vertices = NULL));
     free((chunk->indices = NULL));
+    chunk->indices_count = 1;
+    chunk->vertecies_count = 1;
     vao_destroy(chunk->vao);
     vbo_destroy(chunk->vbo);
     vbo_destroy(chunk->ebo);

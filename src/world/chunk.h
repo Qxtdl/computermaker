@@ -23,6 +23,8 @@ typedef struct {
     unsigned int *indices;
     size_t vertices_size;
     size_t indices_size;
+    size_t vertecies_count;
+    size_t indices_count;
 } chunk_t;
 
 chunk_t chunk_gen(int x, int z);
