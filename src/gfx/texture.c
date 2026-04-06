@@ -31,7 +31,7 @@ texture_t texture_load(const char *filename, TextureSetup setup) {
     }
 
     glBindTexture(GL_TEXTURE_2D, handle);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, channels == 3 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, image);
 
     stbi_image_free(image);
 
@@ -41,7 +41,7 @@ texture_t texture_load(const char *filename, TextureSetup setup) {
 }
 
 void texture_destroy(texture_t texture) {
-    // TODO: implement
+    glDeleteTextures(1, &texture.handle);
 }
 
 void texture_bind(texture_t texture) {

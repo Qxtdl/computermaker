@@ -20,7 +20,7 @@ enum RendererShaderType {
 };
 
 enum RendererTextureType {
-    RENDERER_TEXTURE_BLOCKATLAS,
+    RENDERER_TEXTURE_BLOCKATLAS = 1,
     RENDERER_TEXTURE_LAST,
 };
 

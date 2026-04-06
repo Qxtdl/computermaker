@@ -29,23 +29,17 @@ static void push_indice(chunk_t *chunk, unsigned int indice) {
     chunk->indices[chunk->indices_size - 1] = indice;
 }
 
-enum Face {
-    FACE_TOP,
-    FACE_BOTTOM,
-    FACE_RIGHT,
-    FACE_LEFT,
-    FACE_FRONT,
-    FACE_BACK,
-};
-
 static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
+    vec2 scale, uv;
+    block_get_uv(chunk->blocks[x][y][z], face, &scale, &uv);
+
     vertex_t vertex[4];
     switch (face) {
         case FACE_FRONT:
-            vertex[0] = (vertex_t){{x,   y,   z+1}, {0,0}};
-            vertex[1] = (vertex_t){{x+1, y,   z+1}, {1,0}};
-            vertex[2] = (vertex_t){{x+1, y+1, z+1}, {1,1}};
-            vertex[3] = (vertex_t){{x,   y+1, z+1}, {0,1}};
+            vertex[0] = (vertex_t){{x,   y,   z+1}, {0, 0}};
+            vertex[1] = (vertex_t){{x+1, y,   z+1}, {1, 0}};
+            vertex[2] = (vertex_t){{x+1, y+1, z+1}, {1, 1}};
+            vertex[3] = (vertex_t){{x,   y+1, z+1}, {0, 1}};
             break;
         case FACE_BACK:
             vertex[0] = (vertex_t){{x+1, y,   z}, {0,0}};
@@ -78,8 +72,11 @@ static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
             vertex[3] = (vertex_t){{x,   y, z},   {0,1}};
     }
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++) {
+        glm_vec2_mul(vertex[i].texture, scale, vertex[i].texture);
+        glm_vec2_add(vertex[i].texture, uv, vertex[i].texture);
         push_vertex(chunk, vertex[i]);
+    }
 
     const size_t start = chunk->vertices_size - 4;
     push_indice(chunk, start + 0);
@@ -91,6 +88,8 @@ static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
 }
 
 void chunk_bake(chunk_t *chunk) {
+    free((chunk->vertices = NULL));
+    free((chunk->indices = NULL));
     vao_destroy(chunk->vao);
     vbo_destroy(chunk->vbo);
     vbo_destroy(chunk->ebo);
