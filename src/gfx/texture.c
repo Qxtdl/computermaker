@@ -23,7 +23,7 @@ texture_t texture_load(const char *filename, TextureSetup setup) {
     } 
     else setup();
 
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(false);
     int width, height, channels;
     unsigned char *image = stbi_load(filename, &width, &height, &channels, 0);
     if (!image) {
