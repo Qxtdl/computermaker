@@ -29,7 +29,7 @@ typedef struct logic_gate {
     enum LogicState {
         STATE_OFF,
         STATE_ON
-    } state;
+    } state, new_state;
 } logic_gate_t;
 
 typedef struct {
@@ -40,6 +40,7 @@ typedef struct {
 
         // logic gates
         AND,
+        NAND,
 
         BLOCKID_LAST
     } id;
@@ -54,5 +55,7 @@ BLOCK_UV_DECLARE(air)
 BLOCK_UV_DECLARE(stud)
 BLOCK_UV_DECLARE(brick)
 BLOCK_UV_DECLARE(and)
+BLOCK_UV_DECLARE(nand)
 
 BLOCK_TICK_DECLARE(and)
+BLOCK_TICK_DECLARE(nand)

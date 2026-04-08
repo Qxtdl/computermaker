@@ -23,10 +23,11 @@ typedef struct {
     unsigned int *indices;
     size_t vertices_size;
     size_t indices_size;
-    size_t vertecies_count;
+    size_t vertices_count;
     size_t indices_count;
 } chunk_t;
 
 chunk_t chunk_gen(int x, int z);
 void chunk_bake(chunk_t *chunk);
+void chunk_bake_at(chunk_t *chunk, int x, int y, int z);
 void chunk_draw(chunk_t *chunk);

@@ -9,7 +9,7 @@ chunk_t chunk_gen(int x, int z) {
     chunk.x = x;
     chunk.z = z;
     chunk.indices_count = 1;
-    chunk.vertecies_count = 1;
+    chunk.vertices_count = 1;
     for (int x = 0; x < CHUNK_X; x++) {
         for (int y = 0; y < 1; y ++) {
             for (int z = 0; z < CHUNK_Z; z++) {
@@ -23,9 +23,9 @@ chunk_t chunk_gen(int x, int z) {
 
 static void push_vertex(chunk_t *chunk, vertex_t vertex) {
     chunk->vertices_size++;
-    while (chunk->vertecies_count <= chunk->vertices_size) {
-        chunk->vertecies_count <<= 1;
-        chunk->vertices = srealloc(chunk->vertices, chunk->vertecies_count * sizeof(vertex_t));
+    while (chunk->vertices_count <= chunk->vertices_size) {
+        chunk->vertices_count <<= 1;
+        chunk->vertices = srealloc(chunk->vertices, chunk->vertices_count * sizeof(vertex_t));
     }
     chunk->vertices[chunk->vertices_size - 1] = vertex;
 }
@@ -101,7 +101,7 @@ void chunk_bake(chunk_t *chunk) {
     free((chunk->vertices = NULL));
     free((chunk->indices = NULL));
     chunk->indices_count = 1;
-    chunk->vertecies_count = 1;
+    chunk->vertices_count = 1;
     vao_destroy(chunk->vao);
     vbo_destroy(chunk->vbo);
     vbo_destroy(chunk->ebo);
@@ -134,6 +134,12 @@ void chunk_bake(chunk_t *chunk) {
     vao_bind(chunk->vao);
     vbo_buffer(&chunk->vbo, chunk->vertices, 0, chunk->vertices_size * sizeof(vertex_t));
     vbo_buffer(&chunk->ebo, chunk->indices, 0, chunk->indices_size * sizeof(unsigned int));
+}
+
+void chunk_bake_at(chunk_t *chunk, int x, int y, int z) {
+    // TODO:
+    // fking implement this
+    chunk_bake(chunk);
 }
 
 void chunk_draw(chunk_t *chunk) {

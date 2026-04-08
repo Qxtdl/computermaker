@@ -29,7 +29,6 @@ void init(void) {
             world_place_at(&state.world, x, 4, z, (block_t){.id = STUD});
         }
     }    
-
 }
 
 void destroy(void) {

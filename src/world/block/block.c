@@ -7,7 +7,8 @@ void block_get_uv(block_t block, enum Face face, vec2 *scale, vec2 *uv) {
         case AIR: BLOCK_UV_GET(air, block, face, scale, uv) break;
         case STUD: BLOCK_UV_GET(stud, block, face, scale, uv) break;
         case BRICK: BLOCK_UV_GET(brick, block, face, scale, uv) break;
-        case AND: BLOCK_UV_GET(and, block, face, scale, uv); break;
+        case AND: BLOCK_UV_GET(and, block, face, scale, uv) break;
+        case NAND: BLOCK_UV_GET(nand, block, face, scale, uv) break;
     }
 }
 
@@ -15,12 +16,14 @@ void block_tick(block_t *block) {
     switch (block->id) {
         default:
         case AND: _and_tick(block); break;
+        case NAND: _nand_tick(block); break;
     }
 }
 
 bool is_logic_block(block_t block) {
     switch (block.id) {
         case AND: return true;
+        case NAND: return true;
         default: return false;
     }
 }
