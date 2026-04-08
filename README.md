@@ -8,6 +8,7 @@ We have no idea of computer graphics.
 
 #### Requirements
 
+- Linux
 - GCC
 - GNUMake
 - [GLFW](https://www.glfw.org) lib
@@ -16,7 +17,7 @@ We have no idea of computer graphics.
 #### To run the app
 
 ```sh
-./build.sh
+make run
 ```
 
 #### Known Problems

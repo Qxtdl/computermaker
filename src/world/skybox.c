@@ -62,10 +62,10 @@ void skybox_init(skybox_t *skybox) {
     //     "res/texture/sky512_bk.png"
     // };
     const char *faces[] = {
-        config_get("SKY_RT"),
         config_get("SKY_LF"),
-        config_get("SKY_UP"),
+        config_get("SKY_RT"),
         config_get("SKY_DN"),
+        config_get("SKY_UP"),
         config_get("SKY_FT"),
         config_get("SKY_BK")
     };    
