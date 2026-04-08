@@ -50,7 +50,7 @@ void config_process(void) {
 
     char *line = strtok_r(consource, "\n", &save);
     while (line != NULL) {
-        if (strchr(line, ';')) goto skip;
+        if (*line == ';') goto skip;
         char *key = strtok_r(line, "=", &save2);
         char *value = strtok_r(NULL, "=", &save2);
         config_add_key_value(key, value);
@@ -66,5 +66,5 @@ const char *config_get(const char *key) {
             return tables[i].value;
         }
     }
-    app_error("The value in the config \"%s\" could not be found", key)
+    app_error("The value in the config \"%s\" could not be found\n", key)
 }

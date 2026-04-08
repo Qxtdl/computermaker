@@ -1,9 +1,9 @@
 #include "world.h"
+#include "../global.h"
 #include "../util.h"
 #include "../state.h"
 #include "../gfx/renderer.h"
 #include "chunk.h"
-#include "skybox.h"
 
 void world_worldgen(struct world *world) {
     for (int x = 0; x < 4; x++) {
@@ -43,4 +43,18 @@ struct world_get_at_info world_get_at(struct world *world, float x, float y, flo
     info.y = (int)round(y) % CHUNK_Y;
     info.z = (int)round(z) % CHUNK_Z;
     return info;
+}
+
+void world_place_at(struct world *world, int x, int y, int z, block_t block) {
+    int cx = x / CHUNK_X * CHUNK_X;
+    int cz = z / CHUNK_Z * CHUNK_Z;
+    int i;
+    for (i = 0; i < world->chunks_size; i++) {
+        if (world->chunks[i].x == cx && world->chunks[i].z == cz)
+            break;
+    }
+    if (i == world->chunks_size) {
+        app_error("Position out of bounds: %d, %d, %d.\n", x, y, z);
+    }    
+    world->chunks[i].blocks[x][y][z] = block;
 }

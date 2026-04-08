@@ -98,8 +98,8 @@ static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
 }
 
 void chunk_bake(chunk_t *chunk) {
-    free((chunk->vertexes = NULL));
-    free((chunk->indexes = NULL));
+    free(chunk->vertexes);
+    free(chunk->indexes);
     chunk->indexes_count = 1;
     chunk->vertexes_count = 1;
     vao_destroy(chunk->vao);
@@ -134,6 +134,12 @@ void chunk_bake(chunk_t *chunk) {
     vao_bind(chunk->vao);
     vbo_buffer(&chunk->vbo, chunk->vertexes, 0, chunk->vertexes_size * sizeof(vertex_t));
     vbo_buffer(&chunk->ebo, chunk->indexes, 0, chunk->indexes_size * sizeof(unsigned int));
+}
+
+void chunk_bake_at(chunk_t *chunk, int x, int y, int z) {
+    // TODO:
+    // fking implement this
+    chunk_bake(chunk);
 }
 
 void chunk_draw(chunk_t *chunk) {

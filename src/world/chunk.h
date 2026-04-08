@@ -29,4 +29,5 @@ typedef struct {
 
 chunk_t chunk_gen(int x, int z);
 void chunk_bake(chunk_t *chunk);
+void chunk_bake_at(chunk_t *chunk, int x, int y, int z);
 void chunk_draw(chunk_t *chunk);

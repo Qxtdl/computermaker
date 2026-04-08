@@ -12,9 +12,11 @@
 ; SKY_DN=res/texture/skybox/broken_sky512_dn.png
 ; SKY_FT=res/texture/skybox/broken_sky512_ft.png
 ; SKY_BK=res/texture/skybox/broken_sky512_bk.png
+; UNCOMMENT ME TO USE SFOTH SKY
 SKY_RT=res/texture/skybox/sfoth_sky512_rt.png
 SKY_LF=res/texture/skybox/sfoth_sky512_lf.png
 SKY_UP=res/texture/skybox/sfoth_sky512_up.png
 SKY_DN=res/texture/skybox/sfoth_sky512_dn.png
 SKY_FT=res/texture/skybox/sfoth_sky512_ft.png
 SKY_BK=res/texture/skybox/sfoth_sky512_bk.png
+SAVE=5,0,1,0,2,0+0;1,0,0,0,0,;5,0,-1,0,2,0+0?1,2;3,2??
