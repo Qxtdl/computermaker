@@ -10,7 +10,7 @@ OUT = $(BUILD)/comm
 CSRC = $(shell find $(SRC) -type f -name '*.c')
 COBJ = $(patsubst %.c,$(BUILD)/%.o,$(CSRC))
 
-all: clean deps compile run
+all: clean deps compile
 
 clean:
 	mkdir -p $(BUILD)
@@ -23,7 +23,7 @@ deps:
 compile: $(OUT)
 	cp -R res $(BUILD)/.
 
-run: compile
+run:
 	./$(OUT)
 
 $(OUT): $(COBJ)
