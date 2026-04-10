@@ -7,5 +7,8 @@
 extern struct state {
     struct renderer renderer;
     struct world world;
+    struct player {
+        enum BlockId selected_block;
+    } player;
     float deltaTime;
 } state;

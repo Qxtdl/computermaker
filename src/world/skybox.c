@@ -100,6 +100,7 @@ void skybox_init(skybox_t *skybox) {
 
 void skybox_draw(skybox_t *skybox, struct renderer *renderer) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_CULL_FACE);
 
     glm_perspective(
         renderer->camera.perspective.fovy,

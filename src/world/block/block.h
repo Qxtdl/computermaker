@@ -14,7 +14,8 @@ enum Face {
     FACE_RIGHT,
     FACE_LEFT,
     FACE_FRONT,
-    FACE_BACK
+    FACE_BACK,
+    FACE_LAST
 };
 
 struct logic_gate;

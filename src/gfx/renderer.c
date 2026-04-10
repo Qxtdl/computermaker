@@ -1,3 +1,8 @@
+#include <glad/glad.h>
+
+#define GLT_IMPLEMENTATION
+#include <gltext.h>
+
 #include "renderer.h"
 #include "shader.h"
 #include "texture.h"
@@ -10,6 +15,7 @@ void renderer_init(struct renderer *renderer) {
 
     camera_init(&renderer->camera, (vec3){0, 3, 0}, (vec3){0, 0, 0}, (vec3){0, 1, 0}, (vec3){0, 0, -1});
     camera_perspective_init(&renderer->camera, glm_rad(128.0f), 1, 0.5, 1000);
+    gltInit();
 
     renderer->vao = vao_create();
     renderer->vbo = vbo_create(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
@@ -20,6 +26,7 @@ void renderer_init(struct renderer *renderer) {
     renderer->shaders[RENDERER_SHADER_3D] = shader_load("res/shader/3d.vert", "res/shader/3d.frag");
     // textures
     renderer->textures[RENDERER_TEXTURE_BLOCKATLAS] = texture_load("res/texture/blockatlas.png");
+    renderer->textures[RENDERER_TEXTURE_WIRE] = texture_load("res/texture/wire.png");
 }
 
 void renderer_use_shader(struct renderer *renderer, enum RendererShaderType shader) {
@@ -40,9 +47,9 @@ void renderer_prepare(struct renderer *renderer, enum RendererPass pass) {
             glClear(GL_DEPTH_BUFFER_BIT);
             glDepthFunc(GL_LEQUAL);
             glPolygonMode(GL_FRONT_AND_BACK, renderer->wireframe ? GL_LINE : GL_FILL);
-            // TODO: add culling
-            // glEnable(GL_CULL_FACE);
-            // glCullFace(GL_FRONT);
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_FRONT);
+            glFrontFace(GL_CCW);  
 
             glm_perspective(
                 renderer->camera.perspective.fovy,
@@ -77,4 +84,28 @@ void renderer_mesh(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, v
     sendUniformM4FV(renderer->current_shader, "projection", renderer->p);
 
     glDrawElements(GL_TRIANGLES, ebo.size, GL_UNSIGNED_INT, 0);
+}
+
+void renderer_text(float x, float y, float scale, const char *text) {
+    GLboolean cull;
+    cull = glIsEnabled(GL_CULL_FACE);
+
+    // gltext doesnt like culling
+    glDisable(GL_CULL_FACE);
+
+    GLTtext *ptr = gltCreateText();
+    gltSetText(ptr, text);
+
+    gltBeginDraw();
+
+    gltDrawText2D(ptr, x, y, scale);
+
+    gltEndDraw();
+
+    gltDeleteText(ptr);
+
+    if (cull)
+        glCullFace(GL_TRUE);
+    else
+        glCullFace(GL_FALSE);
 }

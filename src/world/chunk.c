@@ -46,16 +46,16 @@ static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
     vertex_t vertex[4];
     switch (face) {
         case FACE_FRONT:
-            vertex[0] = (vertex_t){{x,   y,   z+1}, {0, 0}};
-            vertex[1] = (vertex_t){{x+1, y,   z+1}, {1, 0}};
-            vertex[2] = (vertex_t){{x+1, y+1, z+1}, {1, 1}};
-            vertex[3] = (vertex_t){{x,   y+1, z+1}, {0, 1}};
+            vertex[0] = (vertex_t){{x,   y, z+1}, {0, 0}};
+            vertex[1] = (vertex_t){{x,   y+1,z+1}, {1, 0}};
+            vertex[2] = (vertex_t){{x+1, y+1,z+1}, {1, 1}};
+            vertex[3] = (vertex_t){{x+1, y, z+1}, {0, 1}};
             break;
         case FACE_BACK:
-            vertex[0] = (vertex_t){{x+1, y,   z}, {0, 0}};
-            vertex[1] = (vertex_t){{x,   y,   z}, {1, 0}};
-            vertex[2] = (vertex_t){{x,   y+1, z}, {1, 1}};
-            vertex[3] = (vertex_t){{x+1, y+1, z}, {0, 1}};
+            vertex[0] = (vertex_t){{x,   y,   z}, {0, 0}};
+            vertex[1] = (vertex_t){{x+1, y,   z}, {1, 0}};
+            vertex[2] = (vertex_t){{x+1, y+1, z}, {1, 1}};
+            vertex[3] = (vertex_t){{x,   y+1, z}, {0, 1}};
             break;
         case FACE_RIGHT:
             vertex[0] = (vertex_t){{x+1, y,   z},   {0, 0}};
@@ -98,8 +98,10 @@ static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
 }
 
 void chunk_bake(chunk_t *chunk) {
-    free((chunk->vertices = NULL));
-    free((chunk->indices = NULL));
+    free(chunk->vertices);
+    free(chunk->indices);
+    chunk->vertices = NULL;
+    chunk->indices = NULL;
     chunk->indices_count = 1;
     chunk->vertices_count = 1;
     vao_destroy(chunk->vao);

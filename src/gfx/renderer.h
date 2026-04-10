@@ -21,6 +21,7 @@ enum RendererShaderType {
 
 enum RendererTextureType {
     RENDERER_TEXTURE_BLOCKATLAS = 1,
+    RENDERER_TEXTURE_WIRE,
     RENDERER_TEXTURE_LAST,
 };
 
@@ -41,3 +42,5 @@ void renderer_init(struct renderer *renderer);
 void renderer_use_shader(struct renderer *renderer, enum RendererShaderType shader);
 void renderer_prepare(struct renderer *renderer, enum RendererPass pass);
 void renderer_mesh(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, vec3 translation, enum RendererTextureType texture);
+void renderer_text(float x, float y, float scale, const char *text);
+

@@ -2,15 +2,11 @@
 
 #include "block/block.h"
 #include "../gfx/renderer.h"
+#include "../gfx/vertex.h"
 
 #define CHUNK_X 16
 #define CHUNK_Y 16
 #define CHUNK_Z 16
-
-typedef struct {
-    vec3 vertices;
-    vec2 texture;
-} vertex_t;
 
 typedef struct {
     int x, z;
