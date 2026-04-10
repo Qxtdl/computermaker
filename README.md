@@ -24,4 +24,4 @@ make run
 
 #### Known Problems
 
-1. If your IDE complans about includes, try `bear -- make`.
+1. If your IDE complains about includes, try `bear -- make`.
