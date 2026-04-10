@@ -1,3 +1,5 @@
+![image](images/latest.png)
+
 # ComputerMaker
 
 This is a WIP kinda-clone of [CM2](https://www.roblox.com/games/6652606416/Circuit-Maker-2) in C. \
