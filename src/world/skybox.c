@@ -62,10 +62,10 @@ void skybox_init(skybox_t *skybox) {
     //     "res/texture/sky512_bk.png"
     // };
     const char *faces[] = {
-        config_get("SKY_RT"),
         config_get("SKY_LF"),
-        config_get("SKY_UP"),
+        config_get("SKY_RT"),
         config_get("SKY_DN"),
+        config_get("SKY_UP"),
         config_get("SKY_FT"),
         config_get("SKY_BK")
     };    
@@ -124,4 +124,3 @@ void skybox_draw(skybox_t *skybox, struct renderer *renderer) {
     glBindTexture(GL_TEXTURE_CUBE_MAP, skybox->handle);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 }
-

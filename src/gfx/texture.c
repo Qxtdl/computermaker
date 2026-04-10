@@ -20,7 +20,7 @@ texture_t texture_load(const char *filename) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
 
-    stbi_set_flip_vertically_on_load(false);
+    stbi_set_flip_vertically_on_load(true);
     int width, height, channels;
     unsigned char *image = stbi_load(filename, &width, &height, &channels, 0);
     if (!image) {

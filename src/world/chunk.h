@@ -15,15 +15,16 @@ typedef struct {
     vao_t vao;
     vbo_t vbo, ebo;
 
-    vertex_t *vertices;
-    unsigned int *indices;
-    size_t vertices_size;
-    size_t indices_size;
-    size_t vertices_count;
-    size_t indices_count;
+    vertex_t *vertexes;
+    unsigned int *indexes;
+    size_t vertexes_size;
+    size_t indexes_size;
+    size_t vertexes_count;
+    size_t indexes_count;
 } chunk_t;
 
 chunk_t chunk_gen(int x, int z);
 void chunk_bake(chunk_t *chunk);
 void chunk_bake_at(chunk_t *chunk, int x, int y, int z);
 void chunk_draw(chunk_t *chunk);
+

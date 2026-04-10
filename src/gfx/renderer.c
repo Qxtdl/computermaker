@@ -87,10 +87,7 @@ void renderer_mesh(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, v
 }
 
 void renderer_text(float x, float y, float scale, const char *text) {
-    GLboolean cull;
-    cull = glIsEnabled(GL_CULL_FACE);
-
-    // gltext doesnt like culling
+    GLboolean cull = glIsEnabled(GL_CULL_FACE);
     glDisable(GL_CULL_FACE);
 
     GLTtext *ptr = gltCreateText();
@@ -102,10 +99,10 @@ void renderer_text(float x, float y, float scale, const char *text) {
 
     gltEndDraw();
 
-    gltDeleteText(ptr);
+    gltDestroyText(ptr);
 
     if (cull)
-        glCullFace(GL_TRUE);
+        glEnable(GL_CULL_FACE);
     else
-        glCullFace(GL_FALSE);
+        glDisable(GL_CULL_FACE);
 }

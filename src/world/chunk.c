@@ -8,8 +8,8 @@ chunk_t chunk_gen(int x, int z) {
     chunk_t chunk = {0};
     chunk.x = x;
     chunk.z = z;
-    chunk.indices_count = 1;
-    chunk.vertices_count = 1;
+    chunk.indexes_count = 1;
+    chunk.vertexes_count = 1;
     for (int x = 0; x < CHUNK_X; x++) {
         for (int y = 0; y < 1; y ++) {
             for (int z = 0; z < CHUNK_Z; z++) {
@@ -22,21 +22,21 @@ chunk_t chunk_gen(int x, int z) {
 }
 
 static void push_vertex(chunk_t *chunk, vertex_t vertex) {
-    chunk->vertices_size++;
-    while (chunk->vertices_count <= chunk->vertices_size) {
-        chunk->vertices_count <<= 1;
-        chunk->vertices = srealloc(chunk->vertices, chunk->vertices_count * sizeof(vertex_t));
+    chunk->vertexes_size++;
+    while (chunk->vertexes_count <= chunk->vertexes_size) {
+        chunk->vertexes_count <<= 1;
+        chunk->vertexes = srealloc(chunk->vertexes, chunk->vertexes_count * sizeof(vertex_t));
     }
-    chunk->vertices[chunk->vertices_size - 1] = vertex;
+    chunk->vertexes[chunk->vertexes_size - 1] = vertex;
 }
 
-static void push_indice(chunk_t *chunk, unsigned int indice) {
-    chunk->indices_size++;
-    while (chunk->indices_size >= chunk->indices_count) {
-        chunk->indices_count <<= 1;
-        chunk->indices = srealloc(chunk->indices, chunk->indices_count * sizeof(unsigned int));
+static void push_index(chunk_t *chunk, unsigned int indice) {
+    chunk->indexes_size++;
+    while (chunk->indexes_size >= chunk->indexes_count) {
+        chunk->indexes_count <<= 1;
+        chunk->indexes = srealloc(chunk->indexes, chunk->indexes_count * sizeof(unsigned int));
     }
-    chunk->indices[chunk->indices_size - 1] = indice;
+    chunk->indexes[chunk->indexes_size - 1] = indice;
 }
 
 static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
@@ -88,22 +88,22 @@ static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
         push_vertex(chunk, vertex[i]);
     }
 
-    const size_t start = chunk->vertices_size - 4;
-    push_indice(chunk, start + 0);
-    push_indice(chunk, start + 1);
-    push_indice(chunk, start + 2);
-    push_indice(chunk, start + 2);
-    push_indice(chunk, start + 3);
-    push_indice(chunk, start + 0);    
+    const size_t start = chunk->vertexes_size - 4;
+    push_index(chunk, start + 0);
+    push_index(chunk, start + 1);
+    push_index(chunk, start + 2);
+    push_index(chunk, start + 2);
+    push_index(chunk, start + 3);
+    push_index(chunk, start + 0);    
 }
 
 void chunk_bake(chunk_t *chunk) {
-    free(chunk->vertices);
-    free(chunk->indices);
-    chunk->vertices = NULL;
-    chunk->indices = NULL;
-    chunk->indices_count = 1;
-    chunk->vertices_count = 1;
+    free(chunk->vertexes);
+    free(chunk->indexes);
+    chunk->vertexes = NULL;
+    chunk->indexes = NULL;
+    chunk->indexes_count = 1;
+    chunk->vertexes_count = 1;
     vao_destroy(chunk->vao);
     vbo_destroy(chunk->vbo);
     vbo_destroy(chunk->ebo);
@@ -134,8 +134,8 @@ void chunk_bake(chunk_t *chunk) {
     }
 
     vao_bind(chunk->vao);
-    vbo_buffer(&chunk->vbo, chunk->vertices, 0, chunk->vertices_size * sizeof(vertex_t));
-    vbo_buffer(&chunk->ebo, chunk->indices, 0, chunk->indices_size * sizeof(unsigned int));
+    vbo_buffer(&chunk->vbo, chunk->vertexes, 0, chunk->vertexes_size * sizeof(vertex_t));
+    vbo_buffer(&chunk->ebo, chunk->indexes, 0, chunk->indexes_size * sizeof(unsigned int));
 }
 
 void chunk_bake_at(chunk_t *chunk, int x, int y, int z) {

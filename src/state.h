@@ -12,3 +12,4 @@ extern struct state {
     } player;
     float deltaTime;
 } state;
+
