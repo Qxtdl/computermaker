@@ -12,3 +12,4 @@ GLint shader_attribute(shader_t shader, const char *name);
 void sendUniformM4FV(shader_t shader, const char *uniform, void *data);
 void sendUniform4FV(shader_t shader, const char *uniform, void *data);
 void shader_use(shader_t shader);
+

@@ -21,3 +21,4 @@ void vbo_buffer(vbo_t *vbo, void *data, size_t offset, size_t count) {
     glBufferData((*vbo).type, count - offset, data, (*vbo).attribute);
     (*vbo).size = count;
 }
+

@@ -38,3 +38,4 @@ char *readfile(const char *filename) {
     bin[size] = '\0';
     return bin;
 }
+

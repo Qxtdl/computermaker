@@ -68,3 +68,4 @@ const char *config_get(const char *key) {
     }
     app_error("The value in the config \"%s\" could not be found\n", key)
 }
+

@@ -77,7 +77,7 @@ void tick(void) {
         window.mouse.buttons[GLFW_MOUSE_BUTTON_LEFT].down = false;
     }
     if (window.keyboard.keys[GLFW_KEY_Q].down) {
-        if (selected++ == BLOCKID_LAST) 
+        if (++selected >= BLOCKID_LAST) 
             selected = 0;
         window.keyboard.keys[GLFW_KEY_Q].down = false;
     }    
@@ -101,3 +101,4 @@ int main() {
     window_create("comm", 800, 600, init, destroy, tick, render);
     window_loop();
 }
+

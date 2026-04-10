@@ -1,38 +1,35 @@
-CSRCS = $(shell find src -name '*.c')
-COBJS = $(patsubst %.c,$(BUILD)/%.o,$(CSRCS))
-
-BUILD = build
-OUTPUT = $(BUILD)/comm
-
 CC = gcc
-INCLUDES = -Isrc/include \
-	-Idep/cglm/include
+CFLAGS = -Wall -Wno-unused-result -g \
+		 -Isrc/include -Idep/cglm/include
+LIBS = -lglfw -lGL -lm -fsanitize=address
 
-CFLAGS = -Wall -Wno-unused-result \
-	-g \
-	$(INCLUDES)
+SRC = src
+BUILD = build
+OUT = $(BUILD)/comm
 
-LDFLAGS =
+CSRC = $(shell find $(SRC) -type f -name '*.c')
+COBJ = $(patsubst %.c,$(BUILD)/%.o,$(CSRC))
 
-LIBS = -lglfw -lGL -lm \
-	-fsanitize=address
-
-all: clean deps $(OUTPUT) run
-
-# TODO: other libs should be made a dep not assumed preinstalled
-deps:
-	cd dep/cglm && cmake . -DCGLM_STATIC=ON && make
-
-$(BUILD)/%.o : %.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(OUTPUT): $(COBJS)
-	$(CC) $(CFLAGS) $(COBJS) $(LIBS) $(LDFLAGS) -o $(OUTPUT)
+all: clean deps compile run
 
 clean:
 	mkdir -p $(BUILD)
 	rm -rf $(BUILD)/*
 
-run:
-	$(OUTPUT)
+deps:
+	# TODO: other libs should be made a dep not assumed preinstalled
+	cd dep/cglm && cmake . -DCGLM_STATIC=ON && make
+
+compile: $(OUT)
+	cp -R res $(BUILD)/.
+
+run: compile
+	./$(OUT)
+
+$(OUT): $(COBJ)
+	$(CC) $(CFLAGS) -o $(OUT) $(COBJ) $(LIBS)
+
+$(BUILD)/%.o : %.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c -o $@ $<
+

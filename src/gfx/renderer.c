@@ -78,3 +78,4 @@ void renderer_mesh(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, v
 
     glDrawElements(GL_TRIANGLES, ebo.size, GL_UNSIGNED_INT, 0);
 }
+

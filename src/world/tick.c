@@ -28,3 +28,4 @@ void world_tick(struct world *world) {
         }
     }    
 }
+

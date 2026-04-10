@@ -49,3 +49,4 @@ void sendUniform4FV(shader_t shader, const char *uniform, void *data) {
 void shader_use(shader_t shader) {
     glUseProgram(shader.handle);
 }
+

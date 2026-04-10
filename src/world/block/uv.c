@@ -1,0 +1,40 @@
+#include "uv.h"
+#include "block.h"
+
+struct uv {
+    vec2 scale;
+    vec2 position;
+};
+
+static struct uv uvs[BLOCKID_LAST][2] = {
+    // AIR
+      // state_off
+    {{ { 0 }, { 0 } },
+      // state_on
+     { { 0 }, { 0 } }},
+
+    // STUD
+    {{ {0.0625, 0.0625}, {0.5, 0.9375} },
+     { { 0 }           , { 0 } }},
+
+    // BRICK
+    {{ {0.5, 0.5}, {0, 0.5} },
+     { { 0 }     , { 0 } }},
+
+    // AND
+    {{ {0.0625, 0.0625}, {0.5, 0.875} },
+     { {0.0625, 0.0625}, {0.5625, 0.875} }},
+
+    // NAND
+    {{ {0.0625, 0.0625}, {0.5, 0.8125} },
+     { {0.0625, 0.0625}, {0.5625, 0.8125} }},
+};
+
+vec2 *uv_get_scale(block_t block) {
+    return &uvs[block.id][block.gate.state].scale;
+}
+
+vec2 *uv_get_position(block_t block) {
+    return &uvs[block.id][block.gate.state].position;
+}
+

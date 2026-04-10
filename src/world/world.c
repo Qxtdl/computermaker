@@ -58,3 +58,4 @@ void world_place_at(struct world *world, int x, int y, int z, block_t block) {
     }    
     world->chunks[i].blocks[x][y][z] = block;
 }
+

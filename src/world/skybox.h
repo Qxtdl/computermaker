@@ -23,3 +23,4 @@ typedef struct {
 
 void skybox_init(skybox_t *skybox);
 void skybox_draw(skybox_t *skybox, struct renderer *renderer);
+
