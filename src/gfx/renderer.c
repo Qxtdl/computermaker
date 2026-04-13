@@ -86,6 +86,24 @@ void renderer_mesh(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, v
     glDrawElements(GL_TRIANGLES, ebo.size, GL_UNSIGNED_INT, 0);
 }
 
+// only used by wire.c
+void renderer_wire(struct renderer *renderer, vao_t vao, vbo_t vbo, enum RendererTextureType texture) {
+    renderer_use_shader(renderer, RENDERER_SHADER_3D);
+    renderer_use_texture(renderer, texture);
+
+    vao_attribute(vao, vbo, shader_attribute(renderer->current_shader, "aPos"), 3, GL_FLOAT, sizeof(float) * 5, (void*)0);
+    vao_attribute(vao, vbo, shader_attribute(renderer->current_shader, "aTexCoord"), 2, GL_FLOAT, sizeof(float) * 5, (void*)(sizeof(float) * 3));
+
+    mat4 model;
+    glm_mat4_identity(model);
+
+    sendUniformM4FV(renderer->current_shader, "model", model);
+    sendUniformM4FV(renderer->current_shader, "view", renderer->v);
+    sendUniformM4FV(renderer->current_shader, "projection", renderer->p);
+
+    glDrawArrays(GL_TRIANGLES, 0, vbo.size);
+}
+
 void renderer_text(float x, float y, float scale, const char *text) {
     GLboolean cull = glIsEnabled(GL_CULL_FACE);
     glDisable(GL_CULL_FACE);

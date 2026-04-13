@@ -11,115 +11,53 @@
 #include "../gfx/renderer.h"
 #include "../gfx/vao.h"
 #include "../gfx/vertex.h"
-#include "block/block.h"
+#include "world.h"
 
 static wire_t *wires = NULL;
 static size_t wires_size = 0;
 
 static vao_t vao;
-static vbo_t vbo, ebo;
-vertex_t *vertices = NULL;
-unsigned int *indices = NULL;
-static size_t vertices_size = 0, vertices_count = 1;
-static size_t indices_size = 0, indices_count = 1;
+static vbo_t vbo;
+static vertex_t *vertexes = NULL;
+static size_t vertexes_size = 0, vertexes_count = 1;
 
 void world_wire_init(void) {
     vao = vao_create();
     vbo = vbo_create(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
-    ebo = vbo_create(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
 }
 
 static void push_vertex(vertex_t vertex) {
-    vertices_size++;
-    while (vertices_count <= vertices_size) {
-        vertices_count <<= 1;
-        vertices = srealloc(vertices, vertices_count * sizeof(vertex_t));
+    vertexes_size++;
+    while (vertexes_count <= vertexes_size) {
+        vertexes_count <<= 1;
+        vertexes = srealloc(vertexes, vertexes_count * sizeof(vertex_t));
     }
-    vertices[vertices_size - 1] = vertex;
-}
-
-static void push_indice(unsigned int indice) {
-    indices_size++;
-    while (indices_size >= indices_count) {
-        indices_count <<= 1;
-        indices = srealloc(indices, indices_count * sizeof(unsigned int));
-    }
-    indices[indices_size - 1] = indice;
-}
-
-static void get_face(enum Face face, wire_t wire, vertex_t *mesh) {
-    switch (face) {
-        case FACE_FRONT: 
-            mesh[0] = (vertex_t){{wire.ox,   wire.oy,   wire.oz+1}, {0, 0}};
-            mesh[1] = (vertex_t){{wire.ox,   wire.oy+1, wire.oz+1}, {1, 0}};
-            mesh[2] = (vertex_t){{wire.ox+1, wire.oy+1, wire.oz+1}, {1, 1}};
-            mesh[3] = (vertex_t){{wire.ox+1, wire.oy,   wire.oz+1}, {0, 1}};   
-            break;
-        case FACE_BACK:
-            mesh[0] = (vertex_t){{wire.ox,   wire.oy,   wire.oz}, {0, 0}};
-            mesh[1] = (vertex_t){{wire.ox+1, wire.oy,   wire.oz}, {1, 0}};
-            mesh[2] = (vertex_t){{wire.ox+1, wire.oy+1, wire.oz}, {1, 1}};
-            mesh[3] = (vertex_t){{wire.ox,   wire.oy+1, wire.oz}, {0, 1}};
-            break;
-        case FACE_RIGHT:
-            mesh[0] = (vertex_t){{wire.ox+1, wire.oy,   wire.oz},   {0, 0}};
-            mesh[1] = (vertex_t){{wire.ox+1, wire.oy,   wire.oz+1}, {1, 0}};
-            mesh[2] = (vertex_t){{wire.ox+1, wire.oy+1, wire.oz+1}, {1, 1}};
-            mesh[3] = (vertex_t){{wire.ox+1, wire.oy+1, wire.oz},   {0, 1}};
-            break;
-        case FACE_LEFT:
-            mesh[0] = (vertex_t){{wire.ox, wire.oy,   wire.oz+1}, {0, 0}};
-            mesh[1] = (vertex_t){{wire.ox, wire.oy,   wire.oz},   {1, 0}};
-            mesh[2] = (vertex_t){{wire.ox, wire.oy+1, wire.oz},   {1, 1}};
-            mesh[3] = (vertex_t){{wire.ox, wire.oy+1, wire.oz+1}, {0, 1}};
-            break;
-        case FACE_TOP:
-            mesh[0] = (vertex_t){{wire.ox,   wire.oy+1, wire.oz},   {0, 0}};
-            mesh[1] = (vertex_t){{wire.ox+1, wire.oy+1, wire.oz},   {1, 0}};
-            mesh[2] = (vertex_t){{wire.ox+1, wire.oy+1, wire.oz+1}, {1, 1}};
-            mesh[3] = (vertex_t){{wire.ox,   wire.oy+1, wire.oz+1}, {0, 1}};
-            break;
-        case FACE_BOTTOM:
-            mesh[0] = (vertex_t){{wire.ox,   wire.oy, wire.oz+1}, {0, 0}};
-            mesh[1] = (vertex_t){{wire.ox+1, wire.oy, wire.oz+1}, {1, 0}};
-            mesh[2] = (vertex_t){{wire.ox+1, wire.oy, wire.oz},   {1, 1}};
-            mesh[3] = (vertex_t){{wire.ox,   wire.oy, wire.oz},   {0, 1}};            
-    }
+    vertexes[vertexes_size - 1] = vertex;
 }
 
 void world_create_wire(wire_t wire) {
-    // free(vertices);
+    wires = srealloc(wires, ++wires_size * sizeof(wire_t));
+    wires[wires_size - 1] = wire;
+
+    struct world_get_at_info info  = world_get_at(&state.world, wire.ox, wire.oy, wire.oz),
+                             info2 = world_get_at(&state.world, wire.dx, wire.dy, wire.dz);
+    logic_block_add_input(&info.chunk->blocks[info.x][info.y][info.z], &info2.chunk->blocks[info2.x][info2.y][info2.z]);
+
+    // free(vertexes);
     // free(indices);
-    // vertices = NULL;
+    // vertexes = NULL;
     // indices = NULL;
     // indices_count = 1;
-    // vertices_count = 1;
+    // vertexes_count = 1;
     // vao_destroy(vao);
     // vbo_destroy(vbo);
     // vbo_destroy(ebo);
 
-    wires = srealloc(wires, ++wires_size * sizeof(wire_t));
-    wires[wires_size - 1] = wire;
-    
-    for (enum Face face = 0; face < FACE_LAST; face++) {
-        vertex_t vertex[4];
-        get_face(face, wire, vertex);
-
-        for (int i = 0; i < 4; i++)
-            push_vertex(vertex[i]);
-
-        const size_t start = vertices_size - 4;
-        push_indice(start + 0);
-        push_indice(start + 1);
-        push_indice(start + 2);
-        push_indice(start + 2);
-        push_indice(start + 3);
-        push_indice(start + 0);
-    }
-
+    push_vertex((vertex_t){{wire.dx+0.5, wire.dy+0.5, wire.dz+0.25}, {0, 0}});
+    push_vertex((vertex_t){{wire.ox+0.5, wire.oy+0.5, wire.oz+0.5}, {1, 0}});
+    push_vertex((vertex_t){{wire.dx+0.5, wire.dy+0.5, wire.dz+0.5}, {1, 1}});
     vao_bind(vao);
-    vbo_buffer(&vbo, vertices, 0, vertices_size * sizeof(vertex_t));
-    vbo_buffer(&ebo, indices, 0, indices_size * sizeof(unsigned int));
+    vbo_buffer(&vbo, vertexes, 0, vertexes_size * sizeof(vertex_t));
 }
 
 void world_destroy_wire(wire_t wire) {
@@ -127,6 +65,8 @@ void world_destroy_wire(wire_t wire) {
 }
 
 void world_draw_wires(void) {
-    renderer_prepare(&state.renderer, RENDERER_PASS_3D);
-    renderer_mesh(&state.renderer, vao, vbo, ebo, (vec3){0, 0, 0}, RENDERER_TEXTURE_WIRE);
+    if (wires_size == 0)
+        return;
+    glDisable(GL_CULL_FACE);
+    renderer_wire(&state.renderer, vao, vbo, RENDERER_TEXTURE_WIRE);
 }

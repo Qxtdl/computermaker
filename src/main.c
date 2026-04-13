@@ -30,15 +30,15 @@ void init(void) {
     //     }
     // }
 
-    world_create_wire((wire_t){
-        .ox = 0,
-        .oy = 2,
-        .oz = 0,
+    // world_create_wire((wire_t){
+    //     .ox = 5,
+    //     .oy = 3,
+    //     .oz = 2,
 
-        .dx = 3,
-        .dy = 2,
-        .dz = 0
-    });
+    //     .dx = 2,
+    //     .dy = 1,
+    //     .dz = 1
+    // });
 }
 
 void destroy(void) {

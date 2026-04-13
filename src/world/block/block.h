@@ -48,6 +48,7 @@ typedef struct {
 void block_get_uv(block_t block, enum Face face, vec2 *scale, vec2 *uv);
 void block_tick(block_t *block);
 bool is_logic_block(block_t block);
+void logic_block_add_input(block_t *from, block_t *to);
 
 BLOCK_TICK_DECLARE(and)
 BLOCK_TICK_DECLARE(nand)

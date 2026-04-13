@@ -21,10 +21,10 @@ void world_add_chunk(struct world *world, chunk_t chunk) {
 
 void world_draw(struct world *world) {
     renderer_prepare(&state.renderer, RENDERER_PASS_3D);
-    world_draw_wires();
     for (size_t i = 0; i < world->chunks_size; i++) {
         chunk_draw(&world->chunks[i]);
     }
+    world_draw_wires();
 }
 
 struct world_get_at_info world_get_at(struct world *world, float x, float y, float z) {

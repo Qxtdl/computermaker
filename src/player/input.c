@@ -1,4 +1,5 @@
 #include "../state.h"
+#include "../world/wire.h"
 
 void input_handle(void) {
         if (window.mouse.moved) {
@@ -30,20 +31,48 @@ void input_handle(void) {
             state.renderer.camera.target[0],
             state.renderer.camera.target[1],
             state.renderer.camera.target[2]
-        );
-        if (window.mouse.buttons[GLFW_MOUSE_BUTTON_LEFT].down)
-            info.chunk->blocks[info.x][info.y][info.z] = (block_t){.id = state.player.selected_block, .gate.state = STATE_OFF};
+        );           
+        switch (state.player.mode) {
+            case MODE_BLOCK_PLACE:
+                if (window.mouse.buttons[GLFW_MOUSE_BUTTON_LEFT].down)
+                    info.chunk->blocks[info.x][info.y][info.z] = (block_t){.id = state.player.selected_block, .gate.state = STATE_OFF};
 
-        chunk_bake(info.chunk);
-
+                chunk_bake(info.chunk);
+                break;
+            case MODE_WIRE_PLACE:
+                if (!state.player.planout) {
+                    state.player.wire_ox = info.x;
+                    state.player.wire_oy = info.y;
+                    state.player.wire_oz = info.z;
+                    state.player.planout = true;
+                } else {
+                    world_create_wire((wire_t){
+                        .ox = state.player.wire_ox,
+                        .oy = state.player.wire_oy,
+                        .oz = state.player.wire_oz,
+                        .dx = info.x,
+                        .dy = info.y,
+                        .dz = info.z
+                    });
+                    state.player.planout = false;
+                }
+                break;
+        }
         window.mouse.buttons[GLFW_MOUSE_BUTTON_LEFT].down = false;
+    }
+    if (window.keyboard.keys[GLFW_KEY_E].down) {
+        state.player.mode++;
+        if (state.player.mode == MODE_LAST)
+            state.player.mode = 0;
+
+        window.keyboard.keys[GLFW_KEY_E].down = false;
     }
     if (window.keyboard.keys[GLFW_KEY_Q].down) {
         if (state.player.selected_block++ == BLOCKID_LAST) 
             state.player.selected_block = 0;
 
         window.keyboard.keys[GLFW_KEY_Q].down = false;
-    }    
+    }
 
     if (window.keyboard.keys[GLFW_KEY_O].down) {
         state.renderer.wireframe = !state.renderer.wireframe;

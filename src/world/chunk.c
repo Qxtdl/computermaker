@@ -13,7 +13,7 @@ chunk_t chunk_gen(int x, int z) {
     for (int x = 0; x < CHUNK_X; x++) {
         for (int y = 0; y < 1; y ++) {
             for (int z = 0; z < CHUNK_Z; z++) {
-                chunk.blocks[x][y][z] = (block_t){.id = BRICK};
+                chunk.blocks[x][y][z] = (block_t){.id = STUD};
             }
         }
     }
@@ -98,6 +98,7 @@ static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
 }
 
 void chunk_bake(chunk_t *chunk) {
+    // TODO: subbuffer
     free(chunk->vertexes);
     free(chunk->indexes);
     chunk->vertexes = NULL;
