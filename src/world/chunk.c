@@ -1,5 +1,6 @@
 #include "chunk.h"
 #include "../util.h"
+#include "../vec.h"
 #include "../state.h"
 #include "../gfx/renderer.h"
 #include "block/block.h"
@@ -41,6 +42,15 @@ static void push_index(void *args, unsigned int index) {
     chunk->indexes[chunk->indexes_size - 1] = index;
 }
 
+static void push_blockinfo(chunk_t *chunk, ivec3 info) {
+    chunk->blockinfo_size++;
+    while (chunk->blockinfo_size >= chunk->blockinfo_count) {
+        chunk->blockinfo_count <<= 1;
+        chunk->blockinfo = srealloc(chunk->blockinfo, chunk->blockinfo_count * sizeof(ivec3));
+    }
+    memcpy(&chunk->blockinfo[chunk->blockinfo_size - 1], info, sizeof(ivec3));
+}
+
 static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
     vec2 scale, uv;
     block_get_uv(chunk->blocks[x][y][z], face, &scale, &uv);
@@ -58,21 +68,27 @@ static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
         y,
         z
     );
+    for (int i = 0; i < 4; i++) push_blockinfo(chunk, (ivec3){chunk->x + x, y, chunk->z + z});
 }
 
 void chunk_bake(chunk_t *chunk) {
     // TODO: subbuffer
     free(chunk->vertexes);
     free(chunk->indexes);
+    free(chunk->blockinfo);
     chunk->vertexes = NULL;
     chunk->indexes = NULL;
+    chunk->blockinfo = NULL;
     chunk->vertexes_size = 0;
     chunk->indexes_size = 0;
+    chunk->blockinfo_size = 0;
     chunk->indexes_count = 1;
     chunk->vertexes_count = 1;
+    chunk->blockinfo_count = 1;
     if (!chunk->vao.handle) chunk->vao = vao_create();
     if (!chunk->vbo.handle) chunk->vbo = vbo_create(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
     if (!chunk->ebo.handle) chunk->ebo = vbo_create(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
+    if (!chunk->bbo.handle) chunk->bbo = vbo_create(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
 
     for (int x = 0; x < CHUNK_X; x++) {
         for (int y = 0; y < CHUNK_Y; y++) {
@@ -99,6 +115,7 @@ void chunk_bake(chunk_t *chunk) {
     vao_bind(chunk->vao);
     vbo_buffer(&chunk->vbo, chunk->vertexes, 0, chunk->vertexes_size * sizeof(vertex_t));
     vbo_buffer(&chunk->ebo, chunk->indexes, 0, chunk->indexes_size * sizeof(unsigned int));
+    vbo_buffer(&chunk->bbo, chunk->blockinfo, 0, chunk->blockinfo_size * sizeof(ivec3));
 }
 
 void chunk_bake_at(chunk_t *chunk, int x, int y, int z) {
@@ -108,10 +125,11 @@ void chunk_bake_at(chunk_t *chunk, int x, int y, int z) {
 }
 
 void chunk_draw(chunk_t *chunk) {
-    renderer_mesh(&state.renderer, 
+    renderer_chunk(&state.renderer, 
         chunk->vao,
         chunk->vbo,
         chunk->ebo,
+        chunk->bbo,
         (vec3){
             chunk->x,
             0,

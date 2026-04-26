@@ -15,7 +15,7 @@ enum RendererPass {
 
 enum RendererShaderType {
     RENDERER_SHADER_2D,
-    RENDERER_SHADER_3D,
+    RENDERER_SHADER_CHUNK,
     RENDERER_SHADER_INSTANCED_3D,
     RENDERER_SHADER_LAST
 };
@@ -42,7 +42,7 @@ struct renderer {
 void renderer_init(struct renderer *renderer);
 void renderer_use_shader(struct renderer *renderer, enum RendererShaderType shader);
 void renderer_prepare(struct renderer *renderer, enum RendererPass pass);
-void renderer_mesh(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, vec3 translation, enum RendererTextureType texture);
+void renderer_chunk(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, vbo_t bbo, vec3 translation, enum RendererTextureType texture);
 void renderer_instanced_mesh(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, vbo_t ibo, enum RendererTextureType texture, int instancecount);
 void renderer_text(float x, float y, float scale, const char *text);
 

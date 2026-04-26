@@ -1,3 +1,4 @@
+#include "cglm/vec3.h"
 #include <glad/glad.h>
 
 #define GLT_IMPLEMENTATION
@@ -23,8 +24,8 @@ void renderer_init(struct renderer *renderer) {
 
     // shaders
     renderer->shaders[RENDERER_SHADER_2D] = shader_load("res/shader/shader.vert", "res/shader/shader.frag");
-    renderer->shaders[RENDERER_SHADER_3D] = shader_load("res/shader/3d.vert", "res/shader/3d.frag");
-    renderer->shaders[RENDERER_SHADER_INSTANCED_3D] = shader_load("res/shader/instanced_3d.vert", "res/shader/3d.frag");
+    renderer->shaders[RENDERER_SHADER_CHUNK] = shader_load("res/shader/chunk.vert", "res/shader/chunk.frag");
+    renderer->shaders[RENDERER_SHADER_INSTANCED_3D] = shader_load("res/shader/instanced_3d.vert", "res/shader/instanced_3d.frag");
     // textures
     renderer->textures[RENDERER_TEXTURE_BLOCKATLAS] = texture_load("res/texture/blockatlas.png");
     renderer->textures[RENDERER_TEXTURE_WIRE] = texture_load("res/texture/wire.png");
@@ -69,20 +70,28 @@ void renderer_prepare(struct renderer *renderer, enum RendererPass pass) {
     }
 }
 
-void renderer_mesh(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, vec3 translation, enum RendererTextureType texture) {
-    renderer_use_shader(renderer, RENDERER_SHADER_3D);
+void renderer_chunk(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, vbo_t bbo, vec3 translation, enum RendererTextureType texture) {
+    renderer_use_shader(renderer, RENDERER_SHADER_CHUNK);
     renderer_use_texture(renderer, texture);
 
     vao_attribute(vao, vbo, shader_attribute(renderer->current_shader, "aPos"), 3, GL_FLOAT, sizeof(float) * 5, (void*)0);
     vao_attribute(vao, vbo, shader_attribute(renderer->current_shader, "aTexCoord"), 2, GL_FLOAT, sizeof(float) * 5, (void*)(sizeof(float) * 3));
+    vao_attribute(vao, bbo, shader_attribute(renderer->current_shader, "blockinfo"), 3, GL_INT, sizeof(int) * 3, (void*)0);
 
     mat4 model;
     glm_mat4_identity(model);
     glm_translate(model, translation);
 
+    ivec3 target = {
+        round(renderer->camera.target[0]),
+        round(renderer->camera.target[1]),
+        round(renderer->camera.target[2])
+    };
+
     sendUniformM4FV(renderer->current_shader, "model", model);
     sendUniformM4FV(renderer->current_shader, "view", renderer->v);
     sendUniformM4FV(renderer->current_shader, "projection", renderer->p);
+    sendUniformI3V(renderer->current_shader, "target", target);
 
     glDrawElements(GL_TRIANGLES, ebo.size, GL_UNSIGNED_INT, 0);
 }

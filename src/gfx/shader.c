@@ -46,6 +46,10 @@ void sendUniform4FV(shader_t shader, const char *uniform, void *data) {
     glUniform4fv(glGetUniformLocation(shader.handle, uniform), 1, data);
 }
 
+void sendUniformI3V(shader_t shader, const char *uniform, void *data) {
+     glUniform3iv(glGetUniformLocation(shader.handle, uniform), 1, data);
+}
+
 void shader_use(shader_t shader) {
     glUseProgram(shader.handle);
 }

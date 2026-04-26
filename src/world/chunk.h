@@ -13,14 +13,19 @@ typedef struct {
     block_t blocks[CHUNK_X][CHUNK_Y][CHUNK_Z];
 
     vao_t vao;
-    vbo_t vbo, ebo;
+    vbo_t vbo, ebo, bbo;
 
     vertex_t *vertexes;
     unsigned int *indexes;
+    ivec3 *blockinfo;
+
     size_t vertexes_size;
     size_t indexes_size;
+    size_t blockinfo_size;
+
     size_t vertexes_count;
     size_t indexes_count;
+    size_t blockinfo_count;
 } chunk_t;
 
 chunk_t chunk_gen(int x, int z);
