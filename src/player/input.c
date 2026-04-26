@@ -31,32 +31,45 @@ void input_handle(void) {
             state.renderer.camera.target[0],
             state.renderer.camera.target[1],
             state.renderer.camera.target[2]
-        );           
-        switch (state.player.mode) {
-            case MODE_BLOCK_PLACE:
-                if (window.mouse.buttons[GLFW_MOUSE_BUTTON_LEFT].down)
-                    info.chunk->blocks[info.x][info.y][info.z] = (block_t){.id = state.player.selected_block, .gate.state = STATE_OFF};
-
-                chunk_bake(info.chunk);
-                break;
-            case MODE_WIRE_PLACE:
-                if (!state.player.planout) {
-                    state.player.wire_ox = info.x;
-                    state.player.wire_oy = info.y;
-                    state.player.wire_oz = info.z;
-                    state.player.planout = true;
-                } else {
-                    world_create_wire((wire_t){
-                        .ox = state.player.wire_ox,
-                        .oy = state.player.wire_oy,
-                        .oz = state.player.wire_oz,
-                        .dx = info.x,
-                        .dy = info.y,
-                        .dz = info.z
-                    });
+        );
+        if (!(info.x < 0 || info.y < 0 || info.z < 0)) { // NOTE: dont segfault
+            struct world_get_at_relative_info relative_info = world_get_at_relative(info);
+            switch (state.player.mode) {
+                case MODE_BLOCK_PLACE:
+                    if (window.mouse.buttons[GLFW_MOUSE_BUTTON_LEFT].down)
+                        info.chunk->blocks[info.x][info.y][info.z] = (block_t){.id = state.player.selected_block, .gate.state = STATE_OFF};
+                    chunk_bake(info.chunk);
+                    break;
+                case MODE_WIRE_PLACE:
+                case MODE_WIRE_DESTROY:
+                    if (!state.player.planout) {
+                        state.player.wire_ox = relative_info.x;
+                        state.player.wire_oy = relative_info.y;
+                        state.player.wire_oz = relative_info.z;
+                        state.player.planout = true;                    
+                        break;
+                    } else if (state.player.mode == MODE_WIRE_PLACE) {
+                        world_create_wire((wire_t){
+                            .ox = state.player.wire_ox,
+                            .oy = state.player.wire_oy,
+                            .oz = state.player.wire_oz,
+                            .dx = relative_info.x,
+                            .dy = relative_info.y,
+                            .dz = relative_info.z
+                        });
+                    } else {
+                        world_destroy_wire((wire_t){
+                            .ox = state.player.wire_ox,
+                            .oy = state.player.wire_oy,
+                            .oz = state.player.wire_oz,
+                            .dx = relative_info.x,
+                            .dy = relative_info.y,
+                            .dz = relative_info.z
+                        });
+                    }
                     state.player.planout = false;
-                }
-                break;
+                    break;
+            }
         }
         window.mouse.buttons[GLFW_MOUSE_BUTTON_LEFT].down = false;
     }

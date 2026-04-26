@@ -28,7 +28,22 @@ bool is_logic_block(block_t block) {
 }
 
 void logic_block_add_input(block_t *from, block_t *to) {
+    for (int i = 0; i < to->gate.num_inputs; i++) {
+        if (!to->gate.inputs[i].gate) {
+            to->gate.inputs[i].gate = &from->gate;
+            return;
+        }
+    }    
     to->gate.inputs = srealloc(to->gate.inputs, ++to->gate.num_inputs * sizeof(input_t));
     to->gate.inputs[to->gate.num_inputs - 1].gate = &from->gate;
 }
 
+void logic_block_remove_input(block_t *from, block_t *to) {
+    for (int i = 0; i < to->gate.num_inputs; i++) {
+        if (!to->gate.inputs[i].gate) continue;
+        if (to->gate.inputs[i].gate == &from->gate) {
+            to->gate.inputs[i].gate = NULL;
+            break;
+        }
+    }
+}

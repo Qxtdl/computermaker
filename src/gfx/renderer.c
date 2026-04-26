@@ -14,7 +14,7 @@ void renderer_init(struct renderer *renderer) {
     memset(renderer, 0, sizeof(*renderer));
 
     camera_init(&renderer->camera, (vec3){0, 3, 0}, (vec3){0, 0, 0}, (vec3){0, 1, 0}, (vec3){0, 0, -1});
-    camera_perspective_init(&renderer->camera, glm_rad(128.0f), 1, 0.5, 1000);
+    camera_perspective_init(&renderer->camera, glm_rad(128.0f), 1, 0.1, 1000);
     gltInit();
 
     renderer->vao = vao_create();
@@ -24,6 +24,7 @@ void renderer_init(struct renderer *renderer) {
     // shaders
     renderer->shaders[RENDERER_SHADER_2D] = shader_load("res/shader/shader.vert", "res/shader/shader.frag");
     renderer->shaders[RENDERER_SHADER_3D] = shader_load("res/shader/3d.vert", "res/shader/3d.frag");
+    renderer->shaders[RENDERER_SHADER_INSTANCED_3D] = shader_load("res/shader/instanced_3d.vert", "res/shader/3d.frag");
     // textures
     renderer->textures[RENDERER_TEXTURE_BLOCKATLAS] = texture_load("res/texture/blockatlas.png");
     renderer->textures[RENDERER_TEXTURE_WIRE] = texture_load("res/texture/wire.png");
@@ -86,22 +87,20 @@ void renderer_mesh(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, v
     glDrawElements(GL_TRIANGLES, ebo.size, GL_UNSIGNED_INT, 0);
 }
 
-// only used by wire.c
-void renderer_wire(struct renderer *renderer, vao_t vao, vbo_t vbo, enum RendererTextureType texture) {
-    renderer_use_shader(renderer, RENDERER_SHADER_3D);
+void renderer_instanced_mesh(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, vbo_t ibo, enum RendererTextureType texture, int instancecount) {
+    renderer_use_shader(renderer, RENDERER_SHADER_INSTANCED_3D);
     renderer_use_texture(renderer, texture);
 
     vao_attribute(vao, vbo, shader_attribute(renderer->current_shader, "aPos"), 3, GL_FLOAT, sizeof(float) * 5, (void*)0);
     vao_attribute(vao, vbo, shader_attribute(renderer->current_shader, "aTexCoord"), 2, GL_FLOAT, sizeof(float) * 5, (void*)(sizeof(float) * 3));
+    for (int i = 0; i < 4; i++) {
+        vao_attribute_divisor(vao, ibo, shader_attribute(renderer->current_shader, "model")+i, 4, GL_FLOAT, sizeof(mat4), (void*)(sizeof(vec4) * i), 1);
+    }
 
-    mat4 model;
-    glm_mat4_identity(model);
-
-    sendUniformM4FV(renderer->current_shader, "model", model);
     sendUniformM4FV(renderer->current_shader, "view", renderer->v);
     sendUniformM4FV(renderer->current_shader, "projection", renderer->p);
 
-    glDrawArrays(GL_TRIANGLES, 0, vbo.size);
+    glDrawElementsInstanced(GL_TRIANGLES, ebo.size, GL_UNSIGNED_INT, 0, 1);
 }
 
 void renderer_text(float x, float y, float scale, const char *text) {

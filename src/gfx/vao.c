@@ -33,3 +33,8 @@ void vao_attribute(vao_t vao, vbo_t vbo, GLuint index, GLint size, GLenum type, 
     }
     glEnableVertexAttribArray(index);
 }
+
+void vao_attribute_divisor(vao_t vao, vbo_t vbo, GLuint index, GLint size, GLenum type, GLsizei stride, void *offset, unsigned int divisor) {
+    vao_attribute(vao, vbo, index, size, type, stride, offset);
+    glVertexAttribDivisor(index, divisor);
+}

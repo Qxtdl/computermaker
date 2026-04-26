@@ -53,14 +53,6 @@ float skyboxVertices[] = {
 void skybox_init(skybox_t *skybox) {
     skybox->shader = shader_load("res/shader/skybox.vert", "res/shader/skybox.frag");
 
-    // const char *faces[] = {
-    //     "res/texture/sky512_rt.png",
-    //     "res/texture/sky512_lf.png",
-    //     "res/texture/sky512_up.png",
-    //     "res/texture/sky512_dn.png",
-    //     "res/texture/sky512_ft.png",
-    //     "res/texture/sky512_bk.png"
-    // };
     const char *faces[] = {
         config_get("SKY_LF"),
         config_get("SKY_RT"),

@@ -51,6 +51,14 @@ struct world_get_at_info world_get_at(struct world *world, float x, float y, flo
     return info;
 }
 
+struct world_get_at_relative_info world_get_at_relative(struct world_get_at_info theirinfo) {
+    struct world_get_at_relative_info info;
+    info.x = theirinfo.chunk->x + theirinfo.x;
+    info.y = theirinfo.y;
+    info.z = theirinfo.chunk->z + theirinfo.z;
+    return info;
+}
+
 void world_place_at(struct world *world, int x, int y, int z, block_t block) {
     int cx = x / CHUNK_X * CHUNK_X;
     int cz = z / CHUNK_Z * CHUNK_Z;

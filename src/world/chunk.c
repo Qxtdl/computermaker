@@ -21,7 +21,8 @@ chunk_t chunk_gen(int x, int z) {
     return chunk;
 }
 
-static void push_vertex(chunk_t *chunk, vertex_t vertex) {
+static void push_vertex(void *args, vertex_t vertex) {
+    chunk_t *chunk = (chunk_t *)args;
     chunk->vertexes_size++;
     while (chunk->vertexes_count <= chunk->vertexes_size) {
         chunk->vertexes_count <<= 1;
@@ -30,71 +31,33 @@ static void push_vertex(chunk_t *chunk, vertex_t vertex) {
     chunk->vertexes[chunk->vertexes_size - 1] = vertex;
 }
 
-static void push_index(chunk_t *chunk, unsigned int indice) {
+static void push_index(void *args, unsigned int index) {
+    chunk_t *chunk = (chunk_t *)args;
     chunk->indexes_size++;
     while (chunk->indexes_size >= chunk->indexes_count) {
         chunk->indexes_count <<= 1;
         chunk->indexes = srealloc(chunk->indexes, chunk->indexes_count * sizeof(unsigned int));
     }
-    chunk->indexes[chunk->indexes_size - 1] = indice;
+    chunk->indexes[chunk->indexes_size - 1] = index;
 }
 
 static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
     vec2 scale, uv;
     block_get_uv(chunk->blocks[x][y][z], face, &scale, &uv);
 
-    vertex_t vertex[4];
-    switch (face) {
-        case FACE_FRONT:
-            vertex[0] = (vertex_t){{x,   y, z+1}, {0, 0}};
-            vertex[1] = (vertex_t){{x,   y+1,z+1}, {1, 0}};
-            vertex[2] = (vertex_t){{x+1, y+1,z+1}, {1, 1}};
-            vertex[3] = (vertex_t){{x+1, y, z+1}, {0, 1}};
-            break;
-        case FACE_BACK:
-            vertex[0] = (vertex_t){{x,   y,   z}, {0, 0}};
-            vertex[1] = (vertex_t){{x+1, y,   z}, {1, 0}};
-            vertex[2] = (vertex_t){{x+1, y+1, z}, {1, 1}};
-            vertex[3] = (vertex_t){{x,   y+1, z}, {0, 1}};
-            break;
-        case FACE_RIGHT:
-            vertex[0] = (vertex_t){{x+1, y,   z},   {0, 0}};
-            vertex[1] = (vertex_t){{x+1, y,   z+1}, {1, 0}};
-            vertex[2] = (vertex_t){{x+1, y+1, z+1}, {1, 1}};
-            vertex[3] = (vertex_t){{x+1, y+1, z},   {0, 1}};
-            break;
-        case FACE_LEFT:
-            vertex[0] = (vertex_t){{x, y,   z+1}, {0, 0}};
-            vertex[1] = (vertex_t){{x, y,   z},   {1, 0}};
-            vertex[2] = (vertex_t){{x, y+1, z},   {1, 1}};
-            vertex[3] = (vertex_t){{x, y+1, z+1}, {0, 1}};
-            break;
-        case FACE_TOP:
-            vertex[0] = (vertex_t){{x,   y+1, z},   {0, 0}};
-            vertex[1] = (vertex_t){{x+1, y+1, z},   {1, 0}};
-            vertex[2] = (vertex_t){{x+1, y+1, z+1}, {1, 1}};
-            vertex[3] = (vertex_t){{x,   y+1, z+1}, {0, 1}};
-            break;
-        case FACE_BOTTOM:
-            vertex[0] = (vertex_t){{x,   y, z+1}, {0, 0}};
-            vertex[1] = (vertex_t){{x+1, y, z+1}, {1, 0}};
-            vertex[2] = (vertex_t){{x+1, y, z},   {1, 1}};
-            vertex[3] = (vertex_t){{x,   y, z},   {0, 1}};
-    }
-
-    for (int i = 0; i < 4; i++) {
-        glm_vec2_mul(vertex[i].texture, scale, vertex[i].texture);
-        glm_vec2_add(vertex[i].texture, uv, vertex[i].texture);
-        push_vertex(chunk, vertex[i]);
-    }
-
-    const size_t start = chunk->vertexes_size - 4;
-    push_index(chunk, start + 0);
-    push_index(chunk, start + 1);
-    push_index(chunk, start + 2);
-    push_index(chunk, start + 2);
-    push_index(chunk, start + 3);
-    push_index(chunk, start + 0);    
+    blockmesh_push_face(
+        push_vertex,
+        push_index,
+        chunk,
+        chunk, 
+        &chunk->vertexes_size,
+        scale,
+        uv,
+        face,
+        x, 
+        y,
+        z
+    );
 }
 
 void chunk_bake(chunk_t *chunk) {
@@ -103,14 +66,13 @@ void chunk_bake(chunk_t *chunk) {
     free(chunk->indexes);
     chunk->vertexes = NULL;
     chunk->indexes = NULL;
+    chunk->vertexes_size = 0;
+    chunk->indexes_size = 0;
     chunk->indexes_count = 1;
     chunk->vertexes_count = 1;
-    vao_destroy(chunk->vao);
-    vbo_destroy(chunk->vbo);
-    vbo_destroy(chunk->ebo);
-    chunk->vao = vao_create();
-    chunk->vbo = vbo_create(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
-    chunk->ebo = vbo_create(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
+    if (!chunk->vao.handle) chunk->vao = vao_create();
+    if (!chunk->vbo.handle) chunk->vbo = vbo_create(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
+    if (!chunk->ebo.handle) chunk->ebo = vbo_create(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
 
     for (int x = 0; x < CHUNK_X; x++) {
         for (int y = 0; y < CHUNK_Y; y++) {

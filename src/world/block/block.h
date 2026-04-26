@@ -3,17 +3,9 @@
 #include <string.h>
 #include <cglm/cglm.h>
 
-#define BLOCK_TICK_DECLARE(name) extern void _##name##_tick(block_t *block);
+#include "../blockmesh.h"
 
-enum Face {
-    FACE_TOP,
-    FACE_BOTTOM,
-    FACE_RIGHT,
-    FACE_LEFT,
-    FACE_FRONT,
-    FACE_BACK,
-    FACE_LAST
-};
+#define BLOCK_TICK_DECLARE(name) extern void _##name##_tick(block_t *block);
 
 struct logic_gate;
 
@@ -49,7 +41,7 @@ void block_get_uv(block_t block, enum Face face, vec2 *scale, vec2 *uv);
 void block_tick(block_t *block);
 bool is_logic_block(block_t block);
 void logic_block_add_input(block_t *from, block_t *to);
+void logic_block_remove_input(block_t *from, block_t *to);
 
 BLOCK_TICK_DECLARE(and)
 BLOCK_TICK_DECLARE(nand)
-

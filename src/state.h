@@ -11,6 +11,7 @@ extern struct state {
         enum {
             MODE_BLOCK_PLACE,
             MODE_WIRE_PLACE,
+            MODE_WIRE_DESTROY,
             MODE_LAST
         } mode;
         // block placing
