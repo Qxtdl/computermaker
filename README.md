@@ -25,3 +25,49 @@ make run
 #### Known Problems
 
 1. If your IDE complains about includes, try `bear -- make`.
+
+## Info to use the software
+
+### Controls
+
+> [!NOTE] 
+> The currently selected block is painted with a red gradient
+
+WASD to move around \
+Scroll wheel to change FOV \
+Left click to place/destroy/wire (depends on the mode)
+
+Keybind||
+---|---
+E|Go to next mode
+Q|Change block
+O|Toggle wireframe mode
+R|Reset camera to 0, 0, 0
+Z|Save the world to `SAVELOAD` (from config.comm) filename
+
+### Wire mode
+
+When you are in wire mode:
+1. Left click to select the source block
+2. Go to the destination block
+3. Left click to select the destination block
+4. Now the source block is connected to the destination block.
+
+## Configuring it
+
+Each time you start the game, it reads the file named `config.comm` \
+This file is in the ``res`` (resource) folder \
+You can also add comments to it using `;` \
+Here are the specifications
+
+Parameter|Info|
+---|---
+SKY_RT|Filename of the image for the right side of the skybox
+SKY_LF|Filename of the image for the left side of the skybox
+SKY_UP|Filename of the image for the top side of the skybox
+SKY_DN|Filename of the image for the bottom side of the skybox
+SKY_FT|Filename of the image for the front side of the skybox
+SKY_BK|Filename of the image for the back side of the skybox
+SAVELOAD|Native save file to load when starting the game
+SAVETO|Filename of the native save file, the world is saved here pressing Z
+CM2SAVE|A Circuit Maker 2 save to load when starting the game. Note that SAVELOAD loads the save first, then this.
