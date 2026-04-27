@@ -14,4 +14,3 @@ void _and_tick(block_t *block) {
     }
     block->gate.new_state = STATE_ON;
 }
-

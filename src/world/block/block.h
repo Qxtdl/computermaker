@@ -30,6 +30,8 @@ typedef struct {
 
         // logic gates
         AND,
+        OR,
+        XOR,
         NAND,
 
         BLOCKID_LAST
@@ -37,6 +39,7 @@ typedef struct {
     logic_gate_t gate;
 } block_t;
 
+const char *block_id_name(enum BlockId id);
 void block_get_uv(block_t block, enum Face face, vec2 *scale, vec2 *uv);
 void block_tick(block_t *block);
 bool is_logic_block(block_t block);
@@ -44,4 +47,6 @@ void logic_block_add_input(block_t *from, block_t *to);
 void logic_block_remove_input(block_t *from, block_t *to);
 
 BLOCK_TICK_DECLARE(and)
+BLOCK_TICK_DECLARE(or)
+BLOCK_TICK_DECLARE(xor)
 BLOCK_TICK_DECLARE(nand)

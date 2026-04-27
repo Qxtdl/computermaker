@@ -3,6 +3,22 @@
 #include "../global.h"
 #include "uv.h"
 
+const char *block_id_name(enum BlockId id) {
+    switch (id) {
+        case AIR : return "AIR";
+        case STUD: return "STUD";
+        case BRICK: return "BRICK";
+
+        // logic gates
+        case AND: return "AND";
+        case OR: return "OR";
+        case XOR: return "XOR";
+        case NAND: return "NAND";
+
+        default: return "UNKNOWN";
+    }
+}
+
 void block_get_uv(block_t block, enum Face face, vec2 *scale, vec2 *uv) {
     if (block.id >= BLOCKID_LAST) {
         printf("Invalid block id: %d\n", block.id);
@@ -14,6 +30,8 @@ void block_get_uv(block_t block, enum Face face, vec2 *scale, vec2 *uv) {
 void block_tick(block_t *block) {
     switch (block->id) {
         case AND: _and_tick(block); break;
+        case OR: _or_tick(block); break;
+        case XOR: _xor_tick(block); break;
         case NAND: _nand_tick(block); break;
         default: break;
     }
@@ -22,6 +40,8 @@ void block_tick(block_t *block) {
 bool is_logic_block(block_t block) {
     switch (block.id) {
         case AND: return true;
+        case OR: return true;
+        case XOR: return true;
         case NAND: return true;
         default: return false;
     }

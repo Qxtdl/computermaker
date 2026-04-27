@@ -53,6 +53,7 @@ void config_process(void) {
         if (*line == ';') goto skip;
         char *key = strtok_r(line, "=", &save2);
         char *value = strtok_r(NULL, "=", &save2);
+        if (!strcmp(value, "null")) value = NULL;
         config_add_key_value(key, value);
     skip:
         line = strtok_r(NULL, "\n", &save);
