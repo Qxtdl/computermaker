@@ -39,6 +39,8 @@ typedef struct {
     logic_gate_t gate;
 } block_t;
 
+#define blockof(_gate) ((block_t *)((_gate) - offsetof(block_t, gate)))
+
 const char *block_id_name(enum BlockId id);
 void block_get_uv(block_t block, enum Face face, vec2 *scale, vec2 *uv);
 void block_tick(block_t *block);

@@ -1,8 +1,10 @@
 #include "../state.h"
+#include "../config.h"
 #include "../world/wire.h"
+#include "../world/save.h"
 
 void input_handle(void) {
-        if (window.mouse.moved) {
+    if (window.mouse.moved) {
         camera_mouse_cb(&state.renderer.camera, window.mouse.x, window.mouse.y);
         window.mouse.moved = true;
     }
@@ -94,5 +96,10 @@ void input_handle(void) {
     }
     if (window.keyboard.keys[GLFW_KEY_R].down) {
         memset(&state.renderer.camera.origin, 0, sizeof(state.renderer.camera.origin));
+    }
+    if (window.keyboard.keys[GLFW_KEY_Z].down) {
+        save_save(config_get("SAVETO"));
+
+        window.keyboard.keys[GLFW_KEY_Z].down = false;
     }
 }

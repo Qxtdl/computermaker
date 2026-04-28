@@ -20,8 +20,8 @@ SKY_DN=res/texture/skybox/sfoth_sky512_dn.png
 SKY_FT=res/texture/skybox/sfoth_sky512_ft.png
 SKY_BK=res/texture/skybox/sfoth_sky512_bk.png
 ; where load from starting the game
-SAVELOAD=null
+SAVELOAD=save.save
 ; if save in game where to save
-SAVETO=4bit.save
+SAVETO=save.save
 ; cm2 circuit to load in game starting the game
 SAVE=5,0,1,0,2,0+0;1,0,0,0,0,;5,0,-1,0,2,0+0?1,2;3,2??

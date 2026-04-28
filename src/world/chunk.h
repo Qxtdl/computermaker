@@ -8,7 +8,13 @@
 #define CHUNK_Y 16
 #define CHUNK_Z 16
 
-typedef struct {
+typedef struct 
+__attribute__((packed)) 
+/*
+what if some compiler adds struct padding to the memory layout of the world and
+one person saves it then the other who compiled it with a different compiler loads the save but its different
+*/
+{
     int x, z;
     block_t blocks[CHUNK_X][CHUNK_Y][CHUNK_Z];
 

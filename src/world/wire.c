@@ -16,8 +16,8 @@
 #include "world.h"
 #include "blockmesh.h"
 
-static wire_t *wires = NULL;
-static int wires_size = 0;
+wire_t *wires = NULL;
+int wires_size = 0;
 
 static vao_t vao;
 static vbo_t vbo, ebo, ibo;

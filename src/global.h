@@ -3,9 +3,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define APP_STAGE_STRING "alpha"
+#define APP_VERSION_STRING "2.4.0"
+#define APP_RELEASE_STRING APP_STAGE_STRING " " APP_VERSION_STRING
+
 #define app_error(...) \
    { \
       fprintf(stderr, __VA_ARGS__); \
       exit(1); \
    }
 
+#define app_warn(...) \
+   { \
+      fprintf(stderr, __VA_ARGS__); \
+   }

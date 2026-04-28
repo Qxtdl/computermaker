@@ -14,20 +14,7 @@
 static char *consource;
 
 void config_open(const char *filename) {
-    FILE *fptr = fopen(filename, "r");
-    if (!fptr) {
-        app_error("Failed to find/open the config file %s\n", filename)
-    }
-
-    fseek(fptr, 0, SEEK_END);
-    long size = ftell(fptr);
-    rewind(fptr);
-    consource = smalloc(size + 1);
-    size_t read_size = fread(consource, 1, size, fptr);
-    if (read_size != size) {
-        app_error("Error whilst reading the config file %s\n", filename)
-    }
-    consource[size] = '\0';
+    consource = readfile(filename);
 }
 
 static struct key_value {

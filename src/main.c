@@ -1,44 +1,24 @@
 #include "state.h"
 #include "config.h"
 #include "gfx/renderer.h"
-#include "world/block/block.h"
+#include "world/save.h"
 #include "world/world.h"
 #include "world/tick.h"
+#include "world/wire.h"
 #include "player/input.h"
 #include "player/hud.h"
 #include "cm2save.h"
-
-//testing
-#include "world/wire.h"
 
 void init(void) {
     config_open("res/config.comm");
     config_process();
     renderer_init(&state.renderer);
     state.renderer.wireframe = false;
-    world_worldgen(&state.world);
     skybox_init(&state.world.skybox);
     world_wire_init();
-
-    printf("Savestring: %s\n", config_get("SAVE"));
+    if (!save_load(config_get("SAVELOAD")))
+        world_worldgen(&state.world);
     cm2save_process(config_get("SAVE"));
-
-    /* Test */
-    // for (int x = 0; x < 4; x++) {
-    //     for (int z = 15; z < 17; z++) {
-    //         world_place_at(&state.world, x, 4, z, (block_t){.id = STUD});
-    //     }
-    // }
-
-    // world_create_wire((wire_t){
-    //     .ox = 5,
-    //     .oy = 3,
-    //     .oz = 2,
-
-    //     .dx = 2,
-    //     .dy = 1,
-    //     .dz = 1
-    // });
 }
 
 void destroy(void) {
