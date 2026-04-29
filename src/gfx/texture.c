@@ -32,7 +32,6 @@ texture_t texture_load(const char *filename) {
 
     stbi_image_free(image);
 
-    printf("Made a handle %d for %s\n", handle, filename);
     texture.handle = handle;
     return texture;
 }
@@ -43,9 +42,7 @@ void texture_destroy(texture_t texture) {
 
 void texture_bind(texture_t texture) {
     static int i = 0;
-    if (!i) {
+    if (!i)
         i++;
-        printf("Using handle %d\n", texture.handle);
-    }
     glBindTexture(GL_TEXTURE_2D, texture.handle);
 }

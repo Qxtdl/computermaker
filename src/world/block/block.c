@@ -21,7 +21,7 @@ const char *block_id_name(enum BlockId id) {
 
 void block_get_uv(block_t block, enum Face face, vec2 *scale, vec2 *uv) {
     if (block.id >= BLOCKID_LAST) {
-        printf("Invalid block id: %d\n", block.id);
+        app_warn("Invalid block id: %d\n", block.id);
     }
     memcpy(scale, uv_get_scale(block), sizeof(vec2));
     memcpy(uv, uv_get_position(block), sizeof(vec2));

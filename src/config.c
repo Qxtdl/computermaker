@@ -29,7 +29,7 @@ static void config_add_key_value(const char *key, const char *value) {
         key,
         value
     };
-    printf("[CONFIG]: Key-value pair: [%s : %s]\n", key, value);
+    app_log("[CONFIG]: Key-value pair: [%s : %s]\n", key, value);
 }
 
 void config_process(void) {
@@ -50,7 +50,7 @@ void config_process(void) {
 const char *config_get(const char *key) {
     for (size_t i = 0; i < tables_size; i++) {
         if (!strcmp(tables[i].key, key)) {
-            printf("[CONFIG]: Got %s!\n", tables[i].value);
+            app_log("[CONFIG]: Got %s!\n", tables[i].value);
             return tables[i].value;
         }
     }
