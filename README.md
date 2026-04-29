@@ -6,6 +6,8 @@ This is a WIP kinda-clone of [CM2](https://www.roblox.com/games/6652606416/Circu
 The original is made in Roblox which limits the speed of the simulation enough to be exceeded. \
 We have no idea of computer graphics.
 
+### [``ComputerMaker Discord``](https://discord.gg/gCkxb2uRrU)
+
 ## Quickstart (Linux)
 
 #### Requirements
