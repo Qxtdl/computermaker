@@ -150,6 +150,8 @@ void save_save(const char *filename) {
     fwrite(&savechunk_terminator, sizeof(savechunk_t), 1, fptr);
 
     for (int i = 0; i < wires_size; i++) {
+        if (!wires[i].valid) continue;
+
         fwrite(&(savewire_t){
             .ox = wires[i].ox,
             .oy = wires[i].oy,
