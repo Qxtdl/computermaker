@@ -38,8 +38,7 @@ void input_handle(void) {
             struct world_get_at_relative_info relative_info = world_get_at_relative(info);
             switch (state.player.mode) {
                 case MODE_BLOCK_PLACE:
-                    if (window.mouse.buttons[GLFW_MOUSE_BUTTON_LEFT].down)
-                        info.chunk->blocks[info.x][info.y][info.z] = (block_t){.id = state.player.selected_block, .gate.state = STATE_OFF};
+                    info.chunk->blocks[info.x][info.y][info.z] = (block_t){.id = state.player.selected_block, .gate.state = STATE_OFF};
                     chunk_bake(info.chunk);
                     break;
                 case MODE_WIRE_PLACE:
@@ -73,6 +72,7 @@ void input_handle(void) {
                     break;
             }
         }
+        
         window.mouse.buttons[GLFW_MOUSE_BUTTON_LEFT].down = false;
     }
     if (window.keyboard.keys[GLFW_KEY_E].down) {
