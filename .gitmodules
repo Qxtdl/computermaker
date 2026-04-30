@@ -1,4 +1,4 @@
-[submodule "deps/cglm"]
+[submodule "dep/cglm"]
 	path = deps/cglm
 	url = https://github.com/recp/cglm
 [submodule "dep/glfw"]
