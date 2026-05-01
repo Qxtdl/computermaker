@@ -9,7 +9,7 @@ else
 	# windows
 	CC = x86_64-w64-mingw32-gcc
 	CFLAGS = -Wall -Wno-unused-result -g \
-			-Isrc/include -Idep/cglm/include \
+			-Isrc/include -Idep/cglm/include -Idep/glfw/include \
 			-static
 	# not in dep folder, install yourself
 	LIBS = dep/cglm/windows/libcglm.a dep/glfw/windows/src/libglfw3.a -lopengl32 -lgdi32 -lm
