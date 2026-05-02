@@ -14,6 +14,9 @@ const char *block_id_name(enum BlockId id) {
         case OR: return "OR";
         case XOR: return "XOR";
         case NAND: return "NAND";
+        case NOR: return "NOR";
+        case XNOR: return "XNOR";
+        case FLIPFLOP: return "FLIPFLOP";
 
         default: return "UNKNOWN";
     }
@@ -33,16 +36,23 @@ void block_tick(block_t *block) {
         case OR: _or_tick(block); break;
         case XOR: _xor_tick(block); break;
         case NAND: _nand_tick(block); break;
+        case NOR: _nor_tick(block); break;
+        case XNOR: _xnor_tick(block); break;
+        case FLIPFLOP: _flipflop_tick(block); break;
         default: break;
     }
 }
 
 bool is_logic_block(block_t block) {
     switch (block.id) {
-        case AND: return true;
-        case OR: return true;
-        case XOR: return true;
-        case NAND: return true;
+        case AND:
+        case OR:
+        case XOR:
+        case NAND:
+        case NOR:
+        case XNOR:
+        case FLIPFLOP:
+        return true;
         default: return false;
     }
 }

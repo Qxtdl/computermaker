@@ -15,7 +15,6 @@ void init(void) {
     config_open("res/config.comm");
     config_process();
     renderer_init(&state.renderer);
-    state.renderer.wireframe = false;
     skybox_init(&state.world.skybox);
     world_wire_init();
     if (!save_load(config_get("SAVELOAD")))
@@ -30,8 +29,8 @@ void destroy(void) {
 }
 
 void tick(void) {
-    world_tick(&state.world);
     input_handle();
+    world_tick(&state.world);
 }
 
 void render(void) {

@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -83,11 +81,13 @@ void window_create(
 void window_loop(void) {
     window.init();
     while (!glfwWindowShouldClose(window.handle)) {
+        window.now = glfwGetTime();
         window.tick();
         window.render();
 
         glfwSwapBuffers(window.handle);
         glfwPollEvents();
+        window.deltaTime = glfwGetTime() - window.now;
     }
     window.destroy();
 }

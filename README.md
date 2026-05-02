@@ -47,6 +47,15 @@ O|Toggle wireframe mode
 R|Reset camera to 0, 0, 0
 Z|Save the world to `SAVELOAD` (from config.comm) filename
 
+### Modes
+
+Modes|Info|
+---|---
+BLOCK_PLACE|Place a block
+WIRE_PLACE|Place a wire connection from block -> block
+WIRE_DESTROY|Destroy a wire connection from block -> block
+BLOCK_POKE|The block will be poked. For example, poking a Flipflop toggles it.
+
 ### Wire mode
 
 When you are in wire mode:
@@ -73,3 +82,5 @@ SKY_BK|Filename of the image for the back side of the skybox
 SAVELOAD|Native save file to load when starting the game
 SAVETO|Filename of the native save file, the world is saved here pressing Z
 CM2SAVE|A Circuit Maker 2 save to load when starting the game. Note that SAVELOAD loads the save first, then this.
+CHUNK_AMOUNT_X|How much chunks to generate in the X axis at world generation
+CHUNK_AMOUNT_Z|How much chunks to generate in the Z axis at world generation

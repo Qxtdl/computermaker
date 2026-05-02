@@ -8,10 +8,11 @@ extern struct state {
     struct renderer renderer;
     struct world world;
     struct player {
-        enum {
+        enum mode {
             MODE_BLOCK_PLACE,
             MODE_WIRE_PLACE,
             MODE_WIRE_DESTROY,
+            MODE_BLOCK_POKE,
             MODE_LAST
         } mode;
         // block placing
@@ -23,3 +24,5 @@ extern struct state {
     } player;
     float deltaTime;
 } state;
+
+const char *mode_name(enum mode mode);

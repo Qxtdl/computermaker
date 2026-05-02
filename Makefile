@@ -57,4 +57,3 @@ $(OUT): $(COBJ)
 $(BUILD)/%.o : %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c -o $@ $<
-

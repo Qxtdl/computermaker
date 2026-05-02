@@ -47,14 +47,14 @@ void input_handle(void) {
                 case MODE_BLOCK_PLACE:
                     if (state.player.selected_block!=AIR)
                     switch (raycast_info.face) {
-                        case FACE_TOP:raycast_info.y++;break;
-                        case FACE_BOTTOM:raycast_info.y--;break;
-                        case FACE_RIGHT:raycast_info.x++;break;
-                        case FACE_LEFT:raycast_info.x--;break;
-                        case FACE_FRONT:raycast_info.z++;break;
-                        case FACE_BACK:raycast_info.z--;break;
+                        case FACE_TOP: raycast_info.y++; break;
+                        case FACE_BOTTOM: raycast_info.y--; break;
+                        case FACE_RIGHT: raycast_info.x++; break;
+                        case FACE_LEFT: raycast_info.x--; break;
+                        case FACE_FRONT: raycast_info.z++; break;
+                        case FACE_BACK: raycast_info.z--; break;
                     }
-                    struct world_get_at_info info = world_get_at(&state.world, raycast_info.x,raycast_info.y,raycast_info.z);
+                    info = world_get_at(&state.world, raycast_info.x,raycast_info.y,raycast_info.z);
                     if ((info.x < 0 || info.y < 0 || info.z < 0)) break;
                     info.chunk->blocks[info.x][info.y][info.z] = (block_t){.id = state.player.selected_block, .gate.state = STATE_OFF};
                     chunk_bake(info.chunk);
@@ -88,6 +88,7 @@ void input_handle(void) {
                     }
                     state.player.planout = false;
                     break;
+                case MODE_BLOCK_POKE: info.chunk->blocks[info.x][info.y][info.z].gate.new_state ^= 1; break;
             }
         }
         

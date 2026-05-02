@@ -33,13 +33,14 @@ typedef struct {
         OR,
         XOR,
         NAND,
+        NOR,
+        XNOR,
+        FLIPFLOP,
 
         BLOCKID_LAST
     } id;
     logic_gate_t gate;
 } block_t;
-
-#define blockof(_gate) ((block_t *)((_gate) - offsetof(block_t, gate)))
 
 const char *block_id_name(enum BlockId id);
 void block_get_uv(block_t block, enum Face face, vec2 *scale, vec2 *uv);
@@ -52,3 +53,6 @@ BLOCK_TICK_DECLARE(and)
 BLOCK_TICK_DECLARE(or)
 BLOCK_TICK_DECLARE(xor)
 BLOCK_TICK_DECLARE(nand)
+BLOCK_TICK_DECLARE(nor)
+BLOCK_TICK_DECLARE(xnor)
+BLOCK_TICK_DECLARE(flipflop)
