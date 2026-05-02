@@ -91,8 +91,10 @@ int save_load(const char *filename) {
     savewire_t *wires = save;
     for (int i = 0;; i++) {
         savewire_t wire = wires[i];
-        if (!memcmp(&wire, &savewire_terminator, sizeof(savewire_t)))
+        if (!memcmp(&wire, &savewire_terminator, sizeof(savewire_t))) {
+            save = &wires[i + 1];
             break;
+        }
 
         world_create_wire((wire_t){
             .ox = wire.ox,
@@ -103,6 +105,8 @@ int save_load(const char *filename) {
             .dz = wire.dz,
         });
     }
+
+    memcpy(&state.renderer.camera, save, sizeof(camera_t));
 
     free(_save);
 
@@ -163,6 +167,8 @@ void save_save(const char *filename) {
     }
 
     fwrite(&savewire_terminator, sizeof(savewire_t), 1, fptr);
+
+    fwrite(&state.renderer.camera, sizeof(camera_t), 1, fptr);
 
     fclose(fptr);
 

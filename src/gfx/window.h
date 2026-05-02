@@ -26,6 +26,7 @@ extern struct window {
         } scroll;
         bool scrolled;
     } mouse;
+    double now, deltaTime;
 } window;
 
 void window_init(void);

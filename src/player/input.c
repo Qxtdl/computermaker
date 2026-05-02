@@ -70,6 +70,7 @@ void input_handle(void) {
                     }
                     state.player.planout = false;
                     break;
+                case MODE_BLOCK_POKE: info.chunk->blocks[info.x][info.y][info.z].gate.new_state ^= 1; break;
             }
         }
         
@@ -83,7 +84,7 @@ void input_handle(void) {
         window.keyboard.keys[GLFW_KEY_E].down = false;
     }
     if (window.keyboard.keys[GLFW_KEY_Q].down) {
-        if (state.player.selected_block++ == BLOCKID_LAST) 
+        if (++state.player.selected_block == BLOCKID_LAST) 
             state.player.selected_block = 0;
 
         window.keyboard.keys[GLFW_KEY_Q].down = false;

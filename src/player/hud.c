@@ -10,9 +10,10 @@ void hud_draw(void) {
         "Selected block: \n"
         "%s \n"
         "(q to change block)\n"
-        "Mode: %d (e to cycle)\n", 
+        "Mode: %s\n"
+        "(e to cycle)", 
         block_id_name(state.player.selected_block),
-        state.player.mode
+        mode_name(state.player.mode)
     );
 
     renderer_text(0, 0, 2, APP_RELEASE_STRING);

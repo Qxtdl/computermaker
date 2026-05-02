@@ -2,13 +2,16 @@
 #include "../global.h"
 #include "../util.h"
 #include "../state.h"
+#include "../config.h"
 #include "../gfx/renderer.h"
 #include "chunk.h"
 #include "wire.h"
 
 void world_worldgen(struct world *world) {
-    for (int x = 0; x < 16; x++) {
-        for (int z = 0; z < 16; z++) {
+    int ax = atoi(config_get("CHUNK_AMOUNT_X")),
+        az = atoi(config_get("CHUNK_AMOUNT_Z"));
+    for (int x = 0; x < ax; x++) {
+        for (int z = 0; z < az; z++) {
             world_add_chunk(world, chunk_gen(x * CHUNK_X, z * CHUNK_Z));
         }
     }

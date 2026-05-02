@@ -12,7 +12,6 @@
 #include "../gfx/vao.h"
 #include "../gfx/vertex.h"
 #include "block/uv.h"
-#include "cglm/affine-pre.h"
 #include "world.h"
 #include "blockmesh.h"
 
@@ -63,16 +62,9 @@ static void push_instance(mat4 *model) {
 }
 
 static void get_model(wire_t wire, mat4 *model) {
-    vec3 translation = {
-        (wire.ox + wire.dx),
-        (wire.oy + wire.dy),
-        (wire.oz + wire.dz)
-    };
-
     mat4 m;
     glm_mat4_identity(m);
-    
-    //glm_scale(m, (vec3){1,1, 1});
+
     memcpy(model, m, sizeof(mat4));
 }
 

@@ -17,18 +17,16 @@ void camera_perspective_init(camera_t *camera, float fov, float aspect, float ne
 }
 
 static void rotate(vec3 vec, vec3 rot) {
-    double sa = sin(rot[2]),
-           sb = sin(rot[0]),
+    double sb = sin(rot[0]),
            sg = sin(rot[1]),
-           ca = cos(rot[2]),
            cb = cos(rot[0]),
            cg = cos(rot[1]);
     double x = vec[0],
            y = vec[1],
            z = vec[2];
-    vec[0] = (float)(x * (ca * cb) + y * (ca * sb * sg - sa * cg) + z * (ca * sb * cg + sa * sg));
-    vec[1] = (float)(x * (sa * cb) + y * (sa * sb * sg + ca * cg) + z * (sa * sb * cg - ca * sg));
-    vec[2] = (float)(x * (-sb) + y * (cb * sg) + z * (cb * cg));
+    vec[0] = x * cb + z * sb * cg + y * sb * sg;
+    vec[1] = y * cg - z * sg;
+    vec[2] = -x * sb + z * cb * cg + y * cb * sg;
 }
 
 void camera_move(camera_t *camera, enum CameraDirection direction) {
@@ -71,4 +69,3 @@ void camera_mouse_cb(camera_t *camera, double mouseX, double mouseY) {
     pmouse[0] = mouseX;
     pmouse[1] = mouseY;
 }
-
