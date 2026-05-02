@@ -1,6 +1,7 @@
 #include "state.h"
 #include "config.h"
 #include "gfx/renderer.h"
+#include "gfx/raycast.h"
 #include "world/save.h"
 #include "world/world.h"
 #include "world/tick.h"
@@ -8,6 +9,7 @@
 #include "player/input.h"
 #include "player/hud.h"
 #include "cm2save.h"
+#include <stdlib.h>
 
 void init(void) {
     config_open("res/config.comm");
@@ -18,6 +20,8 @@ void init(void) {
     if (!save_load(config_get("SAVELOAD")))
         world_worldgen(&state.world);
     cm2save_process(config_get("SAVE"));
+    raycast_set_distance(atof(config_get("RAY_DISTANCE")));
+    set_wire_thickness(atof(config_get("WIRE_THICKNESS")));
 }
 
 void destroy(void) {

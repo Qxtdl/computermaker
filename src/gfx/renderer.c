@@ -10,6 +10,7 @@
 #include "camera.h"
 #include "vbo.h"
 #include "vao.h"
+#include "../gfx/raycast.h"
 
 void renderer_init(struct renderer *renderer) {
     memset(renderer, 0, sizeof(*renderer));
@@ -82,10 +83,13 @@ void renderer_chunk(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, 
     glm_mat4_identity(model);
     glm_translate(model, translation);
 
+    vec3 raycast_direction;
+    glm_vec3_sub(renderer->camera.target,renderer->camera.origin,raycast_direction);
+    struct raycast_info raycast_info = raycast(renderer->camera.origin, raycast_direction);
     ivec3 target = {
-        round(renderer->camera.target[0]),
-        round(renderer->camera.target[1]),
-        round(renderer->camera.target[2])
+        floor(raycast_info.x),
+        floor(raycast_info.y),
+        floor(raycast_info.z)
     };
 
     sendUniformM4FV(renderer->current_shader, "model", model);

@@ -3,6 +3,8 @@
 #include "../world/wire.h"
 #include "../world/save.h"
 #include "../gfx/raycast.h"
+#include "../global.h"
+#include <math.h>
 
 void input_handle(void) {
     if (window.mouse.moved) {
@@ -26,23 +28,24 @@ void input_handle(void) {
     if (window.mouse.scrolled) {
         state.renderer.camera.perspective.fovy += glm_rad(window.mouse.scroll.y);
         window.mouse.scrolled = false;
+        if (state.renderer.camera.perspective.fovy>M_PI) app_log("high fov\n");
     }
 
     if (window.mouse.buttons[GLFW_MOUSE_BUTTON_LEFT].down) {
+        vec3 raycast_direction;
+        glm_vec3_sub(state.renderer.camera.target,state.renderer.camera.origin,raycast_direction);
+        struct raycast_info raycast_info = raycast(state.renderer.camera.origin, raycast_direction);
         struct world_get_at_info info = world_get_at(
             &state.world, 
-            state.renderer.camera.target[0],
-            state.renderer.camera.target[1],
-            state.renderer.camera.target[2]
+            raycast_info.x,
+            raycast_info.y,
+            raycast_info.z
         );
         if (!(info.x < 0 || info.y < 0 || info.z < 0)) { // NOTE: dont segfault
             struct world_get_at_relative_info relative_info = world_get_at_relative(info);
             switch (state.player.mode) {
                 case MODE_BLOCK_PLACE:
-                    vec3 direction;
-                    glm_vec3_sub(state.renderer.camera.target,state.renderer.camera.origin,direction);
-                    struct raycast_info raycast_info = raycast(state.renderer.camera.origin, direction, 10.0f);
-                    if (state.player.selected_block != AIR)
+                    if (state.player.selected_block!=AIR)
                     switch (raycast_info.face) {
                         case FACE_TOP: raycast_info.y++; break;
                         case FACE_BOTTOM: raycast_info.y--; break;
