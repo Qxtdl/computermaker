@@ -25,3 +25,5 @@ SAVELOAD=save.save
 SAVETO=save.save
 ; cm2 circuit to load in game starting the game
 SAVE=5,0,1,0,2,0+0;1,0,0,0,0,;5,0,-1,0,2,0+0?1,2;3,2??
+RAY_DISTANCE=10
+WIRE_THICKNESS=0.6
