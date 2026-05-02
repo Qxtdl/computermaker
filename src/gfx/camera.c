@@ -36,13 +36,13 @@ void camera_move(camera_t *camera, enum CameraDirection direction) {
             offset[2] = -0.1;
             break;
         case CAMERA_DIRECTION_LEFT:
-            offset[0] = 0.1;
+            offset[0] = -0.1;
             break;
         case CAMERA_DIRECTION_BACK:
             offset[2] = 0.1;
             break;
         case CAMERA_DIRECTION_RIGHT:
-            offset[0] = -0.1;
+            offset[0] = 0.1;
     }
 
     rotate(offset, camera->rotation);
@@ -55,9 +55,9 @@ void camera_mouse_cb(camera_t *camera, double mouseX, double mouseY) {
     static vec3 pmouse = (vec3){0, 0, 0};
 
     camera->rotation[0] -= (mouseX - pmouse[0]) * M_PI / 180;
-    camera->rotation[1] += (mouseY - pmouse[1]) * M_PI / 180;
-    if (camera->rotation[1] < M_PI_2) camera->rotation[1] = M_PI_2;
-    if (camera->rotation[1] > 1.5f * M_PI) camera->rotation[1] = 1.5f * M_PI;
+    camera->rotation[1] -= (mouseY - pmouse[1]) * M_PI / 180;
+    if (camera->rotation[1] > 0.9f * M_PI_2) camera->rotation[1] = 0.9 * M_PI_2;
+    if (camera->rotation[1] < 0.9f * -M_PI_2) camera->rotation[1] = 0.9 * -M_PI_2;
 
     // scratch = rotate(front, rotation)
     memcpy(scratch_buf, camera->front, sizeof(vec3));
