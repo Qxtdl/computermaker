@@ -108,7 +108,7 @@ static void get_model(wire_t wire, mat4 *model) {
         glm_vec3_cross(direction0, direction, rotation1_axis);
         glm_rotate_make(rotation1, angle1, rotation1_axis);
 
-        glm_rotate_make(rotation0, angle0, (vec3){0, 1, 0});
+        glm_rotate_make(rotation0, -angle0, (vec3){0, 1, 0});
 
         glm_mat4_mul(m, rotation1, m);
         glm_mat4_mul(m, rotation0, m);
