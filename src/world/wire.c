@@ -102,7 +102,7 @@ static void get_model(wire_t wire, mat4 *model) {
         glm_mat4_mul(m, rotation, m);
     }
     glm_scale(m, (vec3){length, wire_thickness, wire_thickness});
-    glm_translate(m, (vec3){-(translation[0]+0.5),-(translation[1]+0.5),-(translation[2]+0.5)});
+    glm_translate(m, (vec3){-(0.5),-(0.5),-(0.5)});
 
     memcpy(model, m, sizeof(mat4));
 }
@@ -124,28 +124,28 @@ void wires_bake(wire_t *wires) {
     for (int i = 0; i < wires_size; i++) {
         wire_t wire = wires[i];
         if (!wire.valid) continue;
-
-        blockmesh_push(
-            push_vertex,
-            push_index,
-            NULL,
-            NULL, 
-            &vertexes_size,
-            UV_NULL,
-            UV_NULL,
-            ((float)wire.ox + (float)wire.dx)/2, 
-            ((float)wire.oy + (float)wire.dy)/2,
-            ((float)wire.oz + (float)wire.dz)/2
-            // wire.ox,
-            // wire.oy,
-            // wire.oz
-        );
         
         mat4 model;
         get_model(wire, &model);
         push_instance(&model);
     }
 
+    blockmesh_push(
+        push_vertex,
+        push_index,
+        NULL,
+        NULL, 
+        &vertexes_size,
+        UV_NULL,
+        UV_NULL,
+        (0), 
+        (0),
+        (0)
+        // wire.ox,
+        // wire.oy,
+        // wire.oz
+    );
+    
     vao_bind(vao);
     vbo_buffer(&vbo, vertexes, 0, vertexes_size * sizeof(vertex_t));
     vbo_buffer(&ebo, indexes, 0, indexes_size * sizeof(unsigned int));

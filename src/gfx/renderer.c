@@ -113,7 +113,7 @@ void renderer_instanced_mesh(struct renderer *renderer, vao_t vao, vbo_t vbo, vb
     sendUniformM4FV(renderer->current_shader, "view", renderer->v);
     sendUniformM4FV(renderer->current_shader, "projection", renderer->p);
 
-    glDrawElementsInstanced(GL_TRIANGLES, ebo.size, GL_UNSIGNED_INT, 0, 1);
+    glDrawElementsInstanced(GL_TRIANGLES, ebo.size, GL_UNSIGNED_INT, 0, instancecount);
 }
 
 void renderer_text(float x, float y, float scale, const char *text) {
