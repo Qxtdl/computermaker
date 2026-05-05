@@ -15,7 +15,7 @@
 void init(void) {
     config_open("res/config.comm");
     config_process();
-    renderer_init(&state.renderer);
+    renderer_init(&state.renderer, 800.0f/600.0f);
     skybox_init(&state.world.skybox);
     world_wire_init();
     //if (!save_load(config_get("SAVELOAD")))

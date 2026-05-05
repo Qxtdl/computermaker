@@ -3,6 +3,7 @@
 
 #include "window.h"
 #include "../global.h"
+#include "../state.h"
 
 struct window window;
 
@@ -14,6 +15,7 @@ void window_init(void) {
 }
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    state.renderer.camera.perspective.aspect=(float)width/(float)height;
     glViewport(0, 0, width, height);
 }
 
