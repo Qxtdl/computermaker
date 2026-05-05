@@ -13,6 +13,7 @@
 #include "../gfx/vertex.h"
 #include "block/uv.h"
 #include "cglm/affine-pre.h"
+#include "cglm/affine.h"
 #include "cglm/mat4.h"
 #include "cglm/vec3.h"
 #include "world.h"
@@ -94,12 +95,23 @@ static void get_model(wire_t wire, mat4 *model) {
     //goes bottom to top
     glm_translate(m, (vec3){translation[0]+0.5,translation[1]+0.5,translation[2]+0.5});
     if (direction[0]!=1) {
-        mat4 rotation;
-        vec3 rotation_axis;
-        float angle = glm_vec3_angle(direction,(vec3){1,0,0});
-        glm_vec3_cross((vec3){1,0,0}, direction,rotation_axis);
-        glm_rotate_make(rotation,angle,rotation_axis);
-        glm_mat4_mul(m, rotation, m);
+        mat4 rotation1;
+        mat4 rotation0;
+        vec3 direction0;
+        vec3 rotation1_axis;
+        
+        glm_vec3_normalize_to((vec3){wire.dx-wire.ox, 0, wire.dz-wire.oz}, direction0);
+
+        float angle0 = glm_vec3_angle(direction0, (vec3){1, 0, 0});
+        float angle1 = glm_vec3_angle(direction0, direction);
+
+        glm_vec3_cross(direction0, direction, rotation1_axis);
+        glm_rotate_make(rotation1, angle1, rotation1_axis);
+
+        glm_rotate_make(rotation0, angle0, (vec3){0, 1, 0});
+
+        glm_mat4_mul(m, rotation1, m);
+        glm_mat4_mul(m, rotation0, m);
     }
     glm_scale(m, (vec3){length, wire_thickness, wire_thickness});
     glm_translate(m, (vec3){-(0.5),-(0.5),-(0.5)});
