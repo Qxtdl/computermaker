@@ -99,22 +99,22 @@ static void cm2save_add_block(StringView sv_block) {
             block.id = XOR;
             break;
         case 4://BUTTON
-            app_error("button not implemented\n");
+            app_warn("button not implemented\n");
             break;
         case 5://FLIPFLOP
             block.id = FLIPFLOP;
             break;
         case 6://LED
-            app_error("led not implemented\n");
+            app_warn("led not implemented\n");
             break;
         case 7://SOUND
-            app_error("sound not implemented\n");
+            app_warn("sound not implemented\n");
             break;
         case 8://CONDUCTOR
-            app_error("conductor not implemented\n");
+            app_warn("conductor not implemented\n");
             break;
         case 9://CUSTOM
-            app_error("custom not implemented\n");
+            app_warn("custom not implemented\n");
             break;
         case 10://NAND
             block.id = NAND;
@@ -123,28 +123,28 @@ static void cm2save_add_block(StringView sv_block) {
             block.id = XNOR;
             break;
         case 12://RANDOM
-            app_error("random not implemented\n");
+            app_warn("random not implemented\n");
             break;
         case 13://TEXT
-            app_error("text not implemented\n");
+            app_warn("text not implemented\n");
             break;
         case 14://TILE
-            app_error("tile not implemented\n");
+            app_warn("tile not implemented\n");
             break;
         case 15://NODE
-            app_error("node not implemented\n");
+            block.id = NODE;
             break;
         case 16://DELAY
-            app_error("delay not implemented\n");
+            app_warn("delay not implemented\n");
             break;
         case 17://ANTENNA
-            app_error("antenna not implemented\n");
+            app_warn("antenna not implemented\n");
             break;
         case 18://CONDUCTORV2
-            app_error("conductorv2 not implemented\n");
+            app_warn("conductorv2 not implemented\n");
             break;
         case 19://LEDMIXER
-            app_error("ledmixer not implemented\n");
+            app_warn("ledmixer not implemented\n");
             break;
     }
     block.gate.inputs = NULL;
@@ -216,6 +216,10 @@ static void cm2save_add_wire(StringView wire) {
 }
 
 void cm2save_process(const char *savestring) {
+	if (!savestring) {
+		return;
+	}
+	
     StringView sv_savestring = cstr2SV(savestring);
     StringView sv_blocks = SV_chop_by_delim(&sv_savestring, '?');
     StringView sv_connections = SV_chop_by_delim(&sv_savestring, '?');

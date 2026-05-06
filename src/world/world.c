@@ -31,7 +31,6 @@ void world_draw(struct world *world) {
 }
 
 struct world_get_at_info world_get_at(struct world *world, float x, float y, float z) {
-
     struct world_get_at_info info;
     int index = 0;
     int cx = (int)floor(x) / CHUNK_X * CHUNK_X;
