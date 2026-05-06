@@ -6,6 +6,8 @@
 #include "../gfx/renderer.h"
 #include "chunk.h"
 #include "wire.h"
+#include <stdlib.h>
+#include <string.h>
 
 void world_worldgen(struct world *world) {
     int ax = atoi(config_get("CHUNK_AMOUNT_X")),
@@ -18,14 +20,16 @@ void world_worldgen(struct world *world) {
 }
 
 void world_add_chunk(struct world *world, chunk_t chunk) {
-    world->chunks = srealloc(world->chunks, ++world->chunks_size * sizeof(chunk_t));
-    world->chunks[world->chunks_size - 1] = chunk;
+    chunk_t *new_chunk = malloc(sizeof(chunk_t));
+    memcpy(new_chunk, &chunk, sizeof(chunk_t));
+    world->chunks = srealloc(world->chunks, ++world->chunks_size * sizeof(chunk_t*));
+    world->chunks[world->chunks_size - 1] = new_chunk;
 }
 
 void world_draw(struct world *world) {
     renderer_prepare(&state.renderer, RENDERER_PASS_3D);
     for (size_t i = 0; i < world->chunks_size; i++) {
-        chunk_draw(&world->chunks[i]);
+        chunk_draw(world->chunks[i]);
     }
     world_draw_wires();
 }
@@ -38,13 +42,14 @@ struct world_get_at_info world_get_at(struct world *world, float x, float y, flo
     if (floor(x)<0) cx -= 16;
     if (floor(z)<0) cz -= 16;
     for (; index < world->chunks_size; index++) {
-        if (world->chunks[index].x == cx && world->chunks[index].z == cz)
+        if (world->chunks[index]->x == cx && world->chunks[index]->z == cz)
             break;
     }
     if (index == world->chunks_size) {
-        index--;
+        //index--;
+        world_add_chunk(world, chunk_gen(cx, cz));
     }
-    info.chunk = &world->chunks[index];
+    info.chunk = world->chunks[index];
     info.x = (int)round(x) % CHUNK_X;
     info.y = (int)round(y) % CHUNK_Y;
     info.z = (int)round(z) % CHUNK_Z;

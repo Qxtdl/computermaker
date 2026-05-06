@@ -131,14 +131,14 @@ void save_save(const char *filename) {
     struct world *world = &state.world;
     for (size_t i = 0; i < state.world.chunks_size; i++) {
         savechunk_t savechunk = {0};
-        savechunk.x = world->chunks[i].x;
+        savechunk.x = world->chunks[i]->x;
         savechunk.y = 0;
-        savechunk.z = world->chunks[i].z;
+        savechunk.z = world->chunks[i]->z;
 
         for (int x = 0; x < CHUNK_X; x++) {
             for (int y = 0; y < CHUNK_Y; y++) {
                 for (int z = 0; z < CHUNK_Z; z++) {
-                    block_t block = world->chunks[i].blocks[x][y][z];
+                    block_t block = world->chunks[i]->blocks[x][y][z];
                     if (block.id == AIR) continue;
 
                     savechunk.blocks[x][y][z] = (saveblock_t){
