@@ -17,6 +17,7 @@ typedef struct {
     vec3 up;
     vec3 front;
     perspective_t perspective;
+    int render_distance; // in chunks
 } camera_t;
 
 enum CameraDirection {

@@ -17,6 +17,7 @@ const char *block_id_name(enum BlockId id) {
         case NOR: return "NOR";
         case XNOR: return "XNOR";
         case FLIPFLOP: return "FLIPFLOP";
+        case NODE: return "NODE";
 
         default: return "UNKNOWN";
     }
@@ -39,6 +40,7 @@ void block_tick(block_t *block) {
         case NOR: _nor_tick(block); break;
         case XNOR: _xnor_tick(block); break;
         case FLIPFLOP: _flipflop_tick(block); break;
+        case NODE: _node_tick(block); break;
         default: break;
     }
 }
@@ -52,6 +54,7 @@ bool is_logic_block(block_t block) {
         case NOR:
         case XNOR:
         case FLIPFLOP:
+        case NODE:
         return true;
         default: return false;
     }
