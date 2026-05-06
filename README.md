@@ -10,6 +10,10 @@ We have no idea of computer graphics.
 
 ![image](images/thumb.png)
 
+## Contribution
+
+To contribute, look at [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Quickstart (Linux)
 
 #### Requirements

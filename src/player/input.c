@@ -1,4 +1,5 @@
 #include <math.h>
+
 #include "../state.h"
 #include "../config.h"
 #include "../world/wire.h"

@@ -41,6 +41,9 @@ typedef struct {
     .dz = 0 \
 })
 
+#define header "Save file for ComputerMaker " APP_RELEASE_STRING
+
+
 int save_load(const char *filename) {
     FILE *fptr = fopen(filename, "rb");
     if (!fptr) {
@@ -50,9 +53,13 @@ int save_load(const char *filename) {
 
     void *save = readfile(filename),
         *_save = save;
-    // there is a save header, skip ahead
-    while (*((char *)save++));
 
+	if (strcmp(save, header)) {
+		app_warn("Save header does not match the string \"" header "\"" ". There may be instability.\n")
+	}
+
+	// there is a save header, skip ahead
+	while (*((char *)save++));
 
     savechunk_t *chunks = save;
     for (int i = 0;; i++) {
@@ -124,9 +131,7 @@ void save_save(const char *filename) {
         return;
     }
 
-    #define header "Save file for ComputerMaker " APP_RELEASE_STRING
     fwrite(header, 1, strlen(header) + 1, fptr);
-    #undef header
 
     struct world *world = &state.world;
     for (size_t i = 0; i < state.world.chunks_size; i++) {
