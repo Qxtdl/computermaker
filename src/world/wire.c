@@ -75,9 +75,9 @@ static void push_instance(mat4 model) {
 
 static void get_model(wire_t wire, mat4 model) {
     vec3 translation = {
-        wire.ox + wire_thickness * 0.5f,
-        wire.oy + wire_thickness * 0.5f,
-        wire.oz
+        ((float)wire.ox + (float)wire.dx)/2,
+        ((float)wire.oy + (float)wire.dy)/2,
+        ((float)wire.oz + (float)wire.dz)/2
     };
     float length = sqrt(
         (wire.dx - wire.ox) * (wire.dx - wire.ox) +
@@ -110,7 +110,7 @@ static void get_model(wire_t wire, mat4 model) {
         glm_vec3_cross(direction0, direction, rotation1_axis);
         glm_rotate_make(rotation1, angle1, rotation1_axis);
 
-        if (direction[0] == -1) {
+        if (direction0[0] == -1) {
             rotation0_axis[0] = 0;
             rotation0_axis[1] = 1;
             rotation0_axis[2] = 0;
