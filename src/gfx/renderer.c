@@ -1,10 +1,11 @@
-#include "cglm/vec3.h"
 #include <glad/glad.h>
+#include <math.h>
 
 #define GLT_IMPLEMENTATION
 #include <gltext.h>
 
 #include "renderer.h"
+#include "../config.h"
 #include "shader.h"
 #include "texture.h"
 #include "camera.h"
@@ -30,6 +31,8 @@ void renderer_init(struct renderer *renderer, float aspect) {
     // textures
     renderer->textures[RENDERER_TEXTURE_BLOCKATLAS] = texture_load("res/texture/blockatlas.png");
     renderer->textures[RENDERER_TEXTURE_WIRE] = texture_load("res/texture/wire.png");
+
+    renderer->camera.render_distance = atoi(config_get("RENDER_DISTANCE"));
 }
 
 void renderer_use_shader(struct renderer *renderer, enum RendererShaderType shader) {
@@ -72,6 +75,15 @@ void renderer_prepare(struct renderer *renderer, enum RendererPass pass) {
 }
 
 void renderer_chunk(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, vbo_t bbo, vec3 translation, enum RendererTextureType texture) {
+    vec3 distance;
+
+    glm_vec3_sub(renderer->camera.origin, translation, distance);
+    glm_vec3_abs(distance, distance);
+
+    for (int i = 0; i < 3; i++)
+        if (distance[i] > renderer->camera.render_distance)
+            return;
+
     renderer_use_shader(renderer, RENDERER_SHADER_CHUNK);
     renderer_use_texture(renderer, texture);
 
@@ -85,7 +97,9 @@ void renderer_chunk(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, 
 
     vec3 raycast_direction;
     glm_vec3_sub(renderer->camera.target,renderer->camera.origin,raycast_direction);
+
     struct raycast_info raycast_info = raycast(renderer->camera.origin, raycast_direction);
+
     ivec3 target = {
         floor(raycast_info.x),
         floor(raycast_info.y),

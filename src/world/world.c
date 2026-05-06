@@ -67,25 +67,6 @@ struct world_get_at_relative_info world_get_at_relative(struct world_get_at_info
 }
 
 void world_place_at(struct world *world, int x, int y, int z, block_t block) {
-    int cx = x / CHUNK_X * CHUNK_X;
-    int cz = z / CHUNK_Z * CHUNK_Z;
-    if (floor(x)<0) cx -= 16;
-    if (floor(z)<0) cz -= 16;
-    int i;
-    for (i = 0; i < world->chunks_size; i++) {
-        if (world->chunks[i].x == cx && world->chunks[i].z == cz)
-            break;
-    }
-    if (i == world->chunks_size) {
-        app_error("Position out of bounds: %d, %d, %d.\n", x, y, z);
-        //app_log("new chunk: %d, %d\n",cx,cz);
-        //world_add_chunk(world, chunk_gen(cx, cz));
-    }
-    x = (int)round(x) % CHUNK_X;
-    y = (int)round(y) % CHUNK_Y;
-    z = (int)round(z) % CHUNK_Z;
-    if (x < 0) x += 16;
-    if (y < 0) y += 16;
-    if (z < 0) z += 16;
-    world->chunks[i].blocks[x][y][z] = block;
+	struct world_get_at_info info = world_get_at(world, x, y, z);
+	info.chunk->blocks[info.x][info.y][info.z] = block;
 }

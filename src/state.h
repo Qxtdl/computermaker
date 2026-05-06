@@ -13,6 +13,7 @@ extern struct state {
             MODE_WIRE_PLACE,
             MODE_WIRE_DESTROY,
             MODE_BLOCK_POKE,
+            MODE_BLOCK_HOVER,
             MODE_LAST
         } mode;
         // block placing
@@ -21,6 +22,9 @@ extern struct state {
         // wire placing
         bool planout;
         int wire_ox, wire_oy, wire_oz;
+
+        // hovered block
+        block_t *hovered_block;
     } player;
     float deltaTime;
 } state;

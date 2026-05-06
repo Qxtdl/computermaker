@@ -1,3 +1,9 @@
+/*
+ * cm2save.c
+ *
+ * load cm2 savestrings into the world
+*/
+
 #include <stddef.h>
 #include <stdlib.h>
 
@@ -8,10 +14,9 @@
 #include "world/block/block.h"
 #include "world/wire.h"
 #include "world/world.h"
+
 /*
- * cm2save.c
- *
- * load cm2 savestrings into the world
+  TODO: code formatting
 */
 
 typedef struct {const char *start; size_t size;} StringView;
