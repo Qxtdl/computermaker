@@ -15,6 +15,7 @@
 #include "cglm/affine-pre.h"
 #include "cglm/affine.h"
 #include "cglm/mat4.h"
+#include "cglm/types.h"
 #include "cglm/vec3.h"
 #include "world.h"
 #include "blockmesh.h"
@@ -94,7 +95,7 @@ static void get_model(wire_t wire, mat4 *model) {
     
     //goes bottom to top
     glm_translate(m, (vec3){translation[0]+0.5,translation[1]+0.5,translation[2]+0.5});
-    if (direction[0]!=1) {
+    if (direction[0] != 1) {
         mat4 rotation1;
         mat4 rotation0;
         vec3 direction0;
@@ -109,7 +110,13 @@ static void get_model(wire_t wire, mat4 *model) {
         glm_vec3_cross(direction0, direction, rotation1_axis);
         glm_rotate_make(rotation1, angle1, rotation1_axis);
 
-        glm_vec3_cross((vec3){1, 0, 0}, direction0,  rotation0_axis);
+        if (direction[0] == -1) {
+            rotation0_axis[0] = 0;
+            rotation0_axis[1] = 1;
+            rotation0_axis[2] = 0;
+        } else {
+            glm_vec3_cross((vec3){1, 0, 0}, direction0,  rotation0_axis);
+        }
         glm_rotate_make(rotation0, angle0, rotation0_axis);
 
         glm_mat4_mul(m, rotation1, m);
