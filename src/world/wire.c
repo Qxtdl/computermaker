@@ -99,6 +99,7 @@ static void get_model(wire_t wire, mat4 *model) {
         mat4 rotation0;
         vec3 direction0;
         vec3 rotation1_axis;
+        vec3 rotation0_axis;
         
         glm_vec3_normalize_to((vec3){wire.dx-wire.ox, 0, wire.dz-wire.oz}, direction0);
 
@@ -108,7 +109,8 @@ static void get_model(wire_t wire, mat4 *model) {
         glm_vec3_cross(direction0, direction, rotation1_axis);
         glm_rotate_make(rotation1, angle1, rotation1_axis);
 
-        glm_rotate_make(rotation0, -angle0, (vec3){0, 1, 0});
+        glm_vec3_cross((vec3){1, 0, 0}, direction0,  rotation0_axis);
+        glm_rotate_make(rotation0, angle0, rotation0_axis);
 
         glm_mat4_mul(m, rotation1, m);
         glm_mat4_mul(m, rotation0, m);
