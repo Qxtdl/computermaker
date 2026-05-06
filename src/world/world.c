@@ -11,10 +11,13 @@
 
 void world_worldgen(struct world *world) {
     int ax = atoi(config_get("CHUNK_AMOUNT_X")),
+        ay = atoi(config_get("CHUNK_AMOUNT_Y")),
         az = atoi(config_get("CHUNK_AMOUNT_Z"));
     for (int x = 0; x < ax; x++) {
-        for (int z = 0; z < az; z++) {
-            world_add_chunk(world, chunk_gen(x * CHUNK_X, z * CHUNK_Z));
+        for (int y = 0; y < ay; y++) {
+            for (int z = 0; z < az; z++) {
+                world_add_chunk(world, chunk_gen(x * CHUNK_X, y * CHUNK_Y, z * CHUNK_Z));
+            }
         }
     }
 }
@@ -38,16 +41,18 @@ struct world_get_at_info world_get_at(struct world *world, float x, float y, flo
     struct world_get_at_info info;
     int index = 0;
     int cx = (int)floor(x) / CHUNK_X * CHUNK_X;
+    int cy = (int)floor(y) / CHUNK_Y * CHUNK_Y;
     int cz = (int)floor(z) / CHUNK_Z * CHUNK_Z;
     if (floor(x)<0) cx -= 16;
+    if (floor(y)<0) cy -= 16;
     if (floor(z)<0) cz -= 16;
     for (; index < world->chunks_size; index++) {
-        if (world->chunks[index]->x == cx && world->chunks[index]->z == cz)
+        if (world->chunks[index]->x == cx && world->chunks[index]->y == cy && world->chunks[index]->z == cz)
             break;
     }
     if (index == world->chunks_size) {
         //index--;
-        world_add_chunk(world, chunk_gen(cx, cz));
+        world_add_chunk(world, chunk_gen(cx, cy, cz));
     }
     info.chunk = world->chunks[index];
     info.x = (int)round(x) % CHUNK_X;
