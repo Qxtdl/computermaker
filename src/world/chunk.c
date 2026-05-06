@@ -69,7 +69,7 @@ static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
         y,
         z
     );
-    for (int i = 0; i < 4; i++) push_blockinfo(chunk, (ivec3){chunk->x + x, y, chunk->z + z});
+    for (int i = 0; i < 4; i++) push_blockinfo(chunk, (ivec3){chunk->x + x, chunk->y + y, chunk->z + z});
 }
 
 void chunk_bake(chunk_t *chunk) {
