@@ -12,6 +12,11 @@
 #include "../gfx/vao.h"
 #include "../gfx/vertex.h"
 #include "block/uv.h"
+#include "cglm/affine-pre.h"
+#include "cglm/affine.h"
+#include "cglm/mat4.h"
+#include "cglm/types.h"
+#include "cglm/vec3.h"
 #include "world.h"
 #include "blockmesh.h"
 
@@ -88,10 +93,38 @@ static void get_model(wire_t wire, mat4 model) {
     mat4 m;
     glm_mat4_identity(m);
     
-    glm_translate(m, translation);
-    glm_scale(m, (vec3){wire_thickness, wire_thickness, length});
-	
-    
+    //goes bottom to top
+    glm_translate(m, (vec3){translation[0]+0.5,translation[1]+0.5,translation[2]+0.5});
+    if (direction[0] != 1) {
+        mat4 rotation1;
+        mat4 rotation0;
+        vec3 direction0;
+        vec3 rotation1_axis;
+        vec3 rotation0_axis;
+        
+        glm_vec3_normalize_to((vec3){wire.dx-wire.ox, 0, wire.dz-wire.oz}, direction0);
+
+        float angle0 = glm_vec3_angle(direction0, (vec3){1, 0, 0});
+        float angle1 = glm_vec3_angle(direction0, direction);
+
+        glm_vec3_cross(direction0, direction, rotation1_axis);
+        glm_rotate_make(rotation1, angle1, rotation1_axis);
+
+        if (direction[0] == -1) {
+            rotation0_axis[0] = 0;
+            rotation0_axis[1] = 1;
+            rotation0_axis[2] = 0;
+        } else {
+            glm_vec3_cross((vec3){1, 0, 0}, direction0,  rotation0_axis);
+        }
+        glm_rotate_make(rotation0, angle0, rotation0_axis);
+
+        glm_mat4_mul(m, rotation1, m);
+        glm_mat4_mul(m, rotation0, m);
+    }
+    glm_scale(m, (vec3){length, wire_thickness, wire_thickness});
+    glm_translate(m, (vec3){-(0.5),-(0.5),-(0.5)});
+
     memcpy(model, m, sizeof(mat4));
 }
 

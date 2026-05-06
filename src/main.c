@@ -20,7 +20,7 @@ void init(void) {
     world_wire_init();
     if (!save_load(config_get("SAVELOAD")))
         world_worldgen(&state.world);
-    //cm2save_process(config_get("SAVE"));
+    cm2save_process(config_get("SAVE"));
     raycast_set_distance(atof(config_get("RAY_DISTANCE")));
     set_wire_thickness(atof(config_get("WIRE_THICKNESS")));
 }
