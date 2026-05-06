@@ -8,6 +8,8 @@ We have no idea of computer graphics.
 
 ### [``ComputerMaker Discord``](https://discord.gg/gCkxb2uRrU)
 
+![image](images/thumb.png)
+
 ## Quickstart (Linux)
 
 #### Requirements
