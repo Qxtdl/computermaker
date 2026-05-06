@@ -103,24 +103,32 @@ static void get_model(wire_t wire, mat4 model) {
         vec3 rotation0_axis;
         
         glm_vec3_normalize_to((vec3){wire.dx-wire.ox, 0, wire.dz-wire.oz}, direction0);
-
-        float angle0 = glm_vec3_angle(direction0, (vec3){1, 0, 0});
-        float angle1 = glm_vec3_angle(direction0, direction);
-
-        glm_vec3_cross(direction0, direction, rotation1_axis);
-        glm_rotate_make(rotation1, angle1, rotation1_axis);
-
-        if (direction0[0] == -1) {
-            rotation0_axis[0] = 0;
-            rotation0_axis[1] = 1;
-            rotation0_axis[2] = 0;
-        } else {
-            glm_vec3_cross((vec3){1, 0, 0}, direction0,  rotation0_axis);
+        
+        float angle1;
+        if (direction0[0] != 0 || direction0[2] != 0) {
+            angle1 = glm_vec3_angle(direction0, direction);
+            glm_vec3_cross(direction0, direction, rotation1_axis);
         }
-        glm_rotate_make(rotation0, angle0, rotation0_axis);
+        else {
+            angle1 = glm_vec3_angle((vec3){1, 0, 0}, direction);
+            glm_vec3_cross((vec3){1, 0, 0}, direction, rotation1_axis);
+        }
+        float angle0 = glm_vec3_angle(direction0, (vec3){1, 0, 0});
 
+        glm_rotate_make(rotation1, angle1, rotation1_axis);
         glm_mat4_mul(m, rotation1, m);
-        glm_mat4_mul(m, rotation0, m);
+
+        if (direction0[0] != 0 || direction0[2] != 0) {
+            if (direction0[0] == -1) {
+                rotation0_axis[0] = 0;
+                rotation0_axis[1] = 1;
+                rotation0_axis[2] = 0;
+            } else {
+                glm_vec3_cross((vec3){1, 0, 0}, direction0,  rotation0_axis);
+            }
+            glm_rotate_make(rotation0, angle0, rotation0_axis);
+            glm_mat4_mul(m, rotation0, m);
+        }
     }
     glm_scale(m, (vec3){length, wire_thickness, wire_thickness});
     glm_translate(m, (vec3){-(0.5),-(0.5),-(0.5)});

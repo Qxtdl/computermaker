@@ -14,7 +14,7 @@ void world_worldgen(struct world *world) {
         ay = atoi(config_get("CHUNK_AMOUNT_Y")),
         az = atoi(config_get("CHUNK_AMOUNT_Z"));
     for (int x = 0; x < ax; x++) {
-        for (int y = 0; y < ay; y++) {
+        for (int y = -1; y < ay; y++) {
             for (int z = 0; z < az; z++) {
                 world_add_chunk(world, chunk_gen(x * CHUNK_X, y * CHUNK_Y, z * CHUNK_Z));
             }
@@ -51,7 +51,6 @@ struct world_get_at_info world_get_at(struct world *world, float x, float y, flo
             break;
     }
     if (index == world->chunks_size) {
-        //index--;
         world_add_chunk(world, chunk_gen(cx, cy, cz));
     }
     info.chunk = world->chunks[index];
