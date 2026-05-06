@@ -106,9 +106,9 @@ int save_load(const char *filename) {
         });
     }
 
-    //wires_bake
-
+    float aspect = state.renderer.camera.perspective.aspect;
     memcpy(&state.renderer.camera, save, sizeof(camera_t));
+    state.renderer.camera.perspective.aspect = aspect;
 
     free(_save);
 

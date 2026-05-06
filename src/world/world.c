@@ -31,14 +31,13 @@ void world_draw(struct world *world) {
 }
 
 struct world_get_at_info world_get_at(struct world *world, float x, float y, float z) {
-    // TODO: bug
-    // if you try to get somewhere in negative x, y or z
-    // it segfaults
 
     struct world_get_at_info info;
     int index = 0;
     int cx = (int)floor(x) / CHUNK_X * CHUNK_X;
     int cz = (int)floor(z) / CHUNK_Z * CHUNK_Z;
+    if (floor(x)<0) cx -= 16;
+    if (floor(z)<0) cz -= 16;
     for (; index < world->chunks_size; index++) {
         if (world->chunks[index].x == cx && world->chunks[index].z == cz)
             break;
@@ -46,11 +45,16 @@ struct world_get_at_info world_get_at(struct world *world, float x, float y, flo
     if (index == world->chunks_size) {
         index--;
         app_warn("Position out of bounds %f, %f, %f\n", x, y, z);
+        //app_log("new chunk: %d, %d\n",cx,cz);
+        //world_add_chunk(world, chunk_gen(cx, cz));
     }
     info.chunk = &world->chunks[index];
     info.x = (int)round(x) % CHUNK_X;
     info.y = (int)round(y) % CHUNK_Y;
     info.z = (int)round(z) % CHUNK_Z;
+    if (info.x < 0) info.x += 16;
+    if (info.y < 0) info.y += 16;
+    if (info.z < 0) info.z += 16;
     return info;
 }
 

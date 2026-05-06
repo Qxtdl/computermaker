@@ -1,9 +1,9 @@
+#include <math.h>
 #include "../state.h"
 #include "../config.h"
 #include "../world/wire.h"
 #include "../world/save.h"
 #include "../gfx/raycast.h"
-#include "../global.h"
 
 void input_handle(void) {
     if (window.mouse.moved) {
@@ -27,7 +27,13 @@ void input_handle(void) {
     if (window.mouse.scrolled) {
         state.renderer.camera.perspective.fovy += glm_rad(window.mouse.scroll.y);
         window.mouse.scrolled = false;
-        if (state.renderer.camera.perspective.fovy>M_PI) app_log("high fov\n");
+
+        if (state.renderer.camera.perspective.fovy > M_PI-0.1) {
+            state.renderer.camera.perspective.fovy = M_PI-0.1;
+        }
+        if (state.renderer.camera.perspective.fovy < 0.1) {
+            state.renderer.camera.perspective.fovy = 0.1;
+        }
     }
 
     if (window.mouse.buttons[GLFW_MOUSE_BUTTON_LEFT].down) {

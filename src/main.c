@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "state.h"
 #include "config.h"
 #include "gfx/renderer.h"
@@ -13,12 +15,12 @@
 void init(void) {
     config_open("res/config.comm");
     config_process();
-    renderer_init(&state.renderer);
+    renderer_init(&state.renderer, 800.0f/600.0f);
     skybox_init(&state.world.skybox);
     world_wire_init();
     if (!save_load(config_get("SAVELOAD")))
         world_worldgen(&state.world);
-    cm2save_process(config_get("SAVE"));
+    //cm2save_process(config_get("SAVE"));
     raycast_set_distance(atof(config_get("RAY_DISTANCE")));
     set_wire_thickness(atof(config_get("WIRE_THICKNESS")));
 }

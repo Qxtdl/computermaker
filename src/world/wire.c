@@ -131,6 +131,22 @@ void wires_bake(wire_t *wires) {
         push_instance(model);
     }    
 
+    blockmesh_push(
+        push_vertex,
+        push_index,
+        NULL,
+        NULL, 
+        &vertexes_size,
+        UV_NULL,
+        UV_NULL,
+        (0), 
+        (0),
+        (0)
+        // wire.ox,
+        // wire.oy,
+        // wire.oz
+    );
+    
     vao_bind(vao);
     vbo_buffer(&vbo, vertexes, 0, vertexes_size * sizeof(vertex_t));
     vbo_buffer(&ebo, indexes, 0, indexes_size * sizeof(unsigned int));

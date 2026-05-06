@@ -41,8 +41,7 @@ struct raycast_info raycast(vec3 origin, vec3 direction) {
     while (dist2x < distance || dist2y < distance || dist2z < distance) {
         //check for collision
         info = world_get_at(&state.world, x, y, z);
-        if (!(info.x < 0 || info.y < 0 || info.z < 0))
-            if (info.chunk->blocks[info.x][info.y][info.z].id != AIR) break;
+        if (info.chunk->blocks[info.x][info.y][info.z].id != AIR) break;
         //go to next block
         if (dist2x <= dist2y && dist2x <= dist2z) {
             x += sx;
