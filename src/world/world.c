@@ -43,9 +43,6 @@ struct world_get_at_info world_get_at(struct world *world, float x, float y, flo
     }
     if (index == world->chunks_size) {
         index--;
-        app_warn("Position out of bounds %f, %f, %f\n", x, y, z);
-        //app_log("new chunk: %d, %d\n",cx,cz);
-        //world_add_chunk(world, chunk_gen(cx, cz));
     }
     info.chunk = &world->chunks[index];
     info.x = (int)round(x) % CHUNK_X;
