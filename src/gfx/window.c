@@ -41,8 +41,7 @@ static void cursor_pos_callback(GLFWwindow *gwindow, double x, double y) {
     window.mouse.moved = true;
 }
 
-static void scroll_callback(GLFWwindow *gwindow, double x, double y)
-{
+static void scroll_callback(GLFWwindow *gwindow, double x, double y) {
     window.mouse.scroll.x = x;
     window.mouse.scroll.y = y;
     window.mouse.scrolled = true;

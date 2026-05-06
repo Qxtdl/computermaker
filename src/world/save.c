@@ -29,7 +29,7 @@ typedef struct {
 
 typedef struct {
     int ox, oy, oz,
-        dx, dy, dz
+        dx, dy, dz;
 } savewire_t;
 
 #define savewire_terminator ((savewire_t){ \
@@ -105,6 +105,8 @@ int save_load(const char *filename) {
             .dz = wire.dz,
         });
     }
+
+    //wires_bake
 
     memcpy(&state.renderer.camera, save, sizeof(camera_t));
 

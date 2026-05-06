@@ -4,7 +4,6 @@
 #include "../world/save.h"
 #include "../gfx/raycast.h"
 #include "../global.h"
-#include <math.h>
 
 void input_handle(void) {
     if (window.mouse.moved) {
@@ -43,9 +42,10 @@ void input_handle(void) {
         );
         if (!(info.x < 0 || info.y < 0 || info.z < 0)) { // NOTE: dont segfault
             struct world_get_at_relative_info relative_info = world_get_at_relative(info);
+            state.player.hovered_block = NULL;
             switch (state.player.mode) {
                 case MODE_BLOCK_PLACE:
-                    if (state.player.selected_block!=AIR)
+                    if (state.player.selected_block != AIR)
                     switch (raycast_info.face) {
                         case FACE_TOP: raycast_info.y++; break;
                         case FACE_BOTTOM: raycast_info.y--; break;
@@ -56,7 +56,7 @@ void input_handle(void) {
                     }
                     info = world_get_at(&state.world, raycast_info.x,raycast_info.y,raycast_info.z);
                     if ((info.x < 0 || info.y < 0 || info.z < 0)) break;
-                    info.chunk->blocks[info.x][info.y][info.z] = (block_t){.id = state.player.selected_block, .gate.state = STATE_OFF};
+                    info.chunk->blocks[info.x][info.y][info.z].id = state.player.selected_block;
                     chunk_bake(info.chunk);
                     break;
                 case MODE_WIRE_PLACE:
@@ -88,7 +88,11 @@ void input_handle(void) {
                     }
                     state.player.planout = false;
                     break;
-                case MODE_BLOCK_POKE: info.chunk->blocks[info.x][info.y][info.z].gate.new_state ^= 1; break;
+                case MODE_BLOCK_POKE: 
+                    info.chunk->blocks[info.x][info.y][info.z].gate.poked = true;
+                    info.chunk->blocks[info.x][info.y][info.z].gate.new_state ^= 1; 
+                    break;
+               	case MODE_BLOCK_HOVER: state.player.hovered_block = &info.chunk->blocks[info.x][info.y][info.z]; break;
             }
         }
         

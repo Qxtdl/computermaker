@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #define APP_STAGE_STRING "alpha"
-#define APP_VERSION_STRING "2.5.0"
+#define APP_VERSION_STRING "2.6.0"
 #define APP_RELEASE_STRING APP_STAGE_STRING " " APP_VERSION_STRING
 
 #define app_error(...) \

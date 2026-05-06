@@ -20,6 +20,7 @@ typedef struct logic_gate {
         STATE_OFF,
         STATE_ON
     } state, new_state;
+    bool poked;
 } logic_gate_t;
 
 typedef struct {
@@ -36,6 +37,7 @@ typedef struct {
         NOR,
         XNOR,
         FLIPFLOP,
+        NODE,
 
         BLOCKID_LAST
     } id;
@@ -56,3 +58,4 @@ BLOCK_TICK_DECLARE(nand)
 BLOCK_TICK_DECLARE(nor)
 BLOCK_TICK_DECLARE(xnor)
 BLOCK_TICK_DECLARE(flipflop)
+BLOCK_TICK_DECLARE(node)

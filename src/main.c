@@ -9,7 +9,6 @@
 #include "player/input.h"
 #include "player/hud.h"
 #include "cm2save.h"
-#include <stdlib.h>
 
 void init(void) {
     config_open("res/config.comm");
