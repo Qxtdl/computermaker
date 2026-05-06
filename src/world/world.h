@@ -4,7 +4,7 @@
 #include "skybox.h"
 
 struct world {
-    chunk_t *chunks;
+    chunk_t **chunks;
     size_t chunks_size;
     skybox_t skybox;
 };

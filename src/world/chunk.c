@@ -5,16 +5,17 @@
 #include "../gfx/renderer.h"
 #include "block/block.h"
 
-chunk_t chunk_gen(int x, int z) {
+chunk_t chunk_gen(int x, int y, int z) {
     chunk_t chunk = {0};
     chunk.x = x;
+    chunk.y = y;
     chunk.z = z;
     chunk.indexes_count = 1;
     chunk.vertexes_count = 1;
-    for (int x = 0; x < CHUNK_X; x++) {
-        for (int y = 0; y < 1; y ++) {
+    if (y/CHUNK_Y == -1) {
+        for (int x = 0; x < CHUNK_X; x++) {
             for (int z = 0; z < CHUNK_Z; z++) {
-                chunk.blocks[x][y][z] = (block_t){.id = STUD};
+                chunk.blocks[x][CHUNK_Y-1][z] = (block_t){.id = STUD};
             }
         }
     }
@@ -68,7 +69,7 @@ static void set_face(chunk_t *chunk, int x, int y, int z, enum Face face) {
         y,
         z
     );
-    for (int i = 0; i < 4; i++) push_blockinfo(chunk, (ivec3){chunk->x + x, y, chunk->z + z});
+    for (int i = 0; i < 4; i++) push_blockinfo(chunk, (ivec3){chunk->x + x, chunk->y + y, chunk->z + z});
 }
 
 void chunk_bake(chunk_t *chunk) {
@@ -132,7 +133,7 @@ void chunk_draw(chunk_t *chunk) {
         chunk->bbo,
         (vec3){
             chunk->x,
-            0,
+            chunk->y,
             chunk->z
     }, RENDERER_TEXTURE_BLOCKATLAS);
 }
