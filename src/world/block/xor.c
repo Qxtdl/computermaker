@@ -6,7 +6,7 @@ void _xor_tick(block_t *block) {
         return;
     }
     int count = 0;
-    for (int i = 0; i < block->gate.num_inputs; i++) {
+    for (int i = 0; i < block->gate.inputs_size; i++) {
         if (!block->gate.inputs[i].gate) continue;
         if (block->gate.inputs[i].gate->state == STATE_ON) {
             count++;

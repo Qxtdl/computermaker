@@ -62,6 +62,7 @@ void input_handle(void) {
                 }
                 info = world_get_at(&state.world, raycast_info.x,raycast_info.y,raycast_info.z);
                 info.chunk->blocks[info.x][info.y][info.z].id = state.player.selected_block;
+                info.chunk->blocks[info.x][info.y][info.z].gate.state = STATE_OFF;
                 chunk_bake(info.chunk);
                 break;
             case MODE_WIRE_PLACE:

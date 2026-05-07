@@ -15,6 +15,7 @@ typedef struct {
 
 typedef struct logic_gate {
     int num_inputs;
+    int inputs_size;
     input_t *inputs;
     enum LogicState {
         STATE_OFF,
