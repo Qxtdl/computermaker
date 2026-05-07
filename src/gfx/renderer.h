@@ -36,6 +36,7 @@ struct renderer {
 
     mat4 m, v, p;
 
+    int width, height;
     bool wireframe;
 };
 

@@ -2,6 +2,7 @@
 
 #include "state.h"
 #include "config.h"
+#include "global.h"
 #include "gfx/renderer.h"
 #include "gfx/raycast.h"
 #include "world/save.h"
@@ -9,7 +10,8 @@
 #include "world/tick.h"
 #include "world/wire.h"
 #include "player/input.h"
-#include "player/hud.h"
+#include "player/hud/hud.h"
+#include "player/hud/chat.h"
 #include "cm2save.h"
 
 void init(void) {
@@ -43,5 +45,6 @@ void render(void) {
 int main() {    
     window_init();
     window_create("comm", 800, 600, init, destroy, tick, render);
+    chat_add_message("comm", APP_RELEASE_STRING);
     window_loop();
 }

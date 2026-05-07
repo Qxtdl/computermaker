@@ -18,5 +18,3 @@ block_keybind_t block_keybinds[] = {
     // { GLFW_KEY_M, TEXT },
     { GLFW_KEY_SEMICOLON, STUD }
 };
-
-const int BLOCK_KEYBINDS_COUNT = sizeof(block_keybinds) / sizeof(block_keybinds[0]);

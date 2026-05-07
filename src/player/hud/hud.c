@@ -1,6 +1,7 @@
 #include "../global.h"
 #include "../state.h"
 #include "../gfx/renderer.h"
+#include "chat.h"
 
 void hud_draw(void) {
     glDisable(GL_DEPTH_TEST);
@@ -16,6 +17,8 @@ void hud_draw(void) {
         mode_name(state.player.mode)
     );
     renderer_text(0, 32, 2, buf);
+
+    render_chat();
 
     if (state.player.hovered_block &&
     	state.player.hovered_block->id != AIR) {

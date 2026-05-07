@@ -5,5 +5,6 @@ typedef struct {
     int blockid;
 } block_keybind_t;
 
+#define BLOCK_KEYBINDS_COUNT 8
+
 extern block_keybind_t block_keybinds[];
-extern const int BLOCK_KEYBINDS_COUNT; // born to be macro, forced to be variable

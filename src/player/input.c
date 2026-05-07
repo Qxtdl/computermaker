@@ -1,16 +1,43 @@
 #include <math.h>
 
 #include "../state.h"
+#include "../global.h"
 #include "../config.h"
 #include "../world/wire.h"
 #include "../world/save.h"
 #include "../gfx/raycast.h"
+#include "hud/chat.h"
 #include "keybinds.h"
+
+void input_chat_handle() {
+    if (window.keyboard.keys[GLFW_KEY_ENTER].down) {
+        if (chat_input[0] == '!') chat_handle_command(chat_input);
+        chat_add_message("player", chat_input);
+
+        chat_input[0] = '\0';
+        chat_input_len = 0;
+        chat_active = false;
+
+        window.keyboard.keys[GLFW_KEY_ENTER].down = false;
+    }
+
+    if (window.keyboard.keys[GLFW_KEY_BACKSPACE].down) {
+        if (chat_input_len > 0) {
+            chat_input[--chat_input_len] = '\0';
+        }
+        window.keyboard.keys[GLFW_KEY_BACKSPACE].down = false;
+    }
+}
 
 void input_handle(void) {
     if (window.mouse.moved) {
         camera_mouse_cb(&state.renderer.camera, window.mouse.x, window.mouse.y);
         window.mouse.moved = true;
+    }
+
+    if (chat_active) {
+        input_chat_handle();
+        return;
     }
 
     if (window.keyboard.keys[GLFW_KEY_W].down) {
@@ -130,8 +157,14 @@ void input_handle(void) {
     }
     if (window.keyboard.keys[GLFW_KEY_Z].down) {
         save_save(config_get("SAVETO"));
+        chat_add_message("comm", "Save written");
 
         window.keyboard.keys[GLFW_KEY_Z].down = false;
+    }
+
+    if (window.keyboard.keys[GLFW_KEY_T].down) {
+        chat_active = true;
+        window.keyboard.keys[GLFW_KEY_T].down = false;
     }
 
     for (int i = 0; i < BLOCK_KEYBINDS_COUNT; i++) {
