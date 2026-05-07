@@ -66,7 +66,7 @@ struct world_get_at_info world_get_at(struct world *world, float x, float y, flo
 struct world_get_at_relative_info world_get_at_relative(struct world_get_at_info theirinfo) {
     struct world_get_at_relative_info info;
     info.x = theirinfo.chunk->x + theirinfo.x;
-    info.y = theirinfo.y;
+    info.y = theirinfo.chunk->y + theirinfo.y;
     info.z = theirinfo.chunk->z + theirinfo.z;
     return info;
 }
