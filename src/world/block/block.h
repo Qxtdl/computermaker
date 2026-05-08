@@ -24,24 +24,26 @@ typedef struct logic_gate {
     bool poked;
 } logic_gate_t;
 
+enum BlockId {
+    AIR,
+    STUD,
+    BRICK,
+
+    // logic gates
+    AND,
+    OR,
+    XOR,
+    NAND,
+    NOR,
+    XNOR,
+    FLIPFLOP,
+    NODE,
+
+    BLOCKID_LAST
+};
+
 typedef struct {
-    enum BlockId {
-        AIR,
-        STUD,
-        BRICK,
-
-        // logic gates
-        AND,
-        OR,
-        XOR,
-        NAND,
-        NOR,
-        XNOR,
-        FLIPFLOP,
-        NODE,
-
-        BLOCKID_LAST
-    } id;
+    enum BlockId id;
     logic_gate_t gate;
 } block_t;
 
