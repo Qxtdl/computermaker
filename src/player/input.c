@@ -3,6 +3,7 @@
 #include "../state.h"
 #include "../config.h"
 #include "../world/wire.h"
+#include "../world/building/building.h"
 #include "../world/save.h"
 #include "../gfx/raycast.h"
 #include "keybinds.h"
@@ -92,8 +93,8 @@ void input_handle(void) {
                             default: break;
                         }
                     }
-
-                    info = world_get_at(&state.world, ray_info.x, ray_info.y, ray_info.z);
+                    info = world_get_at(&state.world, raycast_info.x,raycast_info.y,raycast_info.z);
+                    // TODO: do we need this if stmt ?
                     if ((info.x < 0 || info.y < 0 || info.z < 0)) break;
 
                     info.chunk->blocks[info.x][info.y][info.z].id = state.player.selected_block;
@@ -143,8 +144,16 @@ void input_handle(void) {
                     state.player.hovered_block = &info.chunk->blocks[info.x][info.y][info.z];
                     break;
                 }
-
-                default: {
+                
+               	case MODE_BLOCK_HOVER: state.player.hovered_block = &info.chunk->blocks[info.x][info.y][info.z]; break;
+                
+                case MODE_BUILDING_PLACE: {
+                    building_create((building_t){
+                        .id = HUGE_MEMORY,
+                        .x = relative_info.x,
+                        .y = relative_info.y,
+                        .z = relative_info.z
+                    });
                     break;
                 }
             }
@@ -182,7 +191,7 @@ void input_handle(void) {
         fullscreen = !fullscreen;
 
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        if (fullscreen){
+        if (fullscreen) {
             glfwSetWindowMonitor(window.handle, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, mode->refreshRate);
         } else {
             glfwSetWindowMonitor(window.handle, NULL, 100, 100, 800, 600, 0);

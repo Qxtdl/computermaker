@@ -35,6 +35,19 @@ void hud_draw(void) {
 
     	renderer_text(0, 400, 2, text_buffer, NULL);
     }
-
+    
     renderer_text(0, 0, 2, APP_RELEASE_STRING, (vec3){0, 1, 0});
+    static const char *watermark = NULL;
+    if (!watermark) {
+        watermark = config_get("SHOW_WATERMARK");
+        if (!watermark) {
+            app_error("SHOW_WATERMARK must exist and be y/n\n")
+        }
+    }
+
+    #define watermark_text "https://github.com/Qxtdl/computermaker"
+
+    if (*watermark == 'y')
+        // NOTE: Properly size and multiply text by scale?
+    	renderer_text((int)(window.width / 2) - (int)(strlen(watermark_text) * 10), 0, 2, watermark_text);
 }

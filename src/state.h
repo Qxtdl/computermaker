@@ -14,6 +14,7 @@ extern struct state {
             MODE_WIRE_DESTROY,
             MODE_BLOCK_POKE,
             MODE_BLOCK_HOVER,
+            MODE_BUILDING_PLACE,
             MODE_LAST
         } mode;
         // block placing

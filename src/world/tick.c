@@ -1,11 +1,14 @@
-#include "chunk.h"
 #include "world.h"
+#include "chunk.h"
+#include "building/building.h"
 
 void world_tick(struct world *world) {
     static int tickspeed = 0;
     if (tickspeed++ == 1)
         tickspeed = 0;
     else return;
+
+    // tick blocks
     for (int i = 0; i < world->chunks_size; i++) {
         for (int x = 0; x < CHUNK_X; x++) {
             for (int y = 0; y < CHUNK_Y; y++) {
@@ -19,6 +22,9 @@ void world_tick(struct world *world) {
             }
         }
     }
+    // tick buildings
+	buildings_tick();
+    
     for (int i = 0; i < world->chunks_size; i++) {
         for (int x = 0; x < CHUNK_X; x++) {
             for (int y = 0; y < CHUNK_Y; y++) {

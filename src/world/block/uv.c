@@ -8,9 +8,7 @@ struct uv {
 
 static struct uv uvs[BLOCKID_LAST][2] = {
     // AIR
-      // state_off
     {{ { 0 }, { 0 } },
-      // state_on
      { { 0 }, { 0 } }},
 
     // STUD
@@ -51,7 +49,11 @@ static struct uv uvs[BLOCKID_LAST][2] = {
   
     // NODE
     {{ {0.0625, 0.0625}, {0.5, 0.4375} },
-     { {0.0625, 0.0625}, {0.5625, 0.4375} }},     
+     { {0.0625, 0.0625}, {0.5625, 0.4375} }},
+
+    // BUILDING_PIN
+    {{ {0.0625, 0.0625}, {0.5, 0.375} },
+     { {0.0625, 0.0625}, {0.5625, 0.375} }},     
 };
 
 vec2 *uv_get_scale(block_t block) {
@@ -61,4 +63,3 @@ vec2 *uv_get_scale(block_t block) {
 vec2 *uv_get_position(block_t block) {
     return &uvs[block.id][block.gate.state].position;
 }
-
