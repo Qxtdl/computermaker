@@ -33,16 +33,16 @@ void camera_move(camera_t *camera, enum CameraDirection direction) {
     vec3 offset = {0};
     switch (direction) {
         case CAMERA_DIRECTION_FORWARD:
-            offset[2] = -0.1;
+            offset[2] = -camera->move_speed;
             break;
         case CAMERA_DIRECTION_LEFT:
-            offset[0] = -0.1;
+            offset[0] = -camera->move_speed;
             break;
         case CAMERA_DIRECTION_BACK:
-            offset[2] = 0.1;
+            offset[2] = camera->move_speed;
             break;
         case CAMERA_DIRECTION_RIGHT:
-            offset[0] = 0.1;
+            offset[0] = camera->move_speed;
     }
 
     rotate(offset, camera->rotation);

@@ -2,11 +2,15 @@
 #include "../util.h"
 #include "../state.h"
 #include "block/block.h"
+#include "building/building.h"
 #include "wire.h"
 #include "world.h"
 
 extern wire_t *wires;
 extern int wires_size;
+
+extern building_t **buildings;
+extern size_t buildings_size;
 
 typedef struct {
     enum BlockId id;
@@ -15,7 +19,7 @@ typedef struct {
 
 typedef struct {
     int x, 
-        y, // futureproof
+        y,
         z;
     saveblock_t blocks[CHUNK_X][CHUNK_Y][CHUNK_Z];
 } savechunk_t;
@@ -41,8 +45,19 @@ typedef struct {
     .dz = 0 \
 })
 
-#define header "Save file for ComputerMaker " APP_RELEASE_STRING
+typedef struct {
+	enum BuildingId id;
+	int x, y, z
+} savebuilding_t;
 
+#define savebuilding_terminator (savebuilding_t){ \
+	.id = 0xff1c3, \
+	.x = 0xff1c4, \
+	.y = 0xff1c5, \
+	.z = 0xff1c6, \
+}
+
+#define header "Save file for ComputerMaker " APP_RELEASE_STRING
 
 int save_load(const char *filename) {
     FILE *fptr = fopen(filename, "rb");
@@ -71,6 +86,7 @@ int save_load(const char *filename) {
 
         chunk_t chunk = {0};
         chunk.x = savechunk.x;
+        chunk.y = savechunk.y;
         chunk.z = savechunk.z;
         chunk.indexes_count = 1;
         chunk.vertexes_count = 1;
@@ -93,6 +109,22 @@ int save_load(const char *filename) {
 
         chunk_bake(&chunk);
         world_add_chunk(&state.world, chunk);
+    }
+
+    savebuilding_t *buildings = save;
+    for (int i = 0;; i++) {
+    	savebuilding_t building = buildings[i];
+        if (!memcmp(&building, &savebuilding_terminator, sizeof(savebuilding_t))) {
+            save = &buildings[i + 1];
+            break;
+        }
+
+        building_create((building_t){
+        	.id = building.id,
+        	.x = building.x,
+        	.y = building.y,
+        	.z = building.z
+        });
     }
 
     savewire_t *wires = save;
@@ -137,7 +169,7 @@ void save_save(const char *filename) {
     for (size_t i = 0; i < state.world.chunks_size; i++) {
         savechunk_t savechunk = {0};
         savechunk.x = world->chunks[i]->x;
-        savechunk.y = 0;
+        savechunk.y = world->chunks[i]->y;
         savechunk.z = world->chunks[i]->z;
 
         for (int x = 0; x < CHUNK_X; x++) {
@@ -159,6 +191,19 @@ void save_save(const char *filename) {
     }
 
     fwrite(&savechunk_terminator, sizeof(savechunk_t), 1, fptr);
+
+    for (int i = 0; i < buildings_size; i++) {
+    	if (!buildings[i]) continue;
+
+    	fwrite(&(savebuilding_t){
+    		.id = buildings[i]->id,
+    		.x = buildings[i]->x,
+    		.y = buildings[i]->y,
+    		.z = buildings[i]->z
+    	}, sizeof(savebuilding_t), 1, fptr);
+    }
+
+	fwrite(&savebuilding_terminator, sizeof(savebuilding_t), 1, fptr);
 
     for (int i = 0; i < wires_size; i++) {
         if (!wires[i].valid) continue;

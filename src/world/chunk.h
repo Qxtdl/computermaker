@@ -1,7 +1,7 @@
 #pragma once
 
-#include "block/block.h"
 #include "../gfx/renderer.h"
+#include "block/block.h"
 #include "../gfx/vertex.h"
 
 #define CHUNK_X 16

@@ -18,6 +18,7 @@ const char *block_id_name(enum BlockId id) {
         case XNOR: return "XNOR";
         case FLIPFLOP: return "FLIPFLOP";
         case NODE: return "NODE";
+        case BUILDING_PIN: return "BUILDING_PIN";
 
         default: return "UNKNOWN";
     }
@@ -41,6 +42,7 @@ void block_tick(block_t *block) {
         case XNOR: _xnor_tick(block); break;
         case FLIPFLOP: _flipflop_tick(block); break;
         case NODE: _node_tick(block); break;
+        case BUILDING_PIN: _building_pin_tick(block); break;
         default: break;
     }
 }
@@ -55,6 +57,7 @@ bool is_logic_block(block_t block) {
         case XNOR:
         case FLIPFLOP:
         case NODE:
+        case BUILDING_PIN:
         return true;
         default: return false;
     }

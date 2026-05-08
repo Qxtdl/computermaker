@@ -4,6 +4,7 @@
 #include "window.h"
 #include "../global.h"
 #include "../state.h"
+#include "../player/chat.h"
 
 struct window window;
 
@@ -14,8 +15,10 @@ void window_init(void) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+static void framebuffer_size_callback(GLFWwindow* _window, int width, int height) {
     state.renderer.camera.perspective.aspect=(float)width/(float)height;
+    window.width = width;
+    window.height = height;
     glViewport(0, 0, width, height);
 }
 
@@ -23,6 +26,15 @@ static void key_callback(GLFWwindow* gwindow, int key, int scancode, int action,
     switch (action) {
         case GLFW_PRESS: window.keyboard.keys[key].down = true; break;
         case GLFW_RELEASE: window.keyboard.keys[key].down = false;
+    }
+}
+
+static void char_callback(GLFWwindow* gwindow, unsigned int codepoint) {
+    if (!chat_active) return;
+
+    if (chat_input_len < CHAT_INPUT_MAX - 1) {
+        chat_input[chat_input_len++] = (char)codepoint;
+        chat_input[chat_input_len] = '\0';
     }
 }
 
@@ -69,6 +81,7 @@ void window_create(
 
     glfwSetFramebufferSizeCallback(gwindow, framebuffer_size_callback);
     glfwSetKeyCallback(gwindow, key_callback);
+    glfwSetCharCallback(gwindow, char_callback);
     glfwSetMouseButtonCallback(gwindow, mouse_button_callback);
     glfwSetCursorPosCallback(gwindow, cursor_pos_callback);
     glfwSetScrollCallback(gwindow, scroll_callback);
@@ -77,6 +90,9 @@ void window_create(
     window.destroy = destroy;
     window.tick = tick;
     window.render = render;
+
+    window.width = width;
+    window.height = height;
 }
 
 void window_loop(void) {
