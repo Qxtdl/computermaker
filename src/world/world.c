@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <string.h>
+
 #include "world.h"
 #include "../global.h"
 #include "../util.h"
@@ -6,15 +9,13 @@
 #include "../gfx/renderer.h"
 #include "chunk.h"
 #include "wire.h"
-#include <stdlib.h>
-#include <string.h>
 
 void world_worldgen(struct world *world) {
     int ax = atoi(config_get("CHUNK_AMOUNT_X")),
         ay = atoi(config_get("CHUNK_AMOUNT_Y")),
         az = atoi(config_get("CHUNK_AMOUNT_Z"));
     for (int x = 0; x < ax; x++) {
-        for (int y = 0; y < ay; y++) {
+        for (int y = -1; y < ay; y++) {
             for (int z = 0; z < az; z++) {
                 world_add_chunk(world, chunk_gen(x * CHUNK_X, y * CHUNK_Y, z * CHUNK_Z));
             }
@@ -23,7 +24,7 @@ void world_worldgen(struct world *world) {
 }
 
 void world_add_chunk(struct world *world, chunk_t chunk) {
-    chunk_t *new_chunk = malloc(sizeof(chunk_t));
+    chunk_t *new_chunk = smalloc(sizeof(chunk_t));
     memcpy(new_chunk, &chunk, sizeof(chunk_t));
     world->chunks = srealloc(world->chunks, ++world->chunks_size * sizeof(chunk_t*));
     world->chunks[world->chunks_size - 1] = new_chunk;
@@ -51,7 +52,6 @@ struct world_get_at_info world_get_at(struct world *world, float x, float y, flo
             break;
     }
     if (index == world->chunks_size) {
-        //index--;
         world_add_chunk(world, chunk_gen(cx, cy, cz));
     }
     info.chunk = world->chunks[index];
@@ -72,7 +72,9 @@ struct world_get_at_relative_info world_get_at_relative(struct world_get_at_info
     return info;
 }
 
-void world_place_at(struct world *world, int x, int y, int z, block_t block) {
+struct world_get_at_info world_place_at(struct world *world, int x, int y, int z, block_t block) {
 	struct world_get_at_info info = world_get_at(world, x, y, z);
 	info.chunk->blocks[info.x][info.y][info.z] = block;
+	chunk_bake(info.chunk);
+	return info;
 }

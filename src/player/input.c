@@ -3,6 +3,7 @@
 #include "../state.h"
 #include "../config.h"
 #include "../world/wire.h"
+#include "../world/building/building.h"
 #include "../world/save.h"
 #include "../gfx/raycast.h"
 
@@ -62,6 +63,7 @@ void input_handle(void) {
                         case FACE_BACK: raycast_info.z--; break;
                     }
                     info = world_get_at(&state.world, raycast_info.x,raycast_info.y,raycast_info.z);
+                    // TODO: do we need this if stmt ?
                     if ((info.x < 0 || info.y < 0 || info.z < 0)) break;
                     info.chunk->blocks[info.x][info.y][info.z].id = state.player.selected_block;
                     chunk_bake(info.chunk);
@@ -100,6 +102,14 @@ void input_handle(void) {
                     info.chunk->blocks[info.x][info.y][info.z].gate.new_state ^= 1; 
                     break;
                	case MODE_BLOCK_HOVER: state.player.hovered_block = &info.chunk->blocks[info.x][info.y][info.z]; break;
+				case MODE_BUILDING_PLACE:
+					building_create((building_t){
+						.id = HUGE_MEMORY,
+						.x = relative_info.x,
+						.y = relative_info.y,
+						.z = relative_info.z	
+					});
+					break;               	
             }
         }
         
