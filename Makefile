@@ -3,7 +3,7 @@ TARGET = linux
 ifeq ($(TARGET),linux)
 	CC = gcc
 	CFLAGS = -Wall -Wno-unused-result -g \
-			-Isrc/include -Idep/cglm/include
+			-Isrc/include -Idep/cglm/include -Idep/glfw/include
 	LIBS = dep/cglm/libcglm.a dep/glfw/src/libglfw3.a -lm -fsanitize=address
 else
 	# windows
@@ -52,7 +52,7 @@ ifeq ($(TARGET),linux)
 	cd dep/glfw && cmake . -DGLFW_BUILD_WAYLAND=OFF -DGLFW_BUILD_X11=OFF && make
 else
 	cd dep/cglm && cmake -B windows \
-		-DCGLM_STATIC=ON \
+		-DCGLM_STATIC=ON -DGLFW_BUILD_WAYLAND=OFF -DGLFW_BUILD_X11=OFF \
 		-DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc \
 		-DCMAKE_SYSTEM_NAME=Windows && \
 		cmake --build windows
