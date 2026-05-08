@@ -5,6 +5,7 @@
 #include "../global.h"
 #include "../state.h"
 #include "../world/tick.h"
+#include "../util.h"
 #include "chat.h"
 
 chat_message_t chat_messages[MAX_CHAT_MESSAGES] = {0};
@@ -33,7 +34,7 @@ void render_chat() {
 }
 
 void chat_handle_command(const char *text) {
-    if (strncmp(text, "!tps", 4) == 0) {
+    if (strncmp(text, "!tps ", 5) == 0) {
         int target = atoi(text + 5);
 
         if (target < 0) {
@@ -51,21 +52,30 @@ void chat_handle_command(const char *text) {
 
 void chat_add_message(const char *name, const char *text) {
     chat_message_t *message = &chat_messages[chat_head];
-    message->name = name;
-    message->message = text;
     
-    char *buffer = malloc(8096);
-    if (buffer == NULL) {
-        app_error("Failed to allocate chat buffer");
-        return;
-    }
     if (message->formatted) free(message->formatted);
+    if (message->name) free((void*)message->name);
+    if (message->message) free((void*)message->message);
 
-    snprintf(buffer, 8096, "[%s]: %s", name, text);
+    message->name = strdup(name);
+    message->message = strdup(text);
+
+    size_t buffer_size = snprintf(NULL, 0, "[%s]: %s", name, text) + 1;
+    char *buffer = smalloc(buffer_size);
+    snprintf(buffer, buffer_size, "[%s]: %s", name, text);
+
     message->formatted = buffer;
 
     chat_head = (chat_head + 1) % MAX_CHAT_MESSAGES;
     if (chat_count < MAX_CHAT_MESSAGES) {
         chat_count++;
+    }
+}
+
+void chat_cleanup() {
+    for (size_t i = 0; i < MAX_CHAT_MESSAGES; i++) {
+        free(chat_messages[i].formatted);
+        free((void*)chat_messages[i].name);
+        free((void*)chat_messages[i].message);
     }
 }

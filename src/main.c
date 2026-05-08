@@ -47,4 +47,5 @@ int main() {
     window_create("comm", 800, 600, init, destroy, tick, render);
     chat_add_message("comm", APP_RELEASE_STRING);
     window_loop();
+    chat_cleanup();
 }

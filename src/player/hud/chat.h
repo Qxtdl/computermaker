@@ -26,3 +26,4 @@ void chat_add_message(
     const char *name,
     const char *text
 );
+void chat_cleanup();
