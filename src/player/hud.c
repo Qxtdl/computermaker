@@ -1,4 +1,5 @@
 #include "../global.h"
+#include "../config.h"
 #include "../state.h"
 
 static char text_buffer[512];
@@ -49,5 +50,5 @@ void hud_draw(void) {
 
     if (*watermark == 'y')
         // NOTE: Properly size and multiply text by scale?
-    	renderer_text((int)(window.width / 2) - (int)(strlen(watermark_text) * 10), 0, 2, watermark_text);
+    	renderer_text((int)(window.width / 2) - (int)(strlen(watermark_text) * 10), 0, 2, watermark_text, NULL);
 }

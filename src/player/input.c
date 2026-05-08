@@ -93,7 +93,7 @@ void input_handle(void) {
                             default: break;
                         }
                     }
-                    info = world_get_at(&state.world, raycast_info.x,raycast_info.y,raycast_info.z);
+                    info = world_get_at(&state.world, ray_info.x, ray_info.y,ray_info.z);
                     // TODO: do we need this if stmt ?
                     if ((info.x < 0 || info.y < 0 || info.z < 0)) break;
 
@@ -144,8 +144,6 @@ void input_handle(void) {
                     state.player.hovered_block = &info.chunk->blocks[info.x][info.y][info.z];
                     break;
                 }
-                
-               	case MODE_BLOCK_HOVER: state.player.hovered_block = &info.chunk->blocks[info.x][info.y][info.z]; break;
                 
                 case MODE_BUILDING_PLACE: {
                     building_create((building_t){
