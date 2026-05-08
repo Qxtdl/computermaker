@@ -19,7 +19,7 @@ jobs:
     - name: Install toolchain
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc make cmake
+        sudo apt-get install -y gcc make cmake mesa-common-dev libglu1-mesa-dev
 
     - name: Build
       run: make ci
