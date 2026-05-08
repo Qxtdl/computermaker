@@ -6,7 +6,7 @@ void _nor_tick(block_t *block) {
         return;
     }
     block->gate.new_state = STATE_ON;
-    for (int i = 0; i < block->gate.num_inputs; i++) {
+    for (int i = 0; i < block->gate.inputs_size; i++) {
         if (!block->gate.inputs[i].gate) continue;
         if (block->gate.inputs[i].gate->state == STATE_ON) {
             block->gate.new_state = STATE_OFF;

@@ -20,11 +20,11 @@ void init(void) {
     renderer_init(&state.renderer, 800.0f/600.0f);
     skybox_init(&state.world.skybox);
     world_wire_init();
+    set_wire_thickness(atof(config_get("WIRE_THICKNESS")));
     if (!save_load(config_get("SAVELOAD")))
         world_worldgen(&state.world);
     cm2save_process(config_get("SAVE"));
     raycast_set_distance(atof(config_get("RAY_DISTANCE")));
-    set_wire_thickness(atof(config_get("WIRE_THICKNESS")));
 }
 
 void destroy(void) {

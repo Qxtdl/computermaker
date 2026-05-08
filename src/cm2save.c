@@ -5,6 +5,7 @@
 */
 
 #include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "../vec.h"
@@ -19,39 +20,43 @@
   TODO: code formatting
 */
 
-typedef struct {const char *start; size_t size;} StringView;
+typedef struct {const char *start; size_t size;} stringview_t;
 
-StringView cstr2SV(const char *cstr) {
-    StringView sv;
+stringview_t cstr2SV(const char *cstr) {
+    stringview_t sv;
     sv.start = cstr;
     size_t i = 0;
     while (cstr[i]) {
         i++;
     }
-    sv.size = i - 1;
+    sv.size = i;
     return sv;
 }
 
-void SV_chop_left(StringView *sv, size_t n) {
+void SV_chop_left(stringview_t *sv, size_t n) {
     if (n > sv->size) n = sv->size;
     sv->start += n;
     sv->size -= n;
 }
 
-StringView SV_chop_by_delim(StringView *sv, char delim) {
+stringview_t SV_chop_by_delim(stringview_t *sv, char delim) {
     size_t i = 0;
     while (i < sv->size && sv->start[i] != delim) i++;
     if (i < sv->size) {
-        StringView result = {
+        stringview_t result = {
             .start = sv->start,
             .size = i,
         };
         SV_chop_left(sv, i + 1);
         return result;
     }
-    StringView result = *sv;
+    stringview_t result = *sv;
     SV_chop_left(sv, sv->size);
     return result;
+}
+
+void SV_print(stringview_t sv) {
+    printf("%.*s",(int)sv.size,sv.start);
 }
 
 struct {
@@ -64,7 +69,7 @@ struct {
     .blocks = NULL
 };
 
-static void cm2save_add_block(StringView sv_block) {
+static void cm2save_add_block(stringview_t sv_block) {
     if (cm2_blocks.blocks == NULL) {
         cm2_blocks.blocks = smalloc(100 * sizeof(ivec3));
         cm2_blocks.block_capacity = 100;
@@ -74,17 +79,17 @@ static void cm2save_add_block(StringView sv_block) {
         cm2_blocks.block_capacity <<= 1;
     }
     block_t block;
-    StringView sv_block_type = SV_chop_by_delim(&sv_block, ',');
-    StringView sv_block_state = SV_chop_by_delim(&sv_block, ',');
-    StringView sv_block_x = SV_chop_by_delim(&sv_block, ',');
-    StringView sv_block_y = SV_chop_by_delim(&sv_block, ',');
-    StringView sv_block_z = SV_chop_by_delim(&sv_block, ',');
+    stringview_t sv_block_type = SV_chop_by_delim(&sv_block, ',');
+    stringview_t sv_block_state = SV_chop_by_delim(&sv_block, ',');
+    stringview_t sv_block_x = SV_chop_by_delim(&sv_block, ',');
+    stringview_t sv_block_y = SV_chop_by_delim(&sv_block, ',');
+    stringview_t sv_block_z = SV_chop_by_delim(&sv_block, ',');
     char buf[10];
     size_t i = 0;
     for (; i<9 && i<sv_block_type.size; i++) {
         buf[i] = sv_block_type.start[i];
     }
-    buf[++i] = '\0';
+    buf[i] = '\0';
     switch (atoi(buf)) {
         case 0://NOR
             block.id = NOR;
@@ -149,6 +154,7 @@ static void cm2save_add_block(StringView sv_block) {
     }
     block.gate.inputs = NULL;
     block.gate.num_inputs = 0;
+    block.gate.inputs_size = 0;
     if (sv_block_state.size == 0) {
         block.gate.state = STATE_OFF;
     } else if (*sv_block_type.start == '1') {
@@ -161,17 +167,19 @@ static void cm2save_add_block(StringView sv_block) {
     for (; i<9 && i<sv_block_x.size; i++) {
         buf[i] = sv_block_x.start[i];
     }
-    buf[++i] = '\0';
+    buf[i] = '\0';
     int block_x = atoi(buf);
+    i = 0;
     for (; i<9 && i<sv_block_y.size; i++) {
         buf[i] = sv_block_y.start[i];
     }
-    buf[++i] = '\0';
+    buf[i] = '\0';
     int block_y = atoi(buf);
+    i = 0;
     for (; i<9 && i<sv_block_z.size; i++) {
         buf[i] = sv_block_z.start[i];
     }
-    buf[++i] = '\0';
+    buf[i] = '\0';
     int block_z = atoi(buf);
     cm2_blocks.blocks[cm2_blocks.block_count - 1][0] = block_x;
     cm2_blocks.blocks[cm2_blocks.block_count - 1][1] = block_y;
@@ -179,40 +187,39 @@ static void cm2save_add_block(StringView sv_block) {
     world_place_at(&state.world, block_x, block_y, block_z, block);
 }
 
-static void cm2save_add_wire(StringView wire) {
-    wire_t new_wire;
-    StringView sv_source = SV_chop_by_delim(&wire, ',');
+static void cm2save_add_wire(stringview_t wire) {
+    stringview_t sv_source = SV_chop_by_delim(&wire, ',');
     char buf[10];
     size_t i = 0;
     for (; i<9 && i<sv_source.size; i++) {
         buf[i] = sv_source.start[i];
     }
-    buf[++i] = '\0';
+    buf[i] = '\0';
     ivec3 source = {
-        cm2_blocks.blocks[atoi(buf)][0],
-        cm2_blocks.blocks[atoi(buf)][1],
-        cm2_blocks.blocks[atoi(buf)][2]
+        cm2_blocks.blocks[atoi(buf)-1][0],
+        cm2_blocks.blocks[atoi(buf)-1][1],
+        cm2_blocks.blocks[atoi(buf)-1][2]
     };
 
     i = 0;
     for (; i<9 && i<wire.size; i++) {
         buf[i] = wire.start[i];
     }
-    buf[++i] = '\0';
+    buf[i] = '\0';
     ivec3 dest = {
-        cm2_blocks.blocks[atoi(buf)][0],
-        cm2_blocks.blocks[atoi(buf)][1],
-        cm2_blocks.blocks[atoi(buf)][2]
+        cm2_blocks.blocks[atoi(buf)-1][0],
+        cm2_blocks.blocks[atoi(buf)-1][1],
+        cm2_blocks.blocks[atoi(buf)-1][2]
     };
 
-    new_wire.ox = source[0];
-    new_wire.oy = source[1];
-    new_wire.oz = source[2];
-    new_wire.dx = dest[0];
-    new_wire.dy = dest[1];
-    new_wire.dz = dest[2];
-
-    world_create_wire(new_wire);
+    world_create_wire((wire_t){
+        .ox = source[0],
+        .oy = source[1],
+        .oz = source[2],
+        .dx = dest[0],
+        .dy = dest[1],
+        .dz = dest[2]
+    });
 }
 
 void cm2save_process(const char *savestring) {
@@ -220,14 +227,16 @@ void cm2save_process(const char *savestring) {
 		return;
 	}
 	
-    StringView sv_savestring = cstr2SV(savestring);
-    StringView sv_blocks = SV_chop_by_delim(&sv_savestring, '?');
-    StringView sv_connections = SV_chop_by_delim(&sv_savestring, '?');
+    stringview_t sv_savestring = cstr2SV(savestring);
+    stringview_t sv_blocks = SV_chop_by_delim(&sv_savestring, '?');
+    stringview_t sv_connections = SV_chop_by_delim(&sv_savestring, '?');
+    stringview_t sv_buildings = SV_chop_by_delim(&sv_savestring, '?');
     while (sv_blocks.size > 0) {
         cm2save_add_block(SV_chop_by_delim(&sv_blocks, ';'));
     }
     while (sv_connections.size > 0) {
         cm2save_add_wire(SV_chop_by_delim(&sv_connections, ';'));
     }
+    if (sv_buildings.size) {app_warn("buildings can't be imported yet\n")}
     free(cm2_blocks.blocks);
 }
