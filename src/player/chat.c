@@ -1,8 +1,10 @@
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "chat.h"
 #include "../util.h"
+#include "../config.h"
 #include "../gfx/renderer.h"
 #include "../gfx/window.h"
 #include "../world/tick.h"
@@ -15,6 +17,10 @@ char chat_input[CHAT_INPUT_MAX];
 size_t chat_input_len = 0;
 bool chat_active = false;
 
+float chat_fontscale = 2;
+float chat_fontsize = 32;
+int chat_y_sub = 1024;
+
 void render_chat(void) {
     for (size_t i = 0; i < chat_count; i++) {
         size_t start = (chat_head + MAX_CHAT_MESSAGES - chat_count) % MAX_CHAT_MESSAGES;
@@ -25,11 +31,17 @@ void render_chat(void) {
         if (message->formatted == NULL) continue;
 
         int y = window.height - 
-            CHAT_MESSAGE_FONTSIZE * MAX_CHAT_MESSAGES +
-            i * CHAT_MESSAGE_FONTSIZE - CHAT_MESSAGE_FONTSIZE;
+            chat_fontsize * MAX_CHAT_MESSAGES +
+            i * chat_fontsize - chat_fontsize;
 
-        renderer_text(0, y-1024, CHAT_MESSAGE_SCALE, message->formatted, NULL);
+        renderer_text(0, y - chat_y_sub, chat_fontscale, message->formatted, NULL);
     }
+}
+
+void chat_init(void) {
+    chat_y_sub = atoi(config_get("CHAT_Y_SUB"));
+    chat_fontscale = atof(config_get("CHAT_FONTSCALE"));
+    chat_fontsize = chat_fontscale * 16;
 }
 
 void chat_handle_command(const char *text) {

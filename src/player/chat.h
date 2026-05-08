@@ -1,8 +1,6 @@
 #pragma once
 
 #define MAX_CHAT_MESSAGES 16
-#define CHAT_MESSAGE_SCALE 2
-#define CHAT_MESSAGE_FONTSIZE (CHAT_MESSAGE_SCALE * 16)
 #define CHAT_INPUT_MAX 4096
 
 #include <stddef.h>
@@ -22,7 +20,12 @@ extern char chat_input[CHAT_INPUT_MAX];
 extern size_t chat_input_len;
 extern bool chat_active;
 
+extern float chat_fontscale;
+extern float chat_fontsize;
+extern int chat_y_sub;
+
 void render_chat(void);
+void chat_init(void);
 void chat_handle_command(const char *text);
 void chat_add_message(
     const char *name,

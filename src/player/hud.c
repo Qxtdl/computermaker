@@ -2,9 +2,16 @@
 #include "../config.h"
 #include "../state.h"
 #include "../gfx/renderer.h"
+#include "hud.h"
 #include "chat.h"
 
 static char text_buffer[512];
+
+float fontscale = 2;
+
+void hud_init(void) {
+    fontscale = atoi(config_get("FONTSCALE"));
+}
 
 void hud_draw(void) {
     glDisable(GL_DEPTH_TEST);
@@ -22,7 +29,7 @@ void hud_draw(void) {
         mode_name(state.player.mode)
     );
 
-    renderer_text(0, 32, 2, text_buffer, NULL);
+    renderer_text(0, 32, fontscale, text_buffer, NULL);
   
     if (state.player.hovered_block && state.player.hovered_block->id != AIR) {
     	snprintf(text_buffer, sizeof(text_buffer),
@@ -36,14 +43,14 @@ void hud_draw(void) {
     		state.player.hovered_block->gate.new_state
     	);
 
-    	renderer_text(0, 400, 2, text_buffer, NULL);
+    	renderer_text(0, 400, fontscale, text_buffer, NULL);
     }
     
-    renderer_text(0, 0, 2, APP_RELEASE_STRING, (vec3){0, 1, 0});
+    renderer_text(0, 0, fontscale, APP_RELEASE_STRING, (vec3){0, 1, 0});
     static const char *watermark = NULL;
     if (!watermark) {
         watermark = config_get("SHOW_WATERMARK");
-        if (!watermark) {
+        if (!watermark) { // NOTE: this will not print the message because config_get auto exits if there is no key
             app_error("SHOW_WATERMARK must exist and be y/n\n")
         }
     }
@@ -52,7 +59,7 @@ void hud_draw(void) {
 
     if (*watermark == 'y')
         // NOTE: Properly size and multiply text by scale?
-    	renderer_text((int)(window.width / 2) - (int)(strlen(watermark_text) * 10), 0, 2, watermark_text, NULL);
+    	renderer_text((int)(window.width / 2) - (int)(strlen(watermark_text) * 10), 0, fontscale, watermark_text, NULL);
 
     render_chat();        
 }

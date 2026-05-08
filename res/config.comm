@@ -26,6 +26,10 @@ SAVETO=save.save
 ; cm2 circuit to load in game starting the game
 SAVE=5,0,1,0,2,0+0;1,0,0,0,0,;5,0,-1,0,2,0+0?1,2;3,2??
 ; Graphics
+FONTSCALE=2
+CHAT_FONTSCALE=2
+CHAT_Y_SUB=1024
+CHAT_X_OFFEST=0
 ; Render Distance in units
 RENDER_DISTANCE=128
 WIRE_THICKNESS=0.6

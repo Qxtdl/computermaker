@@ -19,6 +19,8 @@ void init(void) {
     config_process();
     renderer_init(&state.renderer, 800.0f/600.0f);
     skybox_init(&state.world.skybox);
+    hud_init();
+    chat_init();
     world_wire_init();
     set_wire_thickness(atof(config_get("WIRE_THICKNESS")));
     if (!save_load(config_get("SAVELOAD")))
