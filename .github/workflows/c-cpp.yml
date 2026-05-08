@@ -2,9 +2,9 @@ name: Build
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y gcc
 
-    - name: Build kernel
+    - name: Do Build
       run: make
 
     - name: Verify build artifacts
