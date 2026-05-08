@@ -1,5 +1,4 @@
 #include "world.h"
-#include "../global.h"
 #include "../util.h"
 #include "../state.h"
 #include "../config.h"
@@ -74,4 +73,5 @@ struct world_get_at_relative_info world_get_at_relative(struct world_get_at_info
 void world_place_at(struct world *world, int x, int y, int z, block_t block) {
 	struct world_get_at_info info = world_get_at(world, x, y, z);
 	info.chunk->blocks[info.x][info.y][info.z] = block;
+    chunk_bake(info.chunk);
 }
