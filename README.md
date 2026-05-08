@@ -1,3 +1,5 @@
+![Build](https://github.com/Qxtdl/computermaker/actions/workflows/c-cpp.yml/badge.svg)
+
 ![image](images/latest.png)
 
 # ComputerMaker
