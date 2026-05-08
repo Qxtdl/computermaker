@@ -1,7 +1,5 @@
 #pragma once
 
-#include <glad/glad.h>
-
 #include "shader.h"
 #include "texture.h"
 #include "camera.h"
@@ -36,7 +34,6 @@ struct renderer {
 
     mat4 m, v, p;
 
-    int width, height;
     bool wireframe;
 };
 
@@ -46,4 +43,3 @@ void renderer_prepare(struct renderer *renderer, enum RendererPass pass);
 void renderer_chunk(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, vbo_t bbo, vec3 translation, enum RendererTextureType texture);
 void renderer_instanced_mesh(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, vbo_t ibo, enum RendererTextureType texture, int instancecount);
 void renderer_text(float x, float y, float scale, const char *text, vec3 color);
-

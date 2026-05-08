@@ -11,7 +11,7 @@
 #include "world/wire.h"
 #include "player/input.h"
 #include "player/hud.h"
-#include "player/hud/chat.h"
+#include "player/chat.h"
 #include "cm2save.h"
 
 void init(void) {

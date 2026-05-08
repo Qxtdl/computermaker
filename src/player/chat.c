@@ -1,12 +1,11 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#include "../gfx/renderer.h"
-#include "../global.h"
-#include "../state.h"
-#include "../world/tick.h"
-#include "../util.h"
 #include "chat.h"
+#include "../util.h"
+#include "../gfx/renderer.h"
+#include "../gfx/window.h"
+#include "../world/tick.h"
 
 chat_message_t chat_messages[MAX_CHAT_MESSAGES] = {0};
 size_t chat_count = 0;
@@ -16,7 +15,7 @@ char chat_input[CHAT_INPUT_MAX];
 size_t chat_input_len = 0;
 bool chat_active = false;
 
-void render_chat() {
+void render_chat(void) {
     for (size_t i = 0; i < chat_count; i++) {
         size_t start = (chat_head + MAX_CHAT_MESSAGES - chat_count) % MAX_CHAT_MESSAGES;
         size_t index = (start + i) % MAX_CHAT_MESSAGES;
@@ -25,11 +24,11 @@ void render_chat() {
 
         if (message->formatted == NULL) continue;
 
-        int y = state.renderer.height - 
+        int y = window.height - 
             CHAT_MESSAGE_FONTSIZE * MAX_CHAT_MESSAGES +
             i * CHAT_MESSAGE_FONTSIZE - CHAT_MESSAGE_FONTSIZE;
 
-        renderer_text(16, y, CHAT_MESSAGE_SCALE, message->formatted);
+        renderer_text(0, y-1024, CHAT_MESSAGE_SCALE, message->formatted, NULL);
     }
 }
 
@@ -72,7 +71,7 @@ void chat_add_message(const char *name, const char *text) {
     }
 }
 
-void chat_cleanup() {
+void chat_cleanup(void) {
     for (size_t i = 0; i < MAX_CHAT_MESSAGES; i++) {
         free(chat_messages[i].formatted);
         free((void*)chat_messages[i].name);

@@ -1,13 +1,12 @@
 #include <math.h>
 
 #include "../state.h"
-#include "../global.h"
 #include "../config.h"
 #include "../world/wire.h"
 #include "../world/building/building.h"
 #include "../world/save.h"
 #include "../gfx/raycast.h"
-#include "hud/chat.h"
+#include "chat.h"
 #include "keybinds.h"
 
 // If the mouse is locked to the screen
@@ -32,7 +31,7 @@ static void set_mouse_button(int button, bool state) {
 }
 
 static void input_chat_handle() {
-    if (window.keyboard.keys[GLFW_KEY_ENTER].down) {
+    if (get_key(GLFW_KEY_ENTER)) {
         if (chat_input[0] == '!') chat_handle_command(chat_input);
         chat_add_message("player", chat_input);
 
@@ -40,14 +39,14 @@ static void input_chat_handle() {
         chat_input_len = 0;
         chat_active = false;
 
-        window.keyboard.keys[GLFW_KEY_ENTER].down = false;
+        set_key(GLFW_KEY_ENTER, false);
     }
 
-    if (window.keyboard.keys[GLFW_KEY_BACKSPACE].down) {
+    if (get_key(GLFW_KEY_BACKSPACE)) {
         if (chat_input_len > 0) {
             chat_input[--chat_input_len] = '\0';
         }
-        window.keyboard.keys[GLFW_KEY_BACKSPACE].down = false;
+        set_key(GLFW_KEY_BACKSPACE, false);
     }
 }
 
@@ -62,17 +61,16 @@ void input_handle(void) {
         return;
     }
 
-    if (window.keyboard.keys[GLFW_KEY_W].down) {
+    if (get_key(GLFW_KEY_W))
         camera_move(&state.renderer.camera, CAMERA_DIRECTION_FORWARD);
-    if (get_key(GLFW_KEY_ESCAPE))
-    {
+
+    if (get_key(GLFW_KEY_ESCAPE)) {
         glfwSetInputMode(window.handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         set_key(GLFW_KEY_ESCAPE, false);
         mouse_free = true;
     }
 
-    if (get_mouse_button(GLFW_MOUSE_BUTTON_LEFT) && mouse_free)
-    {
+    if (get_mouse_button(GLFW_MOUSE_BUTTON_LEFT) && mouse_free) {
         glfwSetInputMode(window.handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         set_mouse_button(GLFW_MOUSE_BUTTON_LEFT, false);
         mouse_free = false;
@@ -226,9 +224,9 @@ void input_handle(void) {
         }
     }
 
-    if (window.keyboard.keys[GLFW_KEY_T].down) {
+    if (get_key(GLFW_KEY_T)) {
         chat_active = true;
-        window.keyboard.keys[GLFW_KEY_T].down = false;
+        set_key(GLFW_KEY_T, false);
     }
 
     for (int i = 0; i < BLOCK_KEYBINDS_COUNT; i++) {

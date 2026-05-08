@@ -4,7 +4,7 @@
 #include "window.h"
 #include "../global.h"
 #include "../state.h"
-#include "../player/hud/chat.h"
+#include "../player/chat.h"
 
 struct window window;
 
@@ -86,8 +86,6 @@ void window_create(
     glfwSetCursorPosCallback(gwindow, cursor_pos_callback);
     glfwSetScrollCallback(gwindow, scroll_callback);
 
-    state.renderer.width = width;
-    state.renderer.height = height;
     window.init = init;
     window.destroy = destroy;
     window.tick = tick;

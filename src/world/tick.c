@@ -1,9 +1,5 @@
-// TODO: use window.h
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include "chunk.h"
+#include "../gfx/window.h"
 #include "world.h"
 #include "chunk.h"
 #include "building/building.h"
@@ -12,12 +8,10 @@ double last_tick_time = 0;
 double tick_interval = 1.0 / 10.0;
 
 void world_tick(struct world *world) {
-    // TODO: use window.h
-    double now = glfwGetTime();
-
-    if (now - last_tick_time < tick_interval) {
+    if (window.now - last_tick_time < tick_interval) {
         return;
     }
+
     last_tick_time += tick_interval;
 
     for (int i = 0; i < world->chunks_size; i++) {

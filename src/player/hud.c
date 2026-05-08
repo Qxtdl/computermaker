@@ -23,8 +23,6 @@ void hud_draw(void) {
     );
 
     renderer_text(0, 32, 2, text_buffer, NULL);
-
-    render_chat();
   
     if (state.player.hovered_block && state.player.hovered_block->id != AIR) {
     	snprintf(text_buffer, sizeof(text_buffer),
@@ -55,4 +53,6 @@ void hud_draw(void) {
     if (*watermark == 'y')
         // NOTE: Properly size and multiply text by scale?
     	renderer_text((int)(window.width / 2) - (int)(strlen(watermark_text) * 10), 0, 2, watermark_text, NULL);
+
+    render_chat();        
 }
