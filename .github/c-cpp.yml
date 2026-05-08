@@ -1,0 +1,30 @@
+name: Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc
+
+    - name: Build kernel
+      run: make
+
+    - name: Verify build artifacts
+      run: |
+        test -f build/comm
+        echo "Build succeeded"
+    - name: List build outputs
+      run: ls -lah
