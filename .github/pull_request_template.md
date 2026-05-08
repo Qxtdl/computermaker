@@ -2,7 +2,7 @@
 
 Before continuing, make sure you read this [CONTRIBUTING.md](CONTRIBUTING.md)
 
-- [ ] I have read [CONTRIBUTING.md](CONTRIBUTING.md)
+- [ ] I have read [CONTRIBUTING.md](https://github.com/Qxtdl/computermaker/blob/master/CONTRIBUTING.md)
 - [ ] My code compiles and runs without errors
 - [ ] Filled in the information below
 
