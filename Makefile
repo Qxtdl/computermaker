@@ -23,6 +23,7 @@ CSRC = $(shell find $(SRC) -type f -name '*.c')
 COBJ = $(patsubst %.c,$(BUILD)/%.o,$(CSRC))
 
 all: clean deps compile
+ci: clean deps2 compile
 
 clean:
 	mkdir -p $(BUILD)
@@ -32,6 +33,23 @@ deps:
 ifeq ($(TARGET),linux)
 	cd dep/cglm && cmake . -DCGLM_STATIC=ON && make
 	cd dep/glfw && cmake . && make
+else
+	cd dep/cglm && cmake -B windows \
+		-DCGLM_STATIC=ON \
+		-DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc \
+		-DCMAKE_SYSTEM_NAME=Windows && \
+		cmake --build windows
+
+	cd dep/glfw && cmake -B windows \
+		-DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc \
+		-DCMAKE_SYSTEM_NAME=Windows && \
+		cmake --build windows
+endif
+
+deps2:
+ifeq ($(TARGET),linux)
+	cd dep/cglm && cmake . -DCGLM_STATIC=ON && make
+	cd dep/glfw && cmake . -DGLFW_BUILD_WAYLAND=OFF -DGLFW_BUILD_X11=OFF && make
 else
 	cd dep/cglm && cmake -B windows \
 		-DCGLM_STATIC=ON \
