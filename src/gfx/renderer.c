@@ -130,7 +130,7 @@ void renderer_instanced_mesh(struct renderer *renderer, vao_t vao, vbo_t vbo, vb
     glDrawElementsInstanced(GL_TRIANGLES, ebo.size, GL_UNSIGNED_INT, 0, instancecount);
 }
 
-void renderer_text(float x, float y, float scale, const char *text) {
+void renderer_text(float x, float y, float scale, const char *text, vec3 color) {
     GLboolean cull = glIsEnabled(GL_CULL_FACE);
     glDisable(GL_CULL_FACE);
 
@@ -138,6 +138,11 @@ void renderer_text(float x, float y, float scale, const char *text) {
     gltSetText(ptr, text);
 
     gltBeginDraw();
+
+    if (!color)
+        gltColor(1, 1, 1, 1);
+    else
+        gltColor(color[0], color[1], color[2], 1);
 
     gltDrawText2D(ptr, x, y, scale);
 
