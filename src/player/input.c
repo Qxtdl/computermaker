@@ -6,6 +6,7 @@
 #include "../world/building/building.h"
 #include "../world/save.h"
 #include "../gfx/raycast.h"
+#include "keybinds.h"
 
 void input_handle(void) {
     if (window.mouse.moved) {
@@ -141,5 +142,13 @@ void input_handle(void) {
         save_save(config_get("SAVETO"));
 
         window.keyboard.keys[GLFW_KEY_Z].down = false;
+    }
+
+    for (int i = 0; i < BLOCK_KEYBINDS_COUNT; i++) {
+        block_keybind_t *block_kb = &block_keybinds[i];
+        if (!window.keyboard.keys[block_kb->key].down) continue;
+
+        state.player.selected_block = block_kb->blockid;
+        window.keyboard.keys[block_kb->key].down = false;
     }
 }
