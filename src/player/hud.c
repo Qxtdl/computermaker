@@ -1,6 +1,8 @@
 #include "../global.h"
 #include "../config.h"
 #include "../state.h"
+#include "../gfx/renderer.h"
+#include "chat.h"
 
 static char text_buffer[512];
 
@@ -22,6 +24,8 @@ void hud_draw(void) {
 
     renderer_text(0, 32, 2, text_buffer, NULL);
 
+    render_chat();
+  
     if (state.player.hovered_block && state.player.hovered_block->id != AIR) {
     	snprintf(text_buffer, sizeof(text_buffer),
     		"ID: %s\n"

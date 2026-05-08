@@ -1,11 +1,13 @@
 #include <math.h>
 
 #include "../state.h"
+#include "../global.h"
 #include "../config.h"
 #include "../world/wire.h"
 #include "../world/building/building.h"
 #include "../world/save.h"
 #include "../gfx/raycast.h"
+#include "hud/chat.h"
 #include "keybinds.h"
 
 // If the mouse is locked to the screen
@@ -29,12 +31,39 @@ static void set_mouse_button(int button, bool state) {
     window.mouse.buttons[button].down = state;
 }
 
+static void input_chat_handle() {
+    if (window.keyboard.keys[GLFW_KEY_ENTER].down) {
+        if (chat_input[0] == '!') chat_handle_command(chat_input);
+        chat_add_message("player", chat_input);
+
+        chat_input[0] = '\0';
+        chat_input_len = 0;
+        chat_active = false;
+
+        window.keyboard.keys[GLFW_KEY_ENTER].down = false;
+    }
+
+    if (window.keyboard.keys[GLFW_KEY_BACKSPACE].down) {
+        if (chat_input_len > 0) {
+            chat_input[--chat_input_len] = '\0';
+        }
+        window.keyboard.keys[GLFW_KEY_BACKSPACE].down = false;
+    }
+}
+
 void input_handle(void) {
     if (window.mouse.moved && !mouse_free) {
         camera_mouse_cb(&state.renderer.camera, window.mouse.x, window.mouse.y);
         window.mouse.moved = true;
     }
 
+    if (chat_active) {
+        input_chat_handle();
+        return;
+    }
+
+    if (window.keyboard.keys[GLFW_KEY_W].down) {
+        camera_move(&state.renderer.camera, CAMERA_DIRECTION_FORWARD);
     if (get_key(GLFW_KEY_ESCAPE))
     {
         glfwSetInputMode(window.handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -182,6 +211,7 @@ void input_handle(void) {
     if (get_key(GLFW_KEY_Z)) {
         set_key(GLFW_KEY_Z, false);
         save_save(config_get("SAVETO"));
+        chat_add_message("comm", "Save written");
     }
 
     if (get_key(GLFW_KEY_F11)) {
@@ -194,6 +224,11 @@ void input_handle(void) {
         } else {
             glfwSetWindowMonitor(window.handle, NULL, 100, 100, 800, 600, 0);
         }
+    }
+
+    if (window.keyboard.keys[GLFW_KEY_T].down) {
+        chat_active = true;
+        window.keyboard.keys[GLFW_KEY_T].down = false;
     }
 
     for (int i = 0; i < BLOCK_KEYBINDS_COUNT; i++) {
