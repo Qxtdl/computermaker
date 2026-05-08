@@ -15,10 +15,10 @@ void window_init(void) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+static void framebuffer_size_callback(GLFWwindow* _window, int width, int height) {
     state.renderer.camera.perspective.aspect=(float)width/(float)height;
-    state.renderer.width = width;
-    state.renderer.height = height;
+    window.width = width;
+    window.height = height;
     glViewport(0, 0, width, height);
 }
 
@@ -92,6 +92,9 @@ void window_create(
     window.destroy = destroy;
     window.tick = tick;
     window.render = render;
+
+    window.width = width;
+    window.height = height;
 }
 
 void window_loop(void) {

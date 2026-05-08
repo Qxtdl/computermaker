@@ -18,6 +18,7 @@ typedef struct {
     vec3 front;
     perspective_t perspective;
     int render_distance; // in chunks
+    float move_speed;
 } camera_t;
 
 enum CameraDirection {
