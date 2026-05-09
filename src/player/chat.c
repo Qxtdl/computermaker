@@ -20,7 +20,8 @@ bool chat_active = false;
 
 float chat_fontscale = 2;
 float chat_fontsize = 32;
-int chat_y_sub = 1024;
+int chat_y_sub = 162;
+int chat_x_offset = 0;
 vec3 chat_color = {0, 0, 0};
 
 void render_chat(void) {
@@ -36,12 +37,13 @@ void render_chat(void) {
             chat_fontsize * MAX_CHAT_MESSAGES +
             i * chat_fontsize - chat_fontsize;
 
-        renderer_text(0, y - chat_y_sub, chat_fontscale, message->formatted, chat_color);
+        renderer_text(chat_x_offset, y - chat_y_sub, chat_fontscale, message->formatted, chat_color);
     }
 }
 
 void chat_init(void) {
     chat_y_sub = atoi(config_get("CHAT_Y_SUB"));
+    chat_x_offset = atoi(config_get("CHAT_Y_SUB"));
     chat_fontscale = atof(config_get("CHAT_FONTSCALE"));
     chat_fontsize = chat_fontscale * 16;
     chat_color[0] = atoi(config_get("CHAT_COLOR_R")) / 255;

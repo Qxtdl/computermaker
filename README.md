@@ -92,3 +92,10 @@ SAVETO|Filename of the native save file, the world is saved here pressing Z
 CM2SAVE|A Circuit Maker 2 save to load when starting the game. Note that SAVELOAD loads the save first, then this.
 CHUNK_AMOUNT_X|How much chunks to generate in the X axis at world generation
 CHUNK_AMOUNT_Z|How much chunks to generate in the Z axis at world generation
+FONTSCALE|Global scale for fonts
+CHAT_FONTSCALE|scale for chat message text
+CHAT_Y_SUB|Y (Vertical) offset subtraction for chat position
+CHAT_X_OFFSET|X (Horizontal) offset for chat position
+CHAT_COLOR_R|chat text color - red channel (0 - 255)
+CHAT_COLOR_G|chat text color - green channel (0 - 255)
+CHAT_COLOR_B|chat text color - blue channel (0 - 255)

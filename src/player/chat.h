@@ -25,6 +25,7 @@ extern bool chat_active;
 extern float chat_fontscale;
 extern float chat_fontsize;
 extern int chat_y_sub;
+extern int chat_x_offset;
 extern vec3 chat_color;
 
 void render_chat(void);
