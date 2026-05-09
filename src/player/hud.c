@@ -1,6 +1,7 @@
 #include "../global.h"
 #include "../config.h"
 #include "../state.h"
+#include "../gfx/window.h"
 #include "../gfx/renderer.h"
 #include "chat.h"
 
@@ -54,5 +55,5 @@ void hud_draw(void) {
         // NOTE: Properly size and multiply text by scale?
     	renderer_text((int)(window.width / 2) - (int)(strlen(watermark_text) * 10), 0, 2, watermark_text, NULL);
 
-    render_chat();        
+    chat_render();        
 }

@@ -16,7 +16,7 @@ char chat_input[CHAT_INPUT_MAX];
 size_t chat_input_len = 0;
 bool chat_active = false;
 
-void render_chat(void) {
+void chat_render(void) {
     for (size_t i = 0; i < chat_count; i++) {
         size_t start = (chat_head + MAX_CHAT_MESSAGES - chat_count) % MAX_CHAT_MESSAGES;
         size_t index = (start + i) % MAX_CHAT_MESSAGES;
@@ -93,6 +93,15 @@ void chat_add_message(const char *name, const char *text) {
     if (chat_count < MAX_CHAT_MESSAGES) {
         chat_count++;
     }
+}
+
+void chat_char_callback(unsigned int codepoint) {
+    if (!chat_active) return;
+
+    if (chat_input_len < CHAT_INPUT_MAX - 1) {
+        chat_input[chat_input_len++] = (char)codepoint;
+        chat_input[chat_input_len] = '\0';
+    }    
 }
 
 void chat_cleanup(void) {

@@ -15,7 +15,7 @@ void window_init(void) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
-static void framebuffer_size_callback(GLFWwindow* _window, int width, int height) {
+static void framebuffer_size_callback(GLFWwindow* gwindow, int width, int height) {
     state.renderer.camera.perspective.aspect=(float)width/(float)height;
     window.width = width;
     window.height = height;
@@ -30,12 +30,7 @@ static void key_callback(GLFWwindow* gwindow, int key, int scancode, int action,
 }
 
 static void char_callback(GLFWwindow* gwindow, unsigned int codepoint) {
-    if (!chat_active) return;
-
-    if (chat_input_len < CHAT_INPUT_MAX - 1) {
-        chat_input[chat_input_len++] = (char)codepoint;
-        chat_input[chat_input_len] = '\0';
-    }
+    chat_char_callback(codepoint);
 }
 
 static void mouse_button_callback(GLFWwindow *gwindow, int button, int action, int mods) {

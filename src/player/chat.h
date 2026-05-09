@@ -22,10 +22,11 @@ extern char chat_input[CHAT_INPUT_MAX];
 extern size_t chat_input_len;
 extern bool chat_active;
 
-void render_chat(void);
+void chat_render(void);
 void chat_handle_command(const char *text);
 void chat_add_message(
     const char *name,
     const char *text
 );
+void chat_char_callback(unsigned int codepoint);
 void chat_cleanup(void);
