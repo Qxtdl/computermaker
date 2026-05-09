@@ -171,14 +171,14 @@ void input_handle(void) {
                     state.player.hovered_block = &info.chunk->blocks[info.x][info.y][info.z];
                     break;
                 }
-                static int rot = 0;
+
                 case MODE_BUILDING_PLACE: {
                     building_create((building_t){
                         .id = HUGE_MEMORY,
                         .x = relative_info.x,
                         .y = relative_info.y,
                         .z = relative_info.z,
-                        .rotation = rot++
+                        .rotation = ROTATION_FRONT
                     });
                     break;
                 }
