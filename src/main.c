@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "state.h"
+#include "gfx/window.h"
 #include "config.h"
 #include "global.h"
 #include "gfx/renderer.h"

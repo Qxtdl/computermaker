@@ -1,6 +1,7 @@
 #include <math.h>
 
 #include "../state.h"
+#include "../gfx/window.h"
 #include "../config.h"
 #include "../world/wire.h"
 #include "../world/building/building.h"
@@ -61,15 +62,6 @@ void input_handle(void) {
         return;
     }
 
-    if (get_key(GLFW_KEY_W))
-        camera_move(&state.renderer.camera, CAMERA_DIRECTION_FORWARD);
-
-    if (get_key(GLFW_KEY_ESCAPE)) {
-        glfwSetInputMode(window.handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        set_key(GLFW_KEY_ESCAPE, false);
-        mouse_free = true;
-    }
-
     if (get_mouse_button(GLFW_MOUSE_BUTTON_LEFT) && mouse_free) {
         glfwSetInputMode(window.handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         set_mouse_button(GLFW_MOUSE_BUTTON_LEFT, false);
@@ -94,6 +86,13 @@ void input_handle(void) {
         if (state.renderer.camera.perspective.fovy < 0.1f) state.renderer.camera.perspective.fovy = 0.1f;
     }
 
+    if (get_key(GLFW_KEY_ESCAPE)) {
+        glfwSetInputMode(window.handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        set_key(GLFW_KEY_ESCAPE, false);
+        mouse_free = true;
+    }
+
+
     if (get_mouse_button(GLFW_MOUSE_BUTTON_LEFT)) {
         set_mouse_button(GLFW_MOUSE_BUTTON_LEFT, false);
 
@@ -103,88 +102,164 @@ void input_handle(void) {
         struct raycast_info ray_info = raycast(state.renderer.camera.origin, ray_dir);
         struct world_get_at_info info = world_get_at(&state.world, ray_info.x, ray_info.y, ray_info.z);
 
-        if (!(info.x < 0 || info.y < 0 || info.z < 0)) {
-            struct world_get_at_relative_info relative_info = world_get_at_relative(info);
-            state.player.hovered_block = NULL;
+        struct world_get_at_relative_info relative_info = world_get_at_relative(info);
+        state.player.hovered_block = NULL;
 
-            switch (state.player.mode) {
-                case MODE_BLOCK_PLACE: {
-                    if (state.player.selected_block != AIR) {
-                        switch (ray_info.face) {
-                            case FACE_TOP: ray_info.y++; break;
-                            case FACE_BOTTOM: ray_info.y--; break;
-                            case FACE_RIGHT: ray_info.x++; break;
-                            case FACE_LEFT: ray_info.x--; break;
-                            case FACE_FRONT: ray_info.z++; break;
-                            case FACE_BACK: ray_info.z--; break;
-                            default: break;
+        switch (state.player.mode) {
+            case MODE_BLOCK_PLACE:
+                if (state.player.selected_block != AIR) {
+                    switch (ray_info.face) {
+                        case FACE_TOP: ray_info.y++; break;
+                        case FACE_BOTTOM: ray_info.y--; break;
+                        case FACE_RIGHT: ray_info.x++; break;
+                        case FACE_LEFT: ray_info.x--; break;
+                        case FACE_FRONT: ray_info.z++; break;
+                        case FACE_BACK: ray_info.z--; break;
+                        default: break;
+                    }
+                }
+                info = world_get_at(&state.world, ray_info.x, ray_info.y,ray_info.z);
+                // TODO: do we need this if stmt ?
+                if ((info.x < 0 || info.y < 0 || info.z < 0)) break;
+
+                info.chunk->blocks[info.x][info.y][info.z].id = state.player.selected_block;
+                chunk_bake(info.chunk);
+                break;
+
+            case MODE_WIRE_PLACE:
+            case MODE_WIRE_DESTROY: 
+                if (!state.player.planout) {
+                    state.player.wire_ox = relative_info.x;
+                    state.player.wire_oy = relative_info.y;
+                    state.player.wire_oz = relative_info.z;
+                    state.player.planout = true;
+                    break;
+                } else if (state.player.mode == MODE_WIRE_PLACE) {
+                    world_create_wire((wire_t){
+                        .ox = state.player.wire_ox,
+                        .oy = state.player.wire_oy,
+                        .oz = state.player.wire_oz,
+                        .dx = relative_info.x,
+                        .dy = relative_info.y,
+                        .dz = relative_info.z
+                    });
+                } else if (state.player.mode == MODE_WIRE_DESTROY) {
+                    world_destroy_wire((wire_t){
+                        .ox = state.player.wire_ox,
+                        .oy = state.player.wire_oy,
+                        .oz = state.player.wire_oz,
+                        .dx = relative_info.x,
+                        .dy = relative_info.y,
+                        .dz = relative_info.z
+                    });
+                }
+
+                state.player.planout = false;
+                break;
+
+            case MODE_WIRE_PARALLEL_PLACE:
+            case MODE_WIRE_PARALLEL_DESTROY:
+                state.player.points[state.player.point][0] = relative_info.x;
+                state.player.points[state.player.point][1] = relative_info.y;
+                state.player.points[state.player.point][2] = relative_info.z;
+
+                state.player.point++;
+
+                if (state.player.point >= LAST_POINT) {
+                    int x_diff = state.player.points[FIRST_POINT][0] - state.player.points[SECOND_POINT][0],
+                        y_diff = state.player.points[FIRST_POINT][1] - state.player.points[SECOND_POINT][1],
+                        z_diff = state.player.points[FIRST_POINT][2] - state.player.points[SECOND_POINT][2],
+                        rx_diff = abs(x_diff)+1,
+                        ry_diff = abs(y_diff)+1,
+                        rz_diff = abs(z_diff)+1;
+
+                    if (rx_diff > ry_diff && rx_diff > rz_diff) {
+                        printf("placing %d\n", x_diff);
+                        for (int i = 0; i < rx_diff; i++) {
+                            state.player.mode == MODE_WIRE_PARALLEL_PLACE ? world_create_wire((wire_t){
+                                .ox = state.player.points[FIRST_POINT][0] + (x_diff >= 0 ? -i : i),
+                                .oy = state.player.points[FIRST_POINT][1],
+                                .oz = state.player.points[FIRST_POINT][2],
+                                .dx = state.player.points[THIRD_POINT][0] + (x_diff >= 0 ? -i : i),
+                                .dy = state.player.points[THIRD_POINT][1],
+                                .dz = state.player.points[THIRD_POINT][2]
+                            }) :
+                            world_destroy_wire((wire_t){
+                                .ox = state.player.points[FIRST_POINT][0] + (x_diff >= 0 ? -i : i),
+                                .oy = state.player.points[FIRST_POINT][1],
+                                .oz = state.player.points[FIRST_POINT][2],
+                                .dx = state.player.points[THIRD_POINT][0] + (x_diff >= 0 ? -i : i),
+                                .dy = state.player.points[THIRD_POINT][1],
+                                .dz = state.player.points[THIRD_POINT][2]
+                            });
                         }
                     }
-                    info = world_get_at(&state.world, ray_info.x, ray_info.y,ray_info.z);
-                    // TODO: do we need this if stmt ?
-                    if ((info.x < 0 || info.y < 0 || info.z < 0)) break;
-
-                    info.chunk->blocks[info.x][info.y][info.z].id = state.player.selected_block;
-                    chunk_bake(info.chunk);
-                    break;
-                }
-
-                case MODE_WIRE_PLACE:
-                case MODE_WIRE_DESTROY: {
-                    if (!state.player.planout) {
-                        state.player.wire_ox = relative_info.x;
-                        state.player.wire_oy = relative_info.y;
-                        state.player.wire_oz = relative_info.z;
-                        state.player.planout = true;
-                        break;
-                    } else if (state.player.mode == MODE_WIRE_PLACE) {
-                        world_create_wire((wire_t){
-                            .ox = state.player.wire_ox,
-                            .oy = state.player.wire_oy,
-                            .oz = state.player.wire_oz,
-                            .dx = relative_info.x,
-                            .dy = relative_info.y,
-                            .dz = relative_info.z
-                        });
-                    } else {
-                        world_destroy_wire((wire_t){
-                            .ox = state.player.wire_ox,
-                            .oy = state.player.wire_oy,
-                            .oz = state.player.wire_oz,
-                            .dx = relative_info.x,
-                            .dy = relative_info.y,
-                            .dz = relative_info.z
-                        });
+                    else if (ry_diff > rx_diff && ry_diff > rz_diff) {
+                        for (int i = 0; i < ry_diff; i++) {
+                            state.player.mode == MODE_WIRE_PARALLEL_PLACE ? world_create_wire((wire_t){
+                                .ox = state.player.points[FIRST_POINT][0],
+                                .oy = state.player.points[FIRST_POINT][1] + (y_diff >= 0 ? -i : i),
+                                .oz = state.player.points[FIRST_POINT][2],
+                                .dx = state.player.points[THIRD_POINT][0],
+                                .dy = state.player.points[THIRD_POINT][1] + (y_diff >= 0 ? -i : i),
+                                .dz = state.player.points[THIRD_POINT][2]
+                            }) :
+                            world_destroy_wire((wire_t){
+                                .ox = state.player.points[FIRST_POINT][0],
+                                .oy = state.player.points[FIRST_POINT][1] + (y_diff >= 0 ? -i : i),
+                                .oz = state.player.points[FIRST_POINT][2],
+                                .dx = state.player.points[THIRD_POINT][0],
+                                .dy = state.player.points[THIRD_POINT][1] + (y_diff >= 0 ? -i : i),
+                                .dz = state.player.points[THIRD_POINT][2]
+                            });
+                        }                    
+                    }
+                    else if (rz_diff > rx_diff && rz_diff > ry_diff) {
+                        for (int i = 0; i < rz_diff; i++) {
+                            state.player.mode == MODE_WIRE_PARALLEL_PLACE ? world_create_wire((wire_t){
+                                .ox = state.player.points[FIRST_POINT][0],
+                                .oy = state.player.points[FIRST_POINT][1],
+                                .oz = state.player.points[FIRST_POINT][2] + (z_diff >= 0 ? -i : i),
+                                .dx = state.player.points[THIRD_POINT][0],
+                                .dy = state.player.points[THIRD_POINT][1],
+                                .dz = state.player.points[THIRD_POINT][2] + (z_diff >= 0 ? -i : i)
+                            }) :
+                            world_destroy_wire((wire_t){
+                                .ox = state.player.points[FIRST_POINT][0],
+                                .oy = state.player.points[FIRST_POINT][1],
+                                .oz = state.player.points[FIRST_POINT][2] + (z_diff >= 0 ? -i : i),
+                                .dx = state.player.points[THIRD_POINT][0],
+                                .dy = state.player.points[THIRD_POINT][1],
+                                .dz = state.player.points[THIRD_POINT][2] + (z_diff >= 0 ? -i : i)
+                            });
+                        }                        
                     }
 
-                    state.player.planout = false;
-                    break;
+                    state.player.point = 0;
                 }
 
-                case MODE_BLOCK_POKE: {
-                    info.chunk->blocks[info.x][info.y][info.z].gate.poked = true;
-                    info.chunk->blocks[info.x][info.y][info.z].gate.new_state ^= 1;
-                    break;
-                }
+                break;
 
-                case MODE_BLOCK_HOVER: {
-                    state.player.hovered_block = &info.chunk->blocks[info.x][info.y][info.z];
-                    break;
-                }
+            case MODE_BLOCK_POKE:
+                info.chunk->blocks[info.x][info.y][info.z].gate.poked = true;
+                info.chunk->blocks[info.x][info.y][info.z].gate.new_state ^= 1;
+                break;
 
-                case MODE_BUILDING_PLACE: {
-                    building_create((building_t){
-                        .id = HUGE_MEMORY,
-                        .x = relative_info.x,
-                        .y = relative_info.y,
-                        .z = relative_info.z,
-                        .rotation = ROTATION_FRONT
-                    });
-                    break;
-                }
+            case MODE_BLOCK_HOVER:
+                state.player.hovered_block = &info.chunk->blocks[info.x][info.y][info.z];
+                break;
 
-                default: break;                
-            }
+            case MODE_BUILDING_PLACE:
+                building_create((building_t){
+                    .id = HUGE_MEMORY,
+                    .x = relative_info.x,
+                    .y = relative_info.y,
+                    .z = relative_info.z,
+                    .rotation = ROTATION_FRONT
+                });
+                break;
+
+            default: break;                
         }
     }
 
@@ -215,6 +290,11 @@ void input_handle(void) {
         chat_add_message("comm", "Save written");
     }
 
+    if (get_key(GLFW_KEY_T)) {
+        chat_active = true;
+        set_key(GLFW_KEY_T, false);
+    }
+    
     if (get_key(GLFW_KEY_F11)) {
         set_key(GLFW_KEY_F11, false);
         fullscreen = !fullscreen;
@@ -225,11 +305,6 @@ void input_handle(void) {
         } else {
             glfwSetWindowMonitor(window.handle, NULL, 100, 100, 800, 600, 0);
         }
-    }
-
-    if (get_key(GLFW_KEY_T)) {
-        chat_active = true;
-        set_key(GLFW_KEY_T, false);
     }
 
     for (int i = 0; i < BLOCK_KEYBINDS_COUNT; i++) {
