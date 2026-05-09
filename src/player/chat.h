@@ -6,6 +6,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#include "../gfx/renderer.h"
+
 typedef struct {
     const char *name;
     const char *message;
@@ -23,6 +25,7 @@ extern bool chat_active;
 extern float chat_fontscale;
 extern float chat_fontsize;
 extern int chat_y_sub;
+extern vec3 chat_color;
 
 void render_chat(void);
 void chat_init(void);

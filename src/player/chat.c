@@ -8,6 +8,7 @@
 #include "../gfx/renderer.h"
 #include "../gfx/window.h"
 #include "../world/tick.h"
+#include "../world/save.h"
 
 chat_message_t chat_messages[MAX_CHAT_MESSAGES] = {0};
 size_t chat_count = 0;
@@ -20,6 +21,7 @@ bool chat_active = false;
 float chat_fontscale = 2;
 float chat_fontsize = 32;
 int chat_y_sub = 1024;
+vec3 chat_color = {0, 0, 0};
 
 void render_chat(void) {
     for (size_t i = 0; i < chat_count; i++) {
@@ -34,7 +36,7 @@ void render_chat(void) {
             chat_fontsize * MAX_CHAT_MESSAGES +
             i * chat_fontsize - chat_fontsize;
 
-        renderer_text(0, y - chat_y_sub, chat_fontscale, message->formatted, NULL);
+        renderer_text(0, y - chat_y_sub, chat_fontscale, message->formatted, chat_color);
     }
 }
 
@@ -42,10 +44,15 @@ void chat_init(void) {
     chat_y_sub = atoi(config_get("CHAT_Y_SUB"));
     chat_fontscale = atof(config_get("CHAT_FONTSCALE"));
     chat_fontsize = chat_fontscale * 16;
+    chat_color[0] = atoi(config_get("CHAT_COLOR_R")) / 255;
+    chat_color[1] = atoi(config_get("CHAT_COLOR_G")) / 255;
+    chat_color[2] = atoi(config_get("CHAT_COLOR_B")) / 255;
 }
 
 void chat_handle_command(const char *text) {
-    if (strncmp(text, "!tps ", 5) == 0) {
+    char buf[256];
+
+    if (!strncmp(text, "!tps ", 5)) {
         int target = atoi(text + 5);
 
         if (target < 0) {
@@ -54,8 +61,29 @@ void chat_handle_command(const char *text) {
         }
 
         tick_interval = 1.0 / target;
-        chat_add_message("comm", "tps updated");
-        return;
+
+        snprintf(buf, sizeof(buf), "tps updated to interval %f", tick_interval);
+
+        chat_add_message("comm", buf);
+    }
+    else if (!strncmp(text, "!save ", 6)) {
+        const char *save_name = text + 6;
+
+        save_save(save_name);
+
+        snprintf(buf, sizeof(buf), "saved to %s", save_name);
+        chat_add_message("comm", buf);
+    }
+    else if (!strncmp(text, "!system ", 8)) {
+        FILE *fp = popen(text + 8, "r");
+        if (!fp)
+            return;
+
+        while (fgets(buf, sizeof(buf), fp) != NULL) {
+            chat_add_message("comm", buf); // print each line
+        }
+
+        pclose(fp);
     }
 
     return;
@@ -85,8 +113,8 @@ void chat_add_message(const char *name, const char *text) {
 
 void chat_cleanup(void) {
     for (size_t i = 0; i < MAX_CHAT_MESSAGES; i++) {
-        free(chat_messages[i].formatted);
-        free((void*)chat_messages[i].name);
-        free((void*)chat_messages[i].message);
+        if (chat_messages[i].formatted) free(chat_messages[i].formatted);
+        if (chat_messages[i].name) free((void*)chat_messages[i].name);
+        if (chat_messages[i].message) free((void*)chat_messages[i].message);
     }
 }
