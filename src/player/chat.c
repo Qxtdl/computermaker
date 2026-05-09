@@ -43,7 +43,7 @@ void render_chat(void) {
 
 void chat_init(void) {
     chat_y_sub = atoi(config_get("CHAT_Y_SUB"));
-    chat_x_offset = atoi(config_get("CHAT_Y_SUB"));
+    chat_x_offset = atoi(config_get("CHAT_X_OFFSET"));
     chat_fontscale = atof(config_get("CHAT_FONTSCALE"));
     chat_fontsize = chat_fontscale * 16;
     chat_color[0] = atoi(config_get("CHAT_COLOR_R")) / 255;
