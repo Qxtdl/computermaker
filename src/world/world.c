@@ -43,9 +43,9 @@ struct world_get_at_info world_get_at(struct world *world, float x, float y, flo
     int cx = (int)floor(x) / CHUNK_X * CHUNK_X;
     int cy = (int)floor(y) / CHUNK_Y * CHUNK_Y;
     int cz = (int)floor(z) / CHUNK_Z * CHUNK_Z;
-    if (floor(x)<0) cx -= 16;
-    if (floor(y)<0) cy -= 16;
-    if (floor(z)<0) cz -= 16;
+    if (cx>(int)floor(x)) cx -= CHUNK_X;
+    if (cy>(int)floor(y)) cy -= CHUNK_Y;
+    if (cz>(int)floor(z)) cz -= CHUNK_Z;
     for (; index < world->chunks_size; index++) {
         if (world->chunks[index]->x == cx && world->chunks[index]->y == cy && world->chunks[index]->z == cz)
             break;
@@ -57,9 +57,9 @@ struct world_get_at_info world_get_at(struct world *world, float x, float y, flo
     info.x = (int)round(x) % CHUNK_X;
     info.y = (int)round(y) % CHUNK_Y;
     info.z = (int)round(z) % CHUNK_Z;
-    if (info.x < 0) info.x += 16;
-    if (info.y < 0) info.y += 16;
-    if (info.z < 0) info.z += 16;
+    if (info.x < 0) info.x += CHUNK_X;
+    if (info.y < 0) info.y += CHUNK_Y;
+    if (info.z < 0) info.z += CHUNK_Z;
     return info;
 }
 

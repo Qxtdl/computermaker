@@ -45,19 +45,19 @@ void building_create(building_t building) {
 			building.state.hugemem.cells = scalloc(1, 65536 * sizeof(uint16_t));
 			// generate a address bus
 			for (int x = 0; x < 16; x++) {
-				BUILDING_PLACE_PIN(building.x + x, building.y, building.z)
+				BUILDING_PLACE_PIN(x + 2, 0, -3)
 			}
 			// generate a value bus
 			int vx;
 			for (vx = 0; vx < 16; vx++) {
-				BUILDING_PLACE_PIN(building.x + vx-1 - 16, building.y, building.z)
+				BUILDING_PLACE_PIN(vx - 16, 0, -3)
 			}
 			// generate a output bus
 			for (int x = 0; x < 16; x++) {
-				BUILDING_PLACE_PIN(building.x + x, building.y, building.z + 6)
+				BUILDING_PLACE_PIN(x + 2, 0, 3)
 			}
 			// place the write pin
-			BUILDING_PLACE_PIN(building.x - vx-3, building.y, building.z)			
+			BUILDING_PLACE_PIN(-vx - 2, 0, -3)			
 			break;
 
 		default: break;			

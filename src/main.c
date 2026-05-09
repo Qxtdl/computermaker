@@ -17,7 +17,7 @@
 void init(void) {
     config_open("res/config.comm");
     config_process();
-    renderer_init(&state.renderer, 800.0f/600.0f);
+    renderer_init(&state.renderer, 800.0f/600.0f, config_get("BLOCK_ATLAS"));
     skybox_init(&state.world.skybox);
     world_wire_init();
     set_wire_thickness(atof(config_get("WIRE_THICKNESS")));

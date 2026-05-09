@@ -24,7 +24,7 @@ SAVELOAD=save.save
 ; if save in game where to save
 SAVETO=save.save
 ; cm2 circuit to load in game starting the game
-SAVE=5,0,1,0,2,0+0;1,0,0,0,0,;5,0,-1,0,2,0+0?1,2;3,2??
+SAVE=???
 ; Graphics
 ; Render Distance in units
 RENDER_DISTANCE=128
@@ -36,3 +36,4 @@ CHUNK_AMOUNT_X=8
 CHUNK_AMOUNT_Y=1
 CHUNK_AMOUNT_Z=8
 SHOW_WATERMARK=y
+BLOCK_ATLAS=res/texture/blockatlas2.png
