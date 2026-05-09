@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stddef.h>
 
 #include "../state.h"
 #include "../gfx/window.h"
@@ -10,6 +11,8 @@
 #include "chat.h"
 #include "keybinds.h"
 #include "../global.h"
+
+#define max(x,y) ((x)>(y)?(x):(y))
 
 // If the mouse is locked to the screen
 static bool mouse_free = true;
@@ -154,88 +157,77 @@ void input_handle(void) {
 
                 state.player.planout = false;
                 break;
-
             case MODE_WIRE_PARALLEL_PLACE:
             case MODE_WIRE_PARALLEL_DESTROY:
-                state.player.points[state.player.point][0] = relative_info.x;
-                state.player.points[state.player.point][1] = relative_info.y;
-                state.player.points[state.player.point][2] = relative_info.z;
+                state.player.points[state.player.point][0] = ray_info.x;
+                state.player.points[state.player.point][1] = ray_info.y;
+                state.player.points[state.player.point][2] = ray_info.z;
 
                 state.player.point++;
 
                 if (state.player.point >= LAST_POINT) {
-                    int x_diff = state.player.points[FIRST_POINT][0] - state.player.points[SECOND_POINT][0],
-                        y_diff = state.player.points[FIRST_POINT][1] - state.player.points[SECOND_POINT][1],
-                        z_diff = state.player.points[FIRST_POINT][2] - state.player.points[SECOND_POINT][2],
-                        rx_diff = abs(x_diff)+1,
-                        ry_diff = abs(y_diff)+1,
-                        rz_diff = abs(z_diff)+1;
-
-                    if (rx_diff > ry_diff && rx_diff > rz_diff) {
-                        printf("placing %d\n", x_diff);
-                        for (int i = 0; i < rx_diff; i++) {
-                            state.player.mode == MODE_WIRE_PARALLEL_PLACE ? world_create_wire((wire_t){
-                                .ox = state.player.points[FIRST_POINT][0] + (x_diff >= 0 ? -i : i),
-                                .oy = state.player.points[FIRST_POINT][1],
-                                .oz = state.player.points[FIRST_POINT][2],
-                                .dx = state.player.points[THIRD_POINT][0] + (x_diff >= 0 ? -i : i),
-                                .dy = state.player.points[THIRD_POINT][1],
-                                .dz = state.player.points[THIRD_POINT][2]
-                            }) :
+                    int x_diff0 = abs(state.player.points[FIRST_POINT][0] - state.player.points[SECOND_POINT][0])+1,
+                        y_diff0 = abs(state.player.points[FIRST_POINT][1] - state.player.points[SECOND_POINT][1])+1,
+                        z_diff0 = abs(state.player.points[FIRST_POINT][2] - state.player.points[SECOND_POINT][2])+1;
+                    int x_diff1 = abs(state.player.points[THIRD_POINT][0] - state.player.points[FOURTH_POINT][0])+1,
+                        y_diff1 = abs(state.player.points[THIRD_POINT][1] - state.player.points[FOURTH_POINT][1])+1,
+                        z_diff1 = abs(state.player.points[THIRD_POINT][2] - state.player.points[FOURTH_POINT][2])+1;
+                    if ((x_diff0>1 && y_diff0>1) || (x_diff0>1 && z_diff0>1) || (y_diff0>1 && z_diff0>1)) {break;}
+                    if ((x_diff1>1 && y_diff1>1) || (x_diff1>1 && z_diff1>1) || (y_diff1>1 && z_diff1>1)) {break;}
+                    int length = max(max(max(x_diff0,y_diff0),z_diff0),max(max(x_diff1,y_diff1),z_diff1));
+                    int dx0 = 0,
+                        dy0 = 0,
+                        dz0 = 0,
+                        dx1 = 0,
+                        dy1 = 0,
+                        dz1 = 0;
+                    if ((state.player.points[SECOND_POINT][0] - state.player.points[FIRST_POINT][0]) < 0) dx0 = -1;
+                    if ((state.player.points[SECOND_POINT][0] - state.player.points[FIRST_POINT][0]) > 0) dx0 =  1;
+                    if ((state.player.points[SECOND_POINT][1] - state.player.points[FIRST_POINT][1]) < 0) dy0 = -1;
+                    if ((state.player.points[SECOND_POINT][1] - state.player.points[FIRST_POINT][1]) > 0) dy0 =  1;
+                    if ((state.player.points[SECOND_POINT][2] - state.player.points[FIRST_POINT][2]) < 0) dz0 = -1;
+                    if ((state.player.points[SECOND_POINT][2] - state.player.points[FIRST_POINT][2]) > 0) dz0 =  1;
+                    if ((state.player.points[FOURTH_POINT][0] - state.player.points[THIRD_POINT][0]) < 0) dx1 = -1;
+                    if ((state.player.points[FOURTH_POINT][0] - state.player.points[THIRD_POINT][0]) > 0) dx1 =  1;
+                    if ((state.player.points[FOURTH_POINT][1] - state.player.points[THIRD_POINT][1]) < 0) dy1 = -1;
+                    if ((state.player.points[FOURTH_POINT][1] - state.player.points[THIRD_POINT][1]) > 0) dy1 =  1;
+                    if ((state.player.points[FOURTH_POINT][2] - state.player.points[THIRD_POINT][2]) < 0) dz1 = -1;
+                    if ((state.player.points[FOURTH_POINT][2] - state.player.points[THIRD_POINT][2]) > 0) dz1 =  1;
+                    int x0 = state.player.points[FIRST_POINT][0],
+                        y0 = state.player.points[FIRST_POINT][1],
+                        z0 = state.player.points[FIRST_POINT][2],
+                        x1 = state.player.points[THIRD_POINT][0],
+                        y1 = state.player.points[THIRD_POINT][1],
+                        z1 = state.player.points[THIRD_POINT][2];
+                    for (size_t i = 0; i < length; i++) {
+                        if (state.player.mode == MODE_WIRE_PARALLEL_PLACE) {
+                            world_create_wire((wire_t){
+                                .ox = x0,
+                                .oy = y0,
+                                .oz = z0,
+                                .dx = x1,
+                                .dy = y1,
+                                .dz = z1
+                            });
+                        } else {
                             world_destroy_wire((wire_t){
-                                .ox = state.player.points[FIRST_POINT][0] + (x_diff >= 0 ? -i : i),
-                                .oy = state.player.points[FIRST_POINT][1],
-                                .oz = state.player.points[FIRST_POINT][2],
-                                .dx = state.player.points[THIRD_POINT][0] + (x_diff >= 0 ? -i : i),
-                                .dy = state.player.points[THIRD_POINT][1],
-                                .dz = state.player.points[THIRD_POINT][2]
+                                .ox = x0,
+                                .oy = y0,
+                                .oz = z0,
+                                .dx = x1,
+                                .dy = y1,
+                                .dz = z1
                             });
                         }
+                        x0 += dx0;
+                        y0 += dy0;
+                        z0 += dz0;
+                        x1 += dx1;
+                        y1 += dy1;
+                        z1 += dz1;
                     }
-                    else if (ry_diff > rx_diff && ry_diff > rz_diff) {
-                        for (int i = 0; i < ry_diff; i++) {
-                            state.player.mode == MODE_WIRE_PARALLEL_PLACE ? world_create_wire((wire_t){
-                                .ox = state.player.points[FIRST_POINT][0],
-                                .oy = state.player.points[FIRST_POINT][1] + (y_diff >= 0 ? -i : i),
-                                .oz = state.player.points[FIRST_POINT][2],
-                                .dx = state.player.points[THIRD_POINT][0],
-                                .dy = state.player.points[THIRD_POINT][1] + (y_diff >= 0 ? -i : i),
-                                .dz = state.player.points[THIRD_POINT][2]
-                            }) :
-                            world_destroy_wire((wire_t){
-                                .ox = state.player.points[FIRST_POINT][0],
-                                .oy = state.player.points[FIRST_POINT][1] + (y_diff >= 0 ? -i : i),
-                                .oz = state.player.points[FIRST_POINT][2],
-                                .dx = state.player.points[THIRD_POINT][0],
-                                .dy = state.player.points[THIRD_POINT][1] + (y_diff >= 0 ? -i : i),
-                                .dz = state.player.points[THIRD_POINT][2]
-                            });
-                        }                    
-                    }
-                    else if (rz_diff > rx_diff && rz_diff > ry_diff) {
-                        for (int i = 0; i < rz_diff; i++) {
-                            state.player.mode == MODE_WIRE_PARALLEL_PLACE ? world_create_wire((wire_t){
-                                .ox = state.player.points[FIRST_POINT][0],
-                                .oy = state.player.points[FIRST_POINT][1],
-                                .oz = state.player.points[FIRST_POINT][2] + (z_diff >= 0 ? -i : i),
-                                .dx = state.player.points[THIRD_POINT][0],
-                                .dy = state.player.points[THIRD_POINT][1],
-                                .dz = state.player.points[THIRD_POINT][2] + (z_diff >= 0 ? -i : i)
-                            }) :
-                            world_destroy_wire((wire_t){
-                                .ox = state.player.points[FIRST_POINT][0],
-                                .oy = state.player.points[FIRST_POINT][1],
-                                .oz = state.player.points[FIRST_POINT][2] + (z_diff >= 0 ? -i : i),
-                                .dx = state.player.points[THIRD_POINT][0],
-                                .dy = state.player.points[THIRD_POINT][1],
-                                .dz = state.player.points[THIRD_POINT][2] + (z_diff >= 0 ? -i : i)
-                            });
-                        }                        
-                    }
-
                     state.player.point = 0;
                 }
-
                 break;
 
             case MODE_BLOCK_HOVER: {
