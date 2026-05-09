@@ -37,7 +37,7 @@ struct renderer {
     bool wireframe;
 };
 
-void renderer_init(struct renderer *renderer, float aspect);
+void renderer_init(struct renderer *renderer, float aspect, const char *block_atlas_path);
 void renderer_use_shader(struct renderer *renderer, enum RendererShaderType shader);
 void renderer_prepare(struct renderer *renderer, enum RendererPass pass);
 void renderer_chunk(struct renderer *renderer, vao_t vao, vbo_t vbo, vbo_t ebo, vbo_t bbo, vec3 translation, enum RendererTextureType texture);

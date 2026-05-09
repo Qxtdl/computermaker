@@ -9,6 +9,7 @@
 #include "../gfx/raycast.h"
 #include "chat.h"
 #include "keybinds.h"
+#include "../global.h"
 
 // If the mouse is locked to the screen
 static bool mouse_free = true;
@@ -119,9 +120,6 @@ void input_handle(void) {
                     }
                 }
                 info = world_get_at(&state.world, ray_info.x, ray_info.y,ray_info.z);
-                // TODO: do we need this if stmt ?
-                if ((info.x < 0 || info.y < 0 || info.z < 0)) break;
-
                 info.chunk->blocks[info.x][info.y][info.z].id = state.player.selected_block;
                 chunk_bake(info.chunk);
                 break;
@@ -240,25 +238,50 @@ void input_handle(void) {
 
                 break;
 
+            case MODE_BLOCK_HOVER: {
+                state.player.hovered_block = &info.chunk->blocks[info.x][info.y][info.z];
+                break;
+            }
+            case MODE_BUILDING_PLACE: {
+                switch (ray_info.face) {
+                    case FACE_TOP: ray_info.y++; break;
+                    case FACE_BOTTOM: ray_info.y--; break;
+                    case FACE_RIGHT: ray_info.x++; break;
+                    case FACE_LEFT: ray_info.x--; break;
+                    case FACE_FRONT: ray_info.z++; break;
+                    case FACE_BACK: ray_info.z--; break;
+                    default: break;
+                }
+                int camera_rotation;
+                vec3 camera_direction;
+                glm_vec3_sub(state.renderer.camera.target, state.renderer.camera.origin, camera_direction);
+                if (fabsf(camera_direction[2]) > fabsf(camera_direction[0])) {
+                    if (camera_direction[2] > 0) {
+                        camera_rotation = CAMERA_DIRECTION_FORWARD;
+                    } else {
+                        camera_rotation = CAMERA_DIRECTION_BACK;
+                    }
+                } else {
+                    if (camera_direction[0] > 0) {
+                        camera_rotation = CAMERA_DIRECTION_LEFT;
+                    } else {
+                        camera_rotation = CAMERA_DIRECTION_RIGHT;
+                    }
+                }
+                building_create((building_t){
+                    .id = HUGE_MEMORY,
+                    .x = ray_info.x,
+                    .y = ray_info.y,
+                    .z = ray_info.z,
+                    .rotation = camera_rotation
+                });
+                break;
+                }
             case MODE_BLOCK_POKE:
                 info.chunk->blocks[info.x][info.y][info.z].gate.poked = true;
                 info.chunk->blocks[info.x][info.y][info.z].gate.new_state ^= 1;
                 break;
-
-            case MODE_BLOCK_HOVER:
-                state.player.hovered_block = &info.chunk->blocks[info.x][info.y][info.z];
-                break;
-
-            case MODE_BUILDING_PLACE:
-                building_create((building_t){
-                    .id = HUGE_MEMORY,
-                    .x = relative_info.x,
-                    .y = relative_info.y,
-                    .z = relative_info.z,
-                    .rotation = ROTATION_FRONT
-                });
-                break;
-
+        
             default: break;                
         }
     }

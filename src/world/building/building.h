@@ -10,15 +10,15 @@
 #define BUILDING_TICK_DECLARE(name) extern void _##name##_tick(building_t *building);
 #define BUILDING_PLACE_PIN(_x, _y, _z) \
 	{ \
-		int rx, rz; \
+		int rx, ry, rz; \
 		switch (building.rotation) { \
-			case ROTATION_FRONT: rx = (_x); rz = (_z); break; \
-			case ROTATION_LEFT: rx = (_z); rz = (_x); break; \
-			case ROTATION_BACK: rx = (_x); rz = (_z); break; \
-			case ROTATION_RIGHT: rx = (_z); rz = (_x); break; \
-			default: rx = _x, rz = _z; \
+			case ROTATION_FRONT: rx = building.x + (_x); ry = building.y + (_y); rz = building.z + (_z); break; \
+			case ROTATION_LEFT: rx = building.x + (_z); ry = building.y + (_y); rz = building.z - (_x); break; \
+			case ROTATION_BACK: rx = building.x - (_x); ry = building.y + (_y); rz = building.z - (_z); break; \
+			case ROTATION_RIGHT: rx = building.x - (_z); ry = building.y + (_y); rz = building.z + (_x); break; \
+			default: rx = building.x + (_x), ry = building.y + (_y), rz = building.z + (_z); \
 		} \
-		struct world_get_at_info info = world_place_at(&state.world, (rx), (_y), (rz), (block_t){ \
+		struct world_get_at_info info = world_place_at(&state.world, (rx), (ry), (rz), (block_t){ \
 			.id = BUILDING_PIN, \
 			.gate = {0} \
 		}); \
