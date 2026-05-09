@@ -42,6 +42,12 @@ There is a style guide to be followed:
 - Use `//` for single-line comments
 - Use `/* */` for multi-line comments
 - Comment complex algorithms and non-obvious logic
+- Spaces between comments
+```diff
+// example for spaces between comments
+-//bad
++// good
+```
 
 ### File Organization
 - Keep functions under 50 lines when possible
