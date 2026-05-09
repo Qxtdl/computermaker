@@ -10,7 +10,15 @@
 #define BUILDING_TICK_DECLARE(name) extern void _##name##_tick(building_t *building);
 #define BUILDING_PLACE_PIN(_x, _y, _z) \
 	{ \
-		struct world_get_at_info info = world_place_at(&state.world, (_x), (_y), (_z), (block_t){ \
+		int rx, rz; \
+		switch (building.rotation) { \
+			case ROTATION_FRONT: rx = (_x); rz = (_z); break; \
+			case ROTATION_LEFT: rx = (_z); rz = (_x); break; \
+			case ROTATION_BACK: rx = (_x); rz = (_z); break; \
+			case ROTATION_RIGHT: rx = (_z); rz = (_x); break; \
+			default: rx = _x, rz = _z; \
+		} \
+		struct world_get_at_info info = world_place_at(&state.world, (rx), (_y), (rz), (block_t){ \
 			.id = BUILDING_PIN, \
 			.gate = {0} \
 		}); \
@@ -26,6 +34,12 @@ typedef struct {
 		LARGE_RGB_DISPLAY
 	} id;
 	int x, y, z;
+	enum {
+		ROTATION_FRONT,
+		ROTATION_LEFT,
+		ROTATION_BACK,
+		ROTATION_RIGHT
+	} rotation;
 	block_t *pins[BUILDING_MAX_PINS];
 	union {
 		struct {

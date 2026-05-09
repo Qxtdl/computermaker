@@ -54,11 +54,13 @@ void building_create(building_t building) {
 			}
 			// generate a output bus
 			for (int x = 0; x < 16; x++) {
-				BUILDING_PLACE_PIN(building.x + x, building.y, building.z + 4)
+				BUILDING_PLACE_PIN(building.x + x, building.y, building.z + 6)
 			}
 			// place the write pin
 			BUILDING_PLACE_PIN(building.x - vx-3, building.y, building.z)			
 			break;
+
+		default: break;			
 	}
 
 	building_t *_building = smalloc(sizeof(building_t));

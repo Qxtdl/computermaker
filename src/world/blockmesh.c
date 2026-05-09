@@ -50,6 +50,7 @@ void blockmesh_push_face(
             vertex[1] = (vertex_t){{x+1, y, z+1}, {1, 0}};
             vertex[2] = (vertex_t){{x+1, y, z},   {1, 1}};
             vertex[3] = (vertex_t){{x,   y, z},   {0, 1}};
+        default: break;
     }
 
     for (int i = 0; i < 4; i++) {

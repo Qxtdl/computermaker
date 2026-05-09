@@ -27,6 +27,9 @@ There is a style guide to be followed:
 - **Constants**: `UPPER_SNAKE_CASE` (e.g., `MAX_VERTICES`)
 - **Types/Structs**: `snake_case` (followed by a _t) (e.g., `wire_t`)
 
+### Functions
+- If your function has no parameters `void func()`, turn it into `void func(void)`
+
 ### Formatting
 - Use 4 spaces for indentation (no tabs)
 - Opening braces on the same line: `if (condition) {`
@@ -39,6 +42,12 @@ There is a style guide to be followed:
 - Use `//` for single-line comments
 - Use `/* */` for multi-line comments
 - Comment complex algorithms and non-obvious logic
+- Spaces between comments
+```diff
+// example for spaces between comments
+-//bad
++// good
+```
 
 ### File Organization
 - Keep functions under 50 lines when possible
