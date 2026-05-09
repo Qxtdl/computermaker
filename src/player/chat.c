@@ -6,6 +6,7 @@
 #include "../gfx/renderer.h"
 #include "../gfx/window.h"
 #include "../world/tick.h"
+#include "../world/save.h"
 
 chat_message_t chat_messages[MAX_CHAT_MESSAGES] = {0};
 size_t chat_count = 0;
@@ -28,12 +29,14 @@ void render_chat(void) {
             CHAT_MESSAGE_FONTSIZE * MAX_CHAT_MESSAGES +
             i * CHAT_MESSAGE_FONTSIZE - CHAT_MESSAGE_FONTSIZE;
 
-        renderer_text(0, y-1024, CHAT_MESSAGE_SCALE, message->formatted, NULL);
+        renderer_text(0, y, CHAT_MESSAGE_SCALE, message->formatted, (vec3){1, 0.5, 1});
     }
 }
 
 void chat_handle_command(const char *text) {
-    if (strncmp(text, "!tps ", 5) == 0) {
+    char buf[256];
+
+    if (!strncmp(text, "!tps ", 5)) {
         int target = atoi(text + 5);
 
         if (target < 0) {
@@ -42,8 +45,29 @@ void chat_handle_command(const char *text) {
         }
 
         tick_interval = 1.0 / target;
-        chat_add_message("comm", "tps updated");
-        return;
+
+        snprintf(buf, sizeof(buf), "tps updated to interval %f", tick_interval);
+
+        chat_add_message("comm", buf);
+    }
+    else if (!strncmp(text, "!save ", 6)) {
+        const char *save_name = text + 6;
+
+        save_save(save_name);
+
+        snprintf(buf, sizeof(buf), "saved to %s", save_name);
+        chat_add_message("comm", buf);
+    }
+    else if (!strncmp(text, "!system ", 8)) {
+        FILE *fp = popen(text + 8, "r");
+        if (!fp)
+            return;
+
+        while (fgets(buf, sizeof(buf), fp) != NULL) {
+            chat_add_message("comm", buf); // print each line
+        }
+
+        pclose(fp);
     }
 
     return;

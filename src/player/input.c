@@ -32,8 +32,8 @@ static void set_mouse_button(int button, bool state) {
 
 static void input_chat_handle() {
     if (get_key(GLFW_KEY_ENTER)) {
-        if (chat_input[0] == '!') chat_handle_command(chat_input);
         chat_add_message("player", chat_input);
+        if (chat_input[0] == '!') chat_handle_command(chat_input);
 
         chat_input[0] = '\0';
         chat_input_len = 0;
@@ -171,16 +171,19 @@ void input_handle(void) {
                     state.player.hovered_block = &info.chunk->blocks[info.x][info.y][info.z];
                     break;
                 }
-                
+                static int rot = 0;
                 case MODE_BUILDING_PLACE: {
                     building_create((building_t){
                         .id = HUGE_MEMORY,
                         .x = relative_info.x,
                         .y = relative_info.y,
-                        .z = relative_info.z
+                        .z = relative_info.z,
+                        .rotation = rot++
                     });
                     break;
                 }
+
+                default: break;                
             }
         }
     }

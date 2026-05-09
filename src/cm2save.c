@@ -20,7 +20,7 @@
   TODO: code formatting
 */
 
-typedef struct {const char *start; size_t size;} stringview_t;
+typedef struct { const char *start; size_t size; } stringview_t;
 
 stringview_t cstr2SV(const char *cstr) {
     stringview_t sv;

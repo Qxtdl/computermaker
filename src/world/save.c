@@ -28,7 +28,7 @@ typedef struct {
     .x = 0xdeadc0de, \
     .y = 0xcafebabe, \
     .z = 0xf00fc7c8, \
-    .blocks = {0} \
+    .blocks = {{{{0}}}} \
 })
 
 typedef struct {
@@ -47,7 +47,8 @@ typedef struct {
 
 typedef struct {
 	enum BuildingId id;
-	int x, y, z
+	int x, y, z;
+    int rotation;
 } savebuilding_t;
 
 #define savebuilding_terminator (savebuilding_t){ \
@@ -55,6 +56,7 @@ typedef struct {
 	.x = 0xff1c4, \
 	.y = 0xff1c5, \
 	.z = 0xff1c6, \
+    .rotation = 0xffff \
 }
 
 #define header "Save file for ComputerMaker " APP_RELEASE_STRING
@@ -123,7 +125,8 @@ int save_load(const char *filename) {
         	.id = building.id,
         	.x = building.x,
         	.y = building.y,
-        	.z = building.z
+        	.z = building.z,
+            .rotation = building.rotation
         });
     }
 
@@ -199,7 +202,8 @@ void save_save(const char *filename) {
     		.id = buildings[i]->id,
     		.x = buildings[i]->x,
     		.y = buildings[i]->y,
-    		.z = buildings[i]->z
+    		.z = buildings[i]->z,
+            .rotation = buildings[i]->rotation
     	}, sizeof(savebuilding_t), 1, fptr);
     }
 
