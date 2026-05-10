@@ -8,6 +8,7 @@
 #include "wire.h"
 #include "../util.h"
 #include "../state.h"
+#include "../config.h"
 #include "../gfx/renderer.h"
 #include "../gfx/vao.h"
 #include "../gfx/vertex.h"
@@ -22,8 +23,6 @@
 
 wire_t *wires = NULL;
 int wires_size = 0;
-
-static float wire_thickness;
 
 static vao_t vao;
 static vbo_t vbo, ebo, ibo;
@@ -40,10 +39,6 @@ void world_wire_init(void) {
     vbo = vbo_create(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
     ebo = vbo_create(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
     ibo = vbo_create(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
-}
-
-void set_wire_thickness(float thickness) {
-    wire_thickness = thickness;
 }
 
 static void push_vertex(void *args, vertex_t vertex) {
@@ -130,7 +125,7 @@ static void get_model(wire_t wire, mat4 model) {
             glm_mat4_mul(m, rotation0, m);
         }
     }
-    glm_scale(m, (vec3){length, wire_thickness, wire_thickness});
+    glm_scale(m, (vec3){length, atof(config_get("WIRE_THICKNESS")), atof(config_get("WIRE_THICKNESS"))});
     glm_translate(m, (vec3){-(0.5),-(0.5),-(0.5)});
 
     memcpy(model, m, sizeof(mat4));

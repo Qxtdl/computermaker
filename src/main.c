@@ -5,7 +5,6 @@
 #include "config.h"
 #include "global.h"
 #include "gfx/renderer.h"
-#include "gfx/raycast.h"
 #include "world/save.h"
 #include "world/world.h"
 #include "world/tick.h"
@@ -18,14 +17,12 @@
 void init(void) {
     config_open("res/config.comm");
     config_process();
-    renderer_init(&state.renderer, 800.0f/600.0f, config_get("BLOCK_ATLAS"));
+    renderer_init(&state.renderer, 800.0f/600.0f);
     skybox_init(&state.world.skybox);
     world_wire_init();
-    set_wire_thickness(atof(config_get("WIRE_THICKNESS")));
     if (!save_load(config_get("SAVELOAD")))
         world_worldgen(&state.world);
     cm2save_process(config_get("SAVE"));
-    raycast_set_distance(atof(config_get("RAY_DISTANCE")));
 }
 
 void destroy(void) {

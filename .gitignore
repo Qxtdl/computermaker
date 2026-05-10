@@ -4,4 +4,5 @@ compile_commands.json
 compile_commands.tmp
 build
 release
+gitignore
 install.sh
