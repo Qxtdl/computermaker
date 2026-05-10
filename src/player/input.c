@@ -15,28 +15,26 @@
 #define max(x,y) ((x)>(y)?(x):(y))
 #define min(x,y) ((x)>(y)?(y):(x))
 
-// If the mouse is locked to the screen
 static bool mouse_free = true;
 static bool fullscreen = false;
 
-// Input helpers
-static bool get_key(int key) {
+static inline bool get_key(int key) {
     return window.keyboard.keys[key].down;
 }
 
-static void set_key(int key, bool state) {
+static inline void set_key(int key, bool state) {
     window.keyboard.keys[key].down = state;
 }
 
-static bool get_mouse_button(int button) {
+static inline bool get_mouse_button(int button) {
     return window.mouse.buttons[button].down;
 }
 
-static void set_mouse_button(int button, bool state) {
+static inline void set_mouse_button(int button, bool state) {
     window.mouse.buttons[button].down = state;
 }
 
-static void input_chat_handle() {
+static void input_chat_handle(void) {
     if (get_key(GLFW_KEY_ENTER)) {
         chat_add_message("player", chat_input);
         if (chat_input[0] == '!') chat_handle_command(chat_input);
@@ -111,7 +109,7 @@ void input_handle(void) {
         state.player.hovered_block = NULL;
 
         switch (state.player.mode) {
-            case MODE_BLOCK_PLACE:
+            case MODE_BLOCK_PLACE: {
                 if (state.player.selected_block != AIR) {
                     switch (ray_info.face) {
                         case FACE_TOP: ray_info.y++; break;
@@ -127,9 +125,10 @@ void input_handle(void) {
                 info.chunk->blocks[info.x][info.y][info.z].id = state.player.selected_block;
                 chunk_bake(info.chunk);
                 break;
+            }
 
             case MODE_WIRE_PLACE:
-            case MODE_WIRE_DESTROY: 
+            case MODE_WIRE_DESTROY: {
                 if (!state.player.planout) {
                     state.player.wire_ox = relative_info.x;
                     state.player.wire_oy = relative_info.y;
@@ -158,11 +157,13 @@ void input_handle(void) {
 
                 state.player.planout = false;
                 break;
+            }
+
             case MODE_WIRE_PARALLEL_PLACE:
-            case MODE_WIRE_PARALLEL_DESTROY:
-                state.player.points[state.player.point][0] = ray_info.x;
-                state.player.points[state.player.point][1] = ray_info.y;
-                state.player.points[state.player.point][2] = ray_info.z;
+            case MODE_WIRE_PARALLEL_DESTROY: {
+                state.player.points[state.player.point][0] = relative_info.x;
+                state.player.points[state.player.point][1] = relative_info.y;
+                state.player.points[state.player.point][2] = relative_info.z;
 
                 state.player.point++;
 
@@ -252,12 +253,15 @@ void input_handle(void) {
                     }
                     state.player.point = 0;
                 }
+
                 break;
+            }
 
             case MODE_BLOCK_HOVER: {
                 state.player.hovered_block = &info.chunk->blocks[info.x][info.y][info.z];
                 break;
             }
+
             case MODE_BUILDING_PLACE: {
                 switch (ray_info.face) {
                     case FACE_TOP: ray_info.y++; break;
@@ -291,12 +295,15 @@ void input_handle(void) {
                     .z = ray_info.z,
                     .rotation = camera_rotation
                 });
+                
                 break;
-                }
-            case MODE_BLOCK_POKE:
+            }
+
+            case MODE_BLOCK_POKE: {
                 info.chunk->blocks[info.x][info.y][info.z].gate.poked = true;
                 info.chunk->blocks[info.x][info.y][info.z].gate.new_state ^= 1;
                 break;
+            }
         
             default: break;                
         }

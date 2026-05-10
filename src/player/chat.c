@@ -3,6 +3,7 @@
 
 #include "chat.h"
 #include "../util.h"
+#include "../config.h"
 #include "../gfx/renderer.h"
 #include "../gfx/window.h"
 #include "../world/tick.h"
@@ -33,7 +34,7 @@ void chat_render(void) {
     }
 }
 
-void chat_handle_command(const char *text) {
+void chat_handle_command(char *text) {
     char buf[256];
 
     if (!strncmp(text, "!tps ", 5)) {
@@ -58,6 +59,14 @@ void chat_handle_command(const char *text) {
         snprintf(buf, sizeof(buf), "saved to %s", save_name);
         chat_add_message("comm", buf);
     }
+    else if (!strncmp(text, "!setting ", 9)) {
+        strtok(text, " ");
+        char *key = strtok(NULL, " "),
+             *value = strtok(NULL, " ");
+        config_modify(key, value);
+        snprintf(buf, sizeof(buf), "key %s changed to %s", key, value);
+        chat_add_message("comm", buf);
+    }    
     else if (!strncmp(text, "!system ", 8)) {
         FILE *fp = popen(text + 8, "r");
         if (!fp)

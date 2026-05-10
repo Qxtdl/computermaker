@@ -13,7 +13,7 @@
 #include "vao.h"
 #include "../gfx/raycast.h"
 
-void renderer_init(struct renderer *renderer, float aspect, const char *block_atlas_path, const char *wire_texture_path) {
+void renderer_init(struct renderer *renderer, float aspect) {
     memset(renderer, 0, sizeof(*renderer));
 
     camera_init(&renderer->camera, (vec3){0, 3, 0}, (vec3){0, 0, 0}, (vec3){0, 1, 0}, (vec3){0, 0, -1});
@@ -29,8 +29,8 @@ void renderer_init(struct renderer *renderer, float aspect, const char *block_at
     renderer->shaders[RENDERER_SHADER_CHUNK] = shader_load("res/shader/chunk.vert", "res/shader/chunk.frag");
     renderer->shaders[RENDERER_SHADER_INSTANCED_3D] = shader_load("res/shader/instanced_3d.vert", "res/shader/instanced_3d.frag");
     // textures
-    renderer->textures[RENDERER_TEXTURE_BLOCKATLAS] = texture_load(block_atlas_path);
-    renderer->textures[RENDERER_TEXTURE_WIRE] = texture_load(wire_texture_path);
+    renderer->textures[RENDERER_TEXTURE_BLOCKATLAS] = texture_load(config_get("BLOCK_ATLAS"));
+    renderer->textures[RENDERER_TEXTURE_WIRE] = texture_load(config_get("WIRE_TEXTURE"));
 
     renderer->camera.render_distance = atoi(config_get("RENDER_DISTANCE"));
 }

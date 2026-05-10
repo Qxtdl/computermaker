@@ -1,15 +1,13 @@
-#include "raycast.h"
-#include "../state.h"
-#include "../global.h"
 #include <math.h>
 
-static float distance;
-
-void raycast_set_distance(float raycast_distance) {
-    distance = raycast_distance;
-}
+#include "raycast.h"
+#include "../global.h"
+#include "../state.h"
+#include "../config.h"
 
 struct raycast_info raycast(vec3 origin, vec3 direction) {
+    float distance = atof(config_get("RAY_DISTANCE"));
+
     float x = floor(origin[0]);
     float y = floor(origin[1]);
     float z = floor(origin[2]);
@@ -19,7 +17,7 @@ struct raycast_info raycast(vec3 origin, vec3 direction) {
 
     if (direction[0] == 0 && direction[1] == 0 && direction[2] == 0) 
         app_error("Raycast direction is zero\n");
-    if (distance<=0) 
+    if (distance <= 0) 
         app_error("Raycast distance is <= 0\n");
 
     glm_vec3_normalize(direction);
