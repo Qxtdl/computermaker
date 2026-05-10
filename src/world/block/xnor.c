@@ -2,7 +2,7 @@
 
 void _xnor_tick(block_t *block) {
     if (block->gate.num_inputs == 0) {
-        block->gate.new_state = STATE_OFF;
+        block->gate.new_state = STATE_ON;
         return;
     }
 
