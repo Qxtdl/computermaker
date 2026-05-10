@@ -16,10 +16,10 @@ void blockmesh_push_face(
     vertex_t vertex[4];
     switch (face) {
         case FACE_FRONT:
-            vertex[0] = (vertex_t){{x,   y, z+1}, {0, 0}};
-            vertex[1] = (vertex_t){{x,   y+1,z+1}, {1, 0}};
-            vertex[2] = (vertex_t){{x+1, y+1,z+1}, {1, 1}};
-            vertex[3] = (vertex_t){{x+1, y, z+1}, {0, 1}};
+            vertex[0] = (vertex_t){{x+1, y,   z+1}, {0, 0}};
+            vertex[1] = (vertex_t){{x,   y,   z+1}, {1, 0}};
+            vertex[2] = (vertex_t){{x,   y+1, z+1}, {1, 1}};
+            vertex[3] = (vertex_t){{x+1, y+1, z+1}, {0, 1}};
             break;
         case FACE_BACK:
             vertex[0] = (vertex_t){{x,   y,   z}, {0, 0}};

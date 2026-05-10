@@ -90,7 +90,7 @@ static void get_model(wire_t wire, mat4 model) {
     
     //goes bottom to top
     glm_translate(m, (vec3){translation[0]+0.5,translation[1]+0.5,translation[2]+0.5});
-    if (direction[0] != 1) {
+    if (direction[2] != 1) {
         mat4 rotation1;
         mat4 rotation0;
         vec3 direction0;
@@ -100,32 +100,27 @@ static void get_model(wire_t wire, mat4 model) {
         glm_vec3_normalize_to((vec3){wire.dx-wire.ox, 0, wire.dz-wire.oz}, direction0);
         
         float angle1;
-        if (direction0[0] != 0 || direction0[2] != 0) {
-            angle1 = glm_vec3_angle(direction0, direction);
-            glm_vec3_cross(direction0, direction, rotation1_axis);
-        }
-        else {
-            angle1 = glm_vec3_angle((vec3){1, 0, 0}, direction);
-            glm_vec3_cross((vec3){1, 0, 0}, direction, rotation1_axis);
-        }
-        float angle0 = glm_vec3_angle(direction0, (vec3){1, 0, 0});
+        angle1 = glm_vec3_angle((vec3){0, 1, 0}, direction);
+        glm_vec3_cross((vec3){0, 1, 0}, direction, rotation1_axis);
+
+        float angle0 = glm_vec3_angle(direction0, (vec3){0, 0, 1});
 
         glm_rotate_make(rotation1, angle1, rotation1_axis);
         glm_mat4_mul(m, rotation1, m);
 
         if (direction0[0] != 0 || direction0[2] != 0) {
-            if (direction0[0] == -1) {
+            if (direction0[2] == -1) {
                 rotation0_axis[0] = 0;
                 rotation0_axis[1] = 1;
                 rotation0_axis[2] = 0;
             } else {
-                glm_vec3_cross((vec3){1, 0, 0}, direction0,  rotation0_axis);
+                glm_vec3_cross((vec3){0, 0, 1}, direction0,  rotation0_axis);
             }
             glm_rotate_make(rotation0, angle0, rotation0_axis);
             glm_mat4_mul(m, rotation0, m);
         }
     }
-    glm_scale(m, (vec3){length, atof(config_get("WIRE_THICKNESS")), atof(config_get("WIRE_THICKNESS"))});
+    glm_scale(m, (vec3){atof(config_get("WIRE_THICKNESS")), length, atof(config_get("WIRE_THICKNESS"))});
     glm_translate(m, (vec3){-(0.5),-(0.5),-(0.5)});
 
     memcpy(model, m, sizeof(mat4));

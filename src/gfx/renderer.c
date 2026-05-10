@@ -30,7 +30,7 @@ void renderer_init(struct renderer *renderer, float aspect) {
     renderer->shaders[RENDERER_SHADER_INSTANCED_3D] = shader_load("res/shader/instanced_3d.vert", "res/shader/instanced_3d.frag");
     // textures
     renderer->textures[RENDERER_TEXTURE_BLOCKATLAS] = texture_load(config_get("BLOCK_ATLAS"));
-    renderer->textures[RENDERER_TEXTURE_WIRE] = texture_load("res/texture/wire.png");
+    renderer->textures[RENDERER_TEXTURE_WIRE] = texture_load(config_get("WIRE_TEXTURE"));
 
     renderer->camera.render_distance = atoi(config_get("RENDER_DISTANCE"));
 }

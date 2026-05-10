@@ -13,6 +13,7 @@
 #include "../global.h"
 
 #define max(x,y) ((x)>(y)?(x):(y))
+#define min(x,y) ((x)>(y)?(y):(x))
 
 static bool mouse_free = true;
 static bool fullscreen = false;
@@ -173,9 +174,32 @@ void input_handle(void) {
                     int x_diff1 = abs(state.player.points[THIRD_POINT][0] - state.player.points[FOURTH_POINT][0])+1,
                         y_diff1 = abs(state.player.points[THIRD_POINT][1] - state.player.points[FOURTH_POINT][1])+1,
                         z_diff1 = abs(state.player.points[THIRD_POINT][2] - state.player.points[FOURTH_POINT][2])+1;
-                    if ((x_diff0>1 && y_diff0>1) || (x_diff0>1 && z_diff0>1) || (y_diff0>1 && z_diff0>1)) {break;}
-                    if ((x_diff1>1 && y_diff1>1) || (x_diff1>1 && z_diff1>1) || (y_diff1>1 && z_diff1>1)) {break;}
-                    int length = max(max(max(x_diff0,y_diff0),z_diff0),max(max(x_diff1,y_diff1),z_diff1));
+                        
+                    if (x_diff0!=y_diff0 && x_diff0>1 && y_diff0>1) {
+                        state.player.point = 0;
+                        break;
+                    }
+                    if (x_diff0!=z_diff0 && x_diff0>1 && z_diff0>1) {
+                        state.player.point = 0;
+                        break;
+                    }
+                    if (y_diff0!=z_diff0 && y_diff0>1 && z_diff0>1) {
+                        state.player.point = 0;
+                        break;
+                    }
+                    if (x_diff1!=y_diff1 && x_diff1>1 && y_diff1>1) {
+                        state.player.point = 0;
+                        break;
+                    }
+                    if (x_diff1!=z_diff1 && x_diff1>1 && z_diff1>1) {
+                        state.player.point = 0;
+                        break;
+                    }
+                    if (y_diff1!=z_diff1 && y_diff1>1 && z_diff1>1) {
+                        state.player.point = 0;
+                        break;
+                    }
+                    int length = min(max(max(x_diff0,y_diff0),z_diff0),max(max(x_diff1,y_diff1),z_diff1));
                     int dx0 = 0,
                         dy0 = 0,
                         dz0 = 0,
