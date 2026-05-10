@@ -37,3 +37,4 @@ CHUNK_AMOUNT_Y=1
 CHUNK_AMOUNT_Z=8
 SHOW_WATERMARK=y
 BLOCK_ATLAS=res/texture/blockatlas2.png
+WIRE_TEXTURE=res/texture/wire2.png

@@ -1,4 +1,4 @@
-TARGET = linux
+TARGET = windows
 
 ifeq ($(TARGET),linux)
 	CC = gcc
