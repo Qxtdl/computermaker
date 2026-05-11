@@ -5,16 +5,11 @@ void _xor_tick(block_t *block) {
         block->gate.new_state = STATE_OFF;
         return;
     }
-    int count = 0;
+
+    int state = 0;
     for (int i = 0; i < block->gate.inputs_size; i++) {
         if (!block->gate.inputs[i].gate) continue;
-        if (block->gate.inputs[i].gate->state == STATE_ON) {
-            count++;
-        }
+        state ^= block->gate.inputs[i].gate->state;
     }
-
-    if (count % 2)
-        block->gate.new_state = STATE_ON;
-    else
-        block->gate.new_state = STATE_OFF;
+    block->gate.new_state = state;
 }
