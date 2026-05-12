@@ -7,6 +7,7 @@
 #include "../gfx/window.h"
 #include "../world/tick.h"
 #include "../world/save.h"
+#include "../state.h"
 
 chat_message_t chat_messages[MAX_CHAT_MESSAGES] = {0};
 size_t chat_count = 0;
@@ -68,6 +69,9 @@ void chat_handle_command(const char *text) {
         }
 
         pclose(fp);
+    }
+    else if (!strncmp(text, "!restart\0", 9)) {
+        state.restart = true;
     }
 
     return;

@@ -10,7 +10,6 @@
 #include "../gfx/raycast.h"
 #include "chat.h"
 #include "keybinds.h"
-#include "../global.h"
 
 #define max(x,y) ((x)>(y)?(x):(y))
 #define min(x,y) ((x)>(y)?(y):(x))
@@ -59,7 +58,7 @@ static void input_chat_handle() {
 void input_handle(void) {
     if (window.mouse.moved && !mouse_free) {
         camera_mouse_cb(&state.renderer.camera, window.mouse.x, window.mouse.y);
-        window.mouse.moved = true;
+        window.mouse.moved = false;
     }
 
     if (chat_active) {

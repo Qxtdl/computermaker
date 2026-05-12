@@ -27,8 +27,9 @@ static void push_building(building_t *building) {
 
 void building_tick(building_t *building) {
 	switch (building->id) {
-		case HUGE_MEMORY: _hugemem_tick(building);
-		default:
+		case HUGE_MEMORY: _hugemem_tick(building);break;
+		case MULTIPLIER: _multiplier_tick(building);break;
+		default:break;
 	}
 }
 
@@ -59,6 +60,24 @@ void building_create(building_t building) {
 			// place the write pin
 			BUILDING_PLACE_PIN(-vx - 2, 0, -3)			
 			break;
+		
+		case MULTIPLIER:
+			// generate input a
+			for (int x = 0; x < 16; x++) {
+				BUILDING_PLACE_PIN(x -14, 0, -7)
+			}
+			// generate input b
+			for (int x = 0; x < 16; x++) {
+				BUILDING_PLACE_PIN(x -32, 0, -7)
+			}
+			// generate lower half of output
+			for (int x = 0; x < 16; x++) {
+				BUILDING_PLACE_PIN(x -32, 0, 1)
+			}
+			// generate upper half of output
+			for (int x = 0; x < 16; x++) {
+				BUILDING_PLACE_PIN(x -14, 0, 1)
+			}
 
 		default: break;			
 	}

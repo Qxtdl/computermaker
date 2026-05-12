@@ -1,10 +1,12 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <string.h>
 
 #include "window.h"
 #include "../global.h"
 #include "../state.h"
 #include "../player/chat.h"
+#include "../config.h"
 
 struct window window;
 
@@ -92,7 +94,17 @@ void window_create(
 
 void window_loop(void) {
     window.init();
+    state.restart = false;
     while (!glfwWindowShouldClose(window.handle)) {
+        if (state.restart) {
+            for (size_t i = 0; i < state.world.chunks_size; i++) {
+                free(state.world.chunks[i]);
+            }
+            state.world.chunks_size = 0;
+            config_clear();
+            window.init();
+            state.restart = false;
+        }
         window.now = glfwGetTime();
         window.tick();
         window.render();

@@ -16,7 +16,8 @@ void world_worldgen(struct world *world) {
     for (int x = 0; x < ax; x++) {
         for (int y = -1; y < ay; y++) {
             for (int z = 0; z < az; z++) {
-                world_add_chunk(world, chunk_gen(x * CHUNK_X, y * CHUNK_Y, z * CHUNK_Z));
+                world_get_at(world, x * CHUNK_X, y * CHUNK_Y, z * CHUNK_Z);
+                //world_add_chunk(world, chunk_gen(x * CHUNK_X, y * CHUNK_Y, z * CHUNK_Z));
             }
         }
     }

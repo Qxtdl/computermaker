@@ -272,6 +272,74 @@ static struct ivec3 cm2save_get_building_pin_pos(building_t building, int port_i
                 default:break;
             }
         break;
+        case MULTIPLIER:
+            switch (port_id) {
+                case  0:x =   1; y = 0; z = -7;break;
+                case  1:x =  -8; y = 0; z = -7;break;
+                case  2:x =  -9; y = 0; z = -7;break;
+                case  3:x = -10; y = 0; z = -7;break;
+                case  4:x = -11; y = 0; z = -7;break;
+                case  5:x = -12; y = 0; z = -7;break;
+                case  6:x = -13; y = 0; z = -7;break;
+                case  7:x = -14; y = 0; z = -7;break;
+                case  8:x =   0; y = 0; z = -7;break;
+                case  9:x =  -1; y = 0; z = -7;break;
+                case 10:x =  -2; y = 0; z = -7;break;
+                case 11:x =  -3; y = 0; z = -7;break;
+                case 12:x =  -4; y = 0; z = -7;break;
+                case 13:x =  -5; y = 0; z = -7;break;
+                case 14:x =  -6; y = 0; z = -7;break;
+                case 15:x =  -7; y = 0; z = -7;break;
+                case 16:x = -17; y = 0; z = -7;break;
+                case 17:x = -26; y = 0; z = -7;break;
+                case 18:x = -27; y = 0; z = -7;break;
+                case 19:x = -28; y = 0; z = -7;break;
+                case 20:x = -29; y = 0; z = -7;break;
+                case 21:x = -30; y = 0; z = -7;break;
+                case 22:x = -31; y = 0; z = -7;break;
+                case 23:x = -32; y = 0; z = -7;break;
+                case 24:x = -18; y = 0; z = -7;break;
+                case 25:x = -19; y = 0; z = -7;break;
+                case 26:x = -20; y = 0; z = -7;break;
+                case 27:x = -21; y = 0; z = -7;break;
+                case 28:x = -22; y = 0; z = -7;break;
+                case 29:x = -23; y = 0; z = -7;break;
+                case 30:x = -24; y = 0; z = -7;break;
+                case 31:x = -25; y = 0; z = -7;break;
+                case 32:x =   1; y = 0; z = 1;break;
+                case 33:x =  -8; y = 0; z = 1;break;
+                case 34:x =  -9; y = 0; z = 1;break;
+                case 35:x = -10; y = 0; z = 1;break;
+                case 36:x = -11; y = 0; z = 1;break;
+                case 37:x = -12; y = 0; z = 1;break;
+                case 38:x = -13; y = 0; z = 1;break;
+                case 39:x = -14; y = 0; z = 1;break;
+                case 40:x =   0; y = 0; z = 1;break;
+                case 41:x =  -1; y = 0; z = 1;break;
+                case 42:x =  -2; y = 0; z = 1;break;
+                case 43:x =  -3; y = 0; z = 1;break;
+                case 44:x =  -4; y = 0; z = 1;break;
+                case 45:x =  -5; y = 0; z = 1;break;
+                case 46:x =  -6; y = 0; z = 1;break;
+                case 47:x =  -7; y = 0; z = 1;break;
+                case 48:x = -17; y = 0; z = 1;break;
+                case 49:x = -26; y = 0; z = 1;break;
+                case 50:x = -27; y = 0; z = 1;break;
+                case 51:x = -28; y = 0; z = 1;break;
+                case 52:x = -29; y = 0; z = 1;break;
+                case 53:x = -30; y = 0; z = 1;break;
+                case 54:x = -31; y = 0; z = 1;break;
+                case 55:x = -32; y = 0; z = 1;break;
+                case 56:x = -18; y = 0; z = 1;break;
+                case 57:x = -19; y = 0; z = 1;break;
+                case 58:x = -20; y = 0; z = 1;break;
+                case 59:x = -21; y = 0; z = 1;break;
+                case 60:x = -22; y = 0; z = 1;break;
+                case 61:x = -23; y = 0; z = 1;break;
+                case 62:x = -24; y = 0; z = 1;break;
+                case 63:x = -25; y = 0; z = 1;break;
+            }
+        break;
         default:break;
     }
     int rx, ry, rz;
@@ -357,47 +425,61 @@ static void cm2save_add_building(stringview_t sv_building) {
         building_rotation = CAMERA_DIRECTION_FORWARD;
     }
 
+    int pins_count = 0;
+    building_t building;
     if (SV_cmp_cstr(sv_building_type, "HugeMemory")) {
-        building_t building = (building_t){
+        pins_count = 49;
+        building = (building_t){
             .id = HUGE_MEMORY,
             .x = building_x,
             .y = building_y,
             .z = building_z,
             .rotation = building_rotation
         };
-        building_create(building);
-        for (size_t i = 0; i < 16+16+16+1; i++) {
-            stringview_t sv_connections = SV_chop_by_delim(&sv_building, ',');
-            struct ivec3 pin_ptr = cm2save_get_building_pin_pos(building, i);
-            while (sv_connections.size > 0) {
-                stringview_t sv_connection = SV_chop_by_delim(&sv_connections, '+');
-                char start_ch = *SV_chop_left(&sv_connection, 1).start;
-                struct ivec3 block_ptr = cm2_blocks.blocks[SV_to_int(sv_connection)-1];
-                if (start_ch == '0') {//output
-                    world_create_wire((wire_t){
-                        .ox = pin_ptr.x,
-                        .oy = pin_ptr.y,
-                        .oz = pin_ptr.z,
-                        .dx = block_ptr.x,
-                        .dy = block_ptr.y,
-                        .dz = block_ptr.z
-                    });
-                } else if (start_ch == '1') {//input
-                    world_create_wire((wire_t){
-                        .ox = block_ptr.x,
-                        .oy = block_ptr.y,
-                        .oz = block_ptr.z,
-                        .dx = pin_ptr.x,
-                        .dy = pin_ptr.y,
-                        .dz = pin_ptr.z
-                    });
-                }
-            }
-        }
+    } else if (SV_cmp_cstr(sv_building_type, "Multiplier")) {
+        pins_count = 64;
+        building = (building_t){
+            .id = MULTIPLIER,
+            .x = building_x,
+            .y = building_y,
+            .z = building_z,
+            .rotation = building_rotation
+        };
     } else {
         app_warn("building: ")
         SV_print(sv_building_type);
         printf(" not implemented\n");
+        return;
+    }
+    SV_print(sv_building_type);
+    building_create(building);
+    for (size_t i = 0; i < pins_count; i++) {
+        stringview_t sv_connections = SV_chop_by_delim(&sv_building, ',');
+        struct ivec3 pin_ptr = cm2save_get_building_pin_pos(building, i);
+        while (sv_connections.size > 0) {
+            stringview_t sv_connection = SV_chop_by_delim(&sv_connections, '+');
+            char start_ch = *SV_chop_left(&sv_connection, 1).start;
+            struct ivec3 block_ptr = cm2_blocks.blocks[SV_to_int(sv_connection)-1];
+            if (start_ch == '0') {//output
+                world_create_wire((wire_t){
+                    .ox = pin_ptr.x,
+                    .oy = pin_ptr.y,
+                    .oz = pin_ptr.z,
+                    .dx = block_ptr.x,
+                    .dy = block_ptr.y,
+                    .dz = block_ptr.z
+                });
+            } else if (start_ch == '1') {//input
+                world_create_wire((wire_t){
+                    .ox = block_ptr.x,
+                    .oy = block_ptr.y,
+                    .oz = block_ptr.z,
+                    .dx = pin_ptr.x,
+                    .dy = pin_ptr.y,
+                    .dz = pin_ptr.z
+                });
+            }
+        }
     }
 }
 
@@ -420,4 +502,7 @@ void cm2save_process(const char *savestring) {
         cm2save_add_building(SV_chop_by_delim(&sv_buildings, ';'));
     }
     free(cm2_blocks.blocks);
+    cm2_blocks.blocks = NULL;
+    cm2_blocks.block_count = 0;
+    cm2_blocks.block_capacity = 0;
 }

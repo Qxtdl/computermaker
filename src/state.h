@@ -41,6 +41,7 @@ extern struct state {
         block_t *hovered_block;
     } player;
     float deltaTime;
+    bool restart;
 } state;
 
 const char *mode_name(enum mode mode);

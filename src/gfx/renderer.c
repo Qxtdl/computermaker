@@ -16,7 +16,7 @@
 void renderer_init(struct renderer *renderer, float aspect, const char *block_atlas_path, const char *wire_texture_path) {
     memset(renderer, 0, sizeof(*renderer));
 
-    camera_init(&renderer->camera, (vec3){0, 3, 0}, (vec3){0, 0, 0}, (vec3){0, 1, 0}, (vec3){0, 0, -1});
+    camera_init(&renderer->camera, (vec3){0, 3, 0}, (vec3){0, 0, 0.5}, (vec3){0, 1, 0}, (vec3){0, 0, -1});
     camera_perspective_init(&renderer->camera, glm_rad(128.0f), aspect, 0.1, 1000);
     gltInit();
 
