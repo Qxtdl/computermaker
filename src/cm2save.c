@@ -230,23 +230,59 @@ static void cm2save_add_wire(stringview_t sv_wire) {
 static struct ivec3 cm2save_get_building_pin_pos(building_t building, int pin_id) {
     #define pins1b(_x,_y,_z,_pin_id) if ((_pin_id) == 0) {x = (_x); y = (_y); z = (_z);}
     #define pins8b(_x,_y,_z,_pin_id) if (((_pin_id) < 8) && ((_pin_id) >= 0)) {x = (_x) - (_pin_id); y = (_y); z = (_z);}
-    #define pins16b(_x,_y,_z,_pin_id) switch ((_pin_id)) { \
-        case  0:x = (_x);    y = (_y); z = (_z);break; \
-        case  1:x = (_x)-9;  y = (_y); z = (_z);break; \
-        case  2:x = (_x)-10; y = (_y); z = (_z);break; \
-        case  3:x = (_x)-11; y = (_y); z = (_z);break; \
-        case  4:x = (_x)-12; y = (_y); z = (_z);break; \
-        case  5:x = (_x)-13; y = (_y); z = (_z);break; \
-        case  6:x = (_x)-14; y = (_y); z = (_z);break; \
-        case  7:x = (_x)-15; y = (_y); z = (_z);break; \
-        case  8:x = (_x)-1;  y = (_y); z = (_z);break; \
-        case  9:x = (_x)-2;  y = (_y); z = (_z);break; \
-        case 10:x = (_x)-3;  y = (_y); z = (_z);break; \
-        case 11:x = (_x)-4;  y = (_y); z = (_z);break; \
-        case 12:x = (_x)-5;  y = (_y); z = (_z);break; \
-        case 13:x = (_x)-6;  y = (_y); z = (_z);break; \
-        case 14:x = (_x)-7;  y = (_y); z = (_z);break; \
-        case 15:x = (_x)-8;  y = (_y); z = (_z);break; \
+    #define pins16b(_x,_y,_z,_pin_id) y = (_y); z = (_z); \
+    switch ((_pin_id)) { \
+        case  0:x = (_x)   ;break; \
+        case  1:x = (_x) -9;break; \
+        case  2:x = (_x)-10;break; \
+        case  3:x = (_x)-11;break; \
+        case  4:x = (_x)-12;break; \
+        case  5:x = (_x)-13;break; \
+        case  6:x = (_x)-14;break; \
+        case  7:x = (_x)-15;break; \
+        case  8:x = (_x) -1;break; \
+        case  9:x = (_x) -2;break; \
+        case 10:x = (_x) -3;break; \
+        case 11:x = (_x) -4;break; \
+        case 12:x = (_x) -5;break; \
+        case 13:x = (_x) -6;break; \
+        case 14:x = (_x) -7;break; \
+        case 15:x = (_x) -8;break; \
+    }
+    #define pins32b(_x,_y,_z,_pin_id) y = (_y); z = (_z); \
+    switch ((_pin_id)) { \
+        case  0:x = (_x)   ;break; \
+        case  1:x = (_x) -9;break; \
+        case  2:x = (_x)-10;break; \
+        case  3:x = (_x)-11;break; \
+        case  4:x = (_x)-12;break; \
+        case  5:x = (_x)-13;break; \
+        case  6:x = (_x)-14;break; \
+        case  7:x = (_x)-15;break; \
+        case  8:x = (_x)-16;break; \
+        case  9:x = (_x)-17;break; \
+        case 10:x = (_x)-18;break; \
+        case 11:x = (_x) -1;break; \
+        case 12:x = (_x)-19;break; \
+        case 13:x = (_x)-20;break; \
+        case 14:x = (_x)-21;break; \
+        case 15:x = (_x)-22;break; \
+        case 16:x = (_x)-23;break; \
+        case 17:x = (_x)-24;break; \
+        case 18:x = (_x)-25;break; \
+        case 19:x = (_x)-26;break; \
+        case 20:x = (_x)-27;break; \
+        case 21:x = (_x)-28;break; \
+        case 22:x = (_x) -2;break; \
+        case 23:x = (_x)-29;break; \
+        case 24:x = (_x)-30;break; \
+        case 25:x = (_x)-31;break; \
+        case 26:x = (_x) -3;break; \
+        case 27:x = (_x) -4;break; \
+        case 28:x = (_x) -5;break; \
+        case 29:x = (_x) -6;break; \
+        case 30:x = (_x) -7;break; \
+        case 31:x = (_x) -8;break; \
     }
     int x=0,y=0,z=0;
     switch (building.id) {
@@ -274,6 +310,7 @@ static struct ivec3 cm2save_get_building_pin_pos(building_t building, int pin_id
     #undef pins1b
     #undef pins8b
     #undef pins16b
+    #undef pins32b
     int rx, ry, rz;
     switch (building.rotation) {
         case ROTATION_FRONT: rx = building.x + x; ry = building.y + y; rz = building.z + z; break;
