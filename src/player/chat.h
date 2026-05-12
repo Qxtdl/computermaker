@@ -23,7 +23,7 @@ extern size_t chat_input_len;
 extern bool chat_active;
 
 void chat_render(void);
-void chat_handle_command(const char *text);
+void chat_handle_command(char *text);
 void chat_add_message(
     const char *name,
     const char *text

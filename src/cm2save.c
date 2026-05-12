@@ -121,21 +121,26 @@ static void cm2save_add_block(stringview_t sv_block) {
             block.id = XOR;
             break;
         case 4://BUTTON
+            block.id = BRICK;        
             app_warn("button not implemented\n");
             break;
         case 5://FLIPFLOP
             block.id = FLIPFLOP;
             break;
         case 6://LED
+            block.id = BRICK;        
             app_warn("led not implemented\n");
             break;
         case 7://SOUND
+            block.id = BRICK;        
             app_warn("sound not implemented\n");
             break;
         case 8://CONDUCTOR
+            block.id = BRICK;        
             app_warn("conductor not implemented\n");
             break;
         case 9://CUSTOM
+            block.id = BRICK;        
             app_warn("custom not implemented\n");
             break;
         case 10://NAND
@@ -145,27 +150,34 @@ static void cm2save_add_block(stringview_t sv_block) {
             block.id = XNOR;
             break;
         case 12://RANDOM
+            block.id = BRICK;
             app_warn("random not implemented\n");
             break;
         case 13://TEXT
+            block.id = BRICK;
             app_warn("text not implemented\n");
             break;
         case 14://TILE
+            block.id = BRICK;        
             app_warn("tile not implemented\n");
             break;
         case 15://NODE
-            block.id = NODE;
+            block.id = OR;
             break;
         case 16://DELAY
+            block.id = BRICK;        
             app_warn("delay not implemented\n");
             break;
         case 17://ANTENNA
+            block.id = BRICK;        
             app_warn("antenna not implemented\n");
             break;
         case 18://CONDUCTORV2
+            block.id = BRICK;        
             app_warn("conductorv2 not implemented\n");
             break;
         case 19://LEDMIXER
+            block.id = BRICK;        
             app_warn("ledmixer not implemented\n");
             break;
     }

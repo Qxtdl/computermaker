@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "global.h"
 #include "util.h"
@@ -19,15 +20,17 @@ void config_open(const char *filename) {
 
 static struct key_value {
     const char *key;
-    const char *value;
+    char *value;
+    bool modified;
 } *tables = NULL;
-size_t tables_size;
+int tables_size;
 
-static void config_add_key_value(const char *key, const char *value) {
+static void config_add_key_value(const char *key, char *value) {
     tables = srealloc(tables, ++tables_size * sizeof(struct key_value));
     tables[tables_size - 1] = (struct key_value){
         key,
-        value
+        value,
+        false
     };
     app_log("[CONFIG]: Key-value pair: [%s : %s]\n", key, value);
 }
@@ -50,10 +53,10 @@ void config_process(void) {
 const char *config_get(const char *key) {
     for (size_t i = 0; i < tables_size; i++) {
         if (!strcmp(tables[i].key, key)) {
-            app_log("[CONFIG]: Got %s!\n", tables[i].value);
             return tables[i].value;
         }
     }
+    
     app_error("The value in the config \"%s\" could not be found\n", key)
 }
 
@@ -63,4 +66,17 @@ void config_clear(void) {
         tables = NULL;
         tables_size = 0;
     }
+}
+
+void config_modify(const char *key, const char *value) {
+   	for (int i = 0; i < tables_size; i++) {
+   		if (!strcmp(tables[i].key, key)) {
+   			if (tables[i].modified) {
+   				free(tables[i].value);
+   			}
+   			tables[i].value = smalloc(strlen(value) + 1);
+   			strcpy(tables[i].value, value);
+            tables[i].modified = true;
+   		}
+   	}
 }
