@@ -29,6 +29,7 @@ void building_tick(building_t *building) {
 	switch (building->id) {
 		case HUGE_MEMORY: _hugemem_tick(building);break;
 		case MULTIPLIER: _multiplier_tick(building);break;
+		case DUAL_MEMORY: _dualmem_tick(building);break;
 		default:break;
 	}
 }
@@ -58,7 +59,7 @@ void building_create(building_t building) {
 				BUILDING_PLACE_PIN(x + 2, 0, 3)
 			}
 			// place the write pin
-			BUILDING_PLACE_PIN(-vx - 2, 0, -3)			
+			BUILDING_PLACE_PIN(-vx - 2, 0, -3)
 			break;
 		
 		case MULTIPLIER:
@@ -78,6 +79,29 @@ void building_create(building_t building) {
 			for (int x = 0; x < 16; x++) {
 				BUILDING_PLACE_PIN(x -14, 0, 1)
 			}
+			break;
+
+		case DUAL_MEMORY:
+			building.state.dualmem.cells = scalloc(1, 256 * sizeof(uint8_t));
+			// generate save address bus
+			for (int x = 0; x < 8; x++) {
+				BUILDING_PLACE_PIN(x - 3, 0, -2)
+			}
+			// generate load address bus
+			for (int x = 0; x < 8; x++) {
+				BUILDING_PLACE_PIN(x + 6, 0, -2)
+			}
+			// generate output bus
+			for (int x = 0; x < 8; x++) {
+				BUILDING_PLACE_PIN(x + 6, 0, 2)
+			}
+			// generate value bus
+			for (int x = 0; x < 8; x++) {
+				BUILDING_PLACE_PIN(x - 12, 0, -2)
+			}
+			// place the write pin
+			BUILDING_PLACE_PIN(-14, 0, -2)
+			break;
 
 		default: break;			
 	}

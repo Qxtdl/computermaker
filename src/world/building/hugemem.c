@@ -12,13 +12,14 @@ void _hugemem_tick(building_t *building) {
 	for (i = 0; i < 16; i++) {
 		value |= (building->pins[HUGEMEM_V0+i]->gate.state << i);
 	}
+
 	write = building->pins[HUGEMEM_WRITE]->gate.state;
 
-	output = building->state.hugemem.cells[address];
-	
 	if (write) {
 		building->state.hugemem.cells[address] = value;
 	}
+	
+	output = building->state.hugemem.cells[address];
 
 	for (i = 0; i < 16; i++) {
 		building->pins[HUGEMEM_O0+i]->gate.new_state = (output >> i) & 1;

@@ -96,15 +96,6 @@ void window_loop(void) {
     window.init();
     state.restart = false;
     while (!glfwWindowShouldClose(window.handle)) {
-        if (state.restart) {
-            for (size_t i = 0; i < state.world.chunks_size; i++) {
-                free(state.world.chunks[i]);
-            }
-            state.world.chunks_size = 0;
-            config_clear();
-            window.init();
-            state.restart = false;
-        }
         window.now = glfwGetTime();
         window.tick();
         window.render();

@@ -28,7 +28,7 @@ void world_tick(struct world *world) {
         }
     }
     // tick buildings
-	buildings_tick();
+    buildings_tick();
     
     for (int i = 0; i < world->chunks_size; i++) {
         for (int x = 0; x < CHUNK_X; x++) {

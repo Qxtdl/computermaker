@@ -79,7 +79,7 @@ void chat_handle_command(char *text) {
 
         pclose(fp);
     }
-    else if (!strncmp(text, "!restart\0", 9)) {
+    else if (!strcmp(text, "!restart")) {
         state.restart = true;
     }
 

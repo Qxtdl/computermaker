@@ -31,6 +31,15 @@ void destroy(void) {
 }
 
 void tick(void) {
+    if (state.restart) {
+        for (size_t i = 0; i < state.world.chunks_size; i++) {
+            free(state.world.chunks[i]);
+        }
+        state.world.chunks_size = 0;
+        config_clear();
+        window.init();
+        state.restart = false;
+    }
     input_handle();
     world_tick(&state.world);
 }
