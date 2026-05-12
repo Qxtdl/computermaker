@@ -28,8 +28,9 @@ static void push_building(building_t *building) {
 void building_tick(building_t *building) {
 	switch (building->id) {
 		case HUGE_MEMORY: _hugemem_tick(building);break;
-		case MULTIPLIER: _multiplier_tick(building);break;
 		case DUAL_MEMORY: _dualmem_tick(building);break;
+		case MULTIPLIER: _multiplier_tick(building);break;
+		case DIVIDER: _divider_tick(building);break;
 		default:break;
 	}
 }
@@ -62,25 +63,6 @@ void building_create(building_t building) {
 			BUILDING_PLACE_PIN(-vx - 2, 0, -3)
 			break;
 		
-		case MULTIPLIER:
-			// generate input a
-			for (int x = 0; x < 16; x++) {
-				BUILDING_PLACE_PIN(x -14, 0, -7)
-			}
-			// generate input b
-			for (int x = 0; x < 16; x++) {
-				BUILDING_PLACE_PIN(x -32, 0, -7)
-			}
-			// generate lower half of output
-			for (int x = 0; x < 16; x++) {
-				BUILDING_PLACE_PIN(x -32, 0, 1)
-			}
-			// generate upper half of output
-			for (int x = 0; x < 16; x++) {
-				BUILDING_PLACE_PIN(x -14, 0, 1)
-			}
-			break;
-
 		case DUAL_MEMORY:
 			building.state.dualmem.cells = scalloc(1, 256 * sizeof(uint8_t));
 			// generate save address bus
@@ -101,6 +83,44 @@ void building_create(building_t building) {
 			}
 			// place the write pin
 			BUILDING_PLACE_PIN(-14, 0, -2)
+			break;
+
+		case MULTIPLIER:
+			// generate input a
+			for (int x = 0; x < 16; x++) {
+				BUILDING_PLACE_PIN(x -14, 0, -7)
+			}
+			// generate input b
+			for (int x = 0; x < 16; x++) {
+				BUILDING_PLACE_PIN(x -32, 0, -7)
+			}
+			// generate lower half of output
+			for (int x = 0; x < 16; x++) {
+				BUILDING_PLACE_PIN(x -32, 0, 1)
+			}
+			// generate upper half of output
+			for (int x = 0; x < 16; x++) {
+				BUILDING_PLACE_PIN(x -14, 0, 1)
+			}
+			break;
+		
+		case DIVIDER:
+			// generate input a
+			for (int x = 0; x < 16; x++) {
+				BUILDING_PLACE_PIN(x -14, 0, -7)
+			}
+			// generate input b
+			for (int x = 0; x < 16; x++) {
+				BUILDING_PLACE_PIN(x -32, 0, -7)
+			}
+			// generate remainder output
+			for (int x = 0; x < 16; x++) {
+				BUILDING_PLACE_PIN(x -32, 0, 1)
+			}
+			// generate quotient output
+			for (int x = 0; x < 16; x++) {
+				BUILDING_PLACE_PIN(x -14, 0, 1)
+			}
 			break;
 
 		default: break;			
