@@ -228,172 +228,52 @@ static void cm2save_add_wire(stringview_t sv_wire) {
 
 
 static struct ivec3 cm2save_get_building_pin_pos(building_t building, int pin_id) {
+    #define pins1b(_x,_y,_z,_pin_id) if ((_pin_id) == 0) {x = (_x); y = (_y); z = (_z);}
+    #define pins8b(_x,_y,_z,_pin_id) if (((_pin_id) < 8) && ((_pin_id) >= 0)) {x = (_x) - (_pin_id); y = (_y); z = (_z);}
+    #define pins16b(_x,_y,_z,_pin_id) switch ((_pin_id)) { \
+        case  0:x = (_x);    y = (_y); z = (_z);break; \
+        case  1:x = (_x)-9;  y = (_y); z = (_z);break; \
+        case  2:x = (_x)-10; y = (_y); z = (_z);break; \
+        case  3:x = (_x)-11; y = (_y); z = (_z);break; \
+        case  4:x = (_x)-12; y = (_y); z = (_z);break; \
+        case  5:x = (_x)-13; y = (_y); z = (_z);break; \
+        case  6:x = (_x)-14; y = (_y); z = (_z);break; \
+        case  7:x = (_x)-15; y = (_y); z = (_z);break; \
+        case  8:x = (_x)-1;  y = (_y); z = (_z);break; \
+        case  9:x = (_x)-2;  y = (_y); z = (_z);break; \
+        case 10:x = (_x)-3;  y = (_y); z = (_z);break; \
+        case 11:x = (_x)-4;  y = (_y); z = (_z);break; \
+        case 12:x = (_x)-5;  y = (_y); z = (_z);break; \
+        case 13:x = (_x)-6;  y = (_y); z = (_z);break; \
+        case 14:x = (_x)-7;  y = (_y); z = (_z);break; \
+        case 15:x = (_x)-8;  y = (_y); z = (_z);break; \
+    }
     int x=0,y=0,z=0;
     switch (building.id) {
         case HUGE_MEMORY:
-            if (pin_id < 16) {
-                switch (pin_id) {
-                    case  0:x = 17; y = 0; z = -3;break;
-                    case  1:x = 8; y = 0; z = -3;break;
-                    case  2:x = 7; y = 0; z = -3;break;
-                    case  3:x = 6; y = 0; z = -3;break;
-                    case  4:x = 5; y = 0; z = -3;break;
-                    case  5:x = 4; y = 0; z = -3;break;
-                    case  6:x = 3; y = 0; z = -3;break;
-                    case  7:x = 2; y = 0; z = -3;break;
-                    case  8:x = 16; y = 0; z = -3;break;
-                    case  9:x = 15; y = 0; z = -3;break;
-                    case 10:x = 14; y = 0; z = -3;break;
-                    case 11:x = 13; y = 0; z = -3;break;
-                    case 12:x = 12; y = 0; z = -3;break;
-                    case 13:x = 11; y = 0; z = -3;break;
-                    case 14:x = 10; y = 0; z = -3;break;
-                    case 15:x = 9; y = 0; z = -3;break;
-                }
-            } else if (pin_id < 32) {
-                switch (pin_id - 16) {
-                    case  0:x = 17; y = 0; z = 3;break;
-                    case  1:x = 8; y = 0; z = 3;break;
-                    case  2:x = 7; y = 0; z = 3;break;
-                    case  3:x = 6; y = 0; z = 3;break;
-                    case  4:x = 5; y = 0; z = 3;break;
-                    case  5:x = 4; y = 0; z = 3;break;
-                    case  6:x = 3; y = 0; z = 3;break;
-                    case  7:x = 2; y = 0; z = 3;break;
-                    case  8:x = 16; y = 0; z = 3;break;
-                    case  9:x = 15; y = 0; z = 3;break;
-                    case 10:x = 14; y = 0; z = 3;break;
-                    case 11:x = 13; y = 0; z = 3;break;
-                    case 12:x = 12; y = 0; z = 3;break;
-                    case 13:x = 11; y = 0; z = 3;break;
-                    case 14:x = 10; y = 0; z = 3;break;
-                    case 15:x = 9; y = 0; z = 3;break;
-                }
-            } else if (pin_id < 48) {
-                switch (pin_id - 32) {
-                    case  0:x = -1; y = 0; z = -3;break;
-                    case  1:x = -10; y = 0; z = -3;break;
-                    case  2:x = -11; y = 0; z = -3;break;
-                    case  3:x = -12; y = 0; z = -3;break;
-                    case  4:x = -13; y = 0; z = -3;break;
-                    case  5:x = -14; y = 0; z = -3;break;
-                    case  6:x = -15; y = 0; z = -3;break;
-                    case  7:x = -16; y = 0; z = -3;break;
-                    case  8:x = -2; y = 0; z = -3;break;
-                    case  9:x = -3; y = 0; z = -3;break;
-                    case 10:x = -4; y = 0; z = -3;break;
-                    case 11:x = -5; y = 0; z = -3;break;
-                    case 12:x = -6; y = 0; z = -3;break;
-                    case 13:x = -7; y = 0; z = -3;break;
-                    case 14:x = -8; y = 0; z = -3;break;
-                    case 15:x = -9; y = 0; z = -3;break;
-                }
-            } else {x = -18; y = 0; z = -3;}
-            break;
-        case MULTIPLIER:
-            if (pin_id < 16) {
-                switch (pin_id) {
-                    case  0:x =   1; y = 0; z = -7;break;
-                    case  1:x =  -8; y = 0; z = -7;break;
-                    case  2:x =  -9; y = 0; z = -7;break;
-                    case  3:x = -10; y = 0; z = -7;break;
-                    case  4:x = -11; y = 0; z = -7;break;
-                    case  5:x = -12; y = 0; z = -7;break;
-                    case  6:x = -13; y = 0; z = -7;break;
-                    case  7:x = -14; y = 0; z = -7;break;
-                    case  8:x =   0; y = 0; z = -7;break;
-                    case  9:x =  -1; y = 0; z = -7;break;
-                    case 10:x =  -2; y = 0; z = -7;break;
-                    case 11:x =  -3; y = 0; z = -7;break;
-                    case 12:x =  -4; y = 0; z = -7;break;
-                    case 13:x =  -5; y = 0; z = -7;break;
-                    case 14:x =  -6; y = 0; z = -7;break;
-                    case 15:x =  -7; y = 0; z = -7;break;
-                }
-            } else if (pin_id < 32) {
-                switch (pin_id - 16) {
-                    case  0:x = -17; y = 0; z = -7;break;
-                    case  1:x = -26; y = 0; z = -7;break;
-                    case  2:x = -27; y = 0; z = -7;break;
-                    case  3:x = -28; y = 0; z = -7;break;
-                    case  4:x = -29; y = 0; z = -7;break;
-                    case  5:x = -30; y = 0; z = -7;break;
-                    case  6:x = -31; y = 0; z = -7;break;
-                    case  7:x = -32; y = 0; z = -7;break;
-                    case  8:x = -18; y = 0; z = -7;break;
-                    case  9:x = -19; y = 0; z = -7;break;
-                    case 10:x = -20; y = 0; z = -7;break;
-                    case 11:x = -21; y = 0; z = -7;break;
-                    case 12:x = -22; y = 0; z = -7;break;
-                    case 13:x = -23; y = 0; z = -7;break;
-                    case 14:x = -24; y = 0; z = -7;break;
-                    case 15:x = -25; y = 0; z = -7;break;
-                }
-            } else if (pin_id < 48) {
-                switch (pin_id - 32) {
-                    case  0:x =   1; y = 0; z = 1;break;
-                    case  1:x =  -8; y = 0; z = 1;break;
-                    case  2:x =  -9; y = 0; z = 1;break;
-                    case  3:x = -10; y = 0; z = 1;break;
-                    case  4:x = -11; y = 0; z = 1;break;
-                    case  5:x = -12; y = 0; z = 1;break;
-                    case  6:x = -13; y = 0; z = 1;break;
-                    case  7:x = -14; y = 0; z = 1;break;
-                    case  8:x =   0; y = 0; z = 1;break;
-                    case  9:x =  -1; y = 0; z = 1;break;
-                    case 10:x =  -2; y = 0; z = 1;break;
-                    case 11:x =  -3; y = 0; z = 1;break;
-                    case 12:x =  -4; y = 0; z = 1;break;
-                    case 13:x =  -5; y = 0; z = 1;break;
-                    case 14:x =  -6; y = 0; z = 1;break;
-                    case 15:x =  -7; y = 0; z = 1;break;
-                }
-            } else {
-                switch (pin_id - 48) {
-                    case  0:x = -17; y = 0; z = 1;break;
-                    case  1:x = -26; y = 0; z = 1;break;
-                    case  2:x = -27; y = 0; z = 1;break;
-                    case  3:x = -28; y = 0; z = 1;break;
-                    case  4:x = -29; y = 0; z = 1;break;
-                    case  5:x = -30; y = 0; z = 1;break;
-                    case  6:x = -31; y = 0; z = 1;break;
-                    case  7:x = -32; y = 0; z = 1;break;
-                    case  8:x = -18; y = 0; z = 1;break;
-                    case  9:x = -19; y = 0; z = 1;break;
-                    case 10:x = -20; y = 0; z = 1;break;
-                    case 11:x = -21; y = 0; z = 1;break;
-                    case 12:x = -22; y = 0; z = 1;break;
-                    case 13:x = -23; y = 0; z = 1;break;
-                    case 14:x = -24; y = 0; z = 1;break;
-                    case 15:x = -25; y = 0; z = 1;break;
-                }
-            }
+            pins16b(17, 0, -3, pin_id)
+            pins16b(17, 0,  3, pin_id - 16)
+            pins16b(-1, 0, -3, pin_id - 32)
+            pins1b(-18, 0, -3, pin_id - 48)
             break;
         case DUAL_MEMORY:
-            if (pin_id < 8) {
-                x = 4 - pin_id;
-                y = 0;
-                z = -2;
-            } else if (pin_id < 16) {
-                x = 13 - (pin_id - 8);
-                y = 0;
-                z = -2;
-            } else if (pin_id < 24) {
-                x = 13 - (pin_id - 16);
-                y = 0;
-                z = 2;
-            } else if (pin_id < 32) {
-                x = -5 - (pin_id - 24);
-                y = 0;
-                z = -2;
-            } else {
-                x = -14;
-                y = 0;
-                z = -2;
-            }
+            pins8b(  4, 0, -2, pin_id)
+            pins8b( 13, 0, -2, pin_id - 8)
+            pins8b( 13, 0,  2, pin_id - 16)
+            pins8b( -5, 0, -2, pin_id - 24)
+            pins1b(-14, 0, -2, pin_id - 32)
+            break;
+        case MULTIPLIER:
+            pins16b(  1, 0, -7, pin_id)
+            pins16b(-17, 0, -7, pin_id - 16)
+            pins16b(  1, 0,  1, pin_id - 32)
+            pins16b(-17, 0,  1, pin_id - 48)
             break;
         default:break;
     }
+    #undef pins1b
+    #undef pins8b
+    #undef pins16b
     int rx, ry, rz;
     switch (building.rotation) {
         case ROTATION_FRONT: rx = building.x + x; ry = building.y + y; rz = building.z + z; break;
