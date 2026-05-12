@@ -35,7 +35,7 @@ There is a style guide to be followed:
 - Opening braces on the same line: `if (condition) {`
 - One space after keywords: `if (`, `while (`
 - One space after operators aswell. `x + y`
-- You may discard a space between operators if you feel like so. Example: `x+y`
+- You may discard a space between operators if there is NO space on the line for your code editor. Example: `x+y`
 - Pointers are on the right side `char *ptr`
 
 ### Comments
