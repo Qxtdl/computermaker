@@ -40,9 +40,9 @@ typedef struct {
         FLIPFLOP,
         NODE,
 
-        BLOCKID_LAST,
-
         BUILDING_PIN,
+        
+        BLOCKID_LAST,
     } id;
     logic_gate_t gate;
 } block_t;
