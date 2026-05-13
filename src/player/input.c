@@ -288,11 +288,13 @@ void input_handle(void) {
                     }
                 }
                 building_create((building_t){
-                    .id = HUGE_MEMORY,
+                    .id = MEMORY,
                     .x = ray_info.x,
                     .y = ray_info.y,
                     .z = ray_info.z,
-                    .rotation = camera_rotation
+                    .rotation = camera_rotation,
+                    .bitwidth = 16,
+                    .addresswidth = 16
                 });
                 
                 break;

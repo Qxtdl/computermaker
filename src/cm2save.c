@@ -230,6 +230,21 @@ static void cm2save_add_wire(stringview_t sv_wire) {
 static struct ivec3 cm2save_get_building_pin_pos(building_t building, int pin_id) {
     #define pins1b(_x,_y,_z,_pin_id) if ((_pin_id) == 0) {x = (_x); y = (_y); z = (_z);}
     #define pins8b(_x,_y,_z,_pin_id) if (((_pin_id) < 8) && ((_pin_id) >= 0)) {x = (_x) - (_pin_id); y = (_y); z = (_z);}
+    #define pins12b(_x,_y,_z,_pin_id) if (((_pin_id) < 12) && ((_pin_id) >= 0)) {y = (_y); z = (_z);} \
+    switch ((_pin_id)) { \
+        case  0:x = (_x)   ;break; \
+        case  1:x = (_x) -9;break; \
+        case  2:x = (_x)-10;break; \
+        case  3:x = (_x)-11;break; \
+        case  4:x = (_x) -1;break; \
+        case  5:x = (_x) -2;break; \
+        case  6:x = (_x) -3;break; \
+        case  7:x = (_x) -4;break; \
+        case  8:x = (_x) -5;break; \
+        case  9:x = (_x) -6;break; \
+        case 10:x = (_x) -7;break; \
+        case 11:x = (_x) -8;break; \
+    }
     #define pins16b(_x,_y,_z,_pin_id) if (((_pin_id) < 16) && ((_pin_id) >= 0)) {y = (_y); z = (_z);} \
     switch ((_pin_id)) { \
         case  0:x = (_x)   ;break; \
@@ -286,11 +301,25 @@ static struct ivec3 cm2save_get_building_pin_pos(building_t building, int pin_id
     }
     int x=0,y=0,z=0;
     switch (building.id) {
-        case HUGE_MEMORY:
-            pins16b(17, 0, -3, pin_id)
-            pins16b(17, 0,  3, pin_id - 16)
-            pins16b(-1, 0, -3, pin_id - 32)
-            pins1b(-18, 0, -3, pin_id - 48)
+        case MEMORY:
+            if (building.addresswidth == 16) {
+                pins16b(17, 0, -3, pin_id)
+                pins16b(17, 0,  3, pin_id - 16)
+                pins16b(-1, 0, -3, pin_id - 32)
+                pins1b(-18, 0, -3, pin_id - 48)
+            } else if (building.addresswidth == 12) {
+                if (building.bitwidth == 16) {
+                    pins12b(15, 0, -2, pin_id)
+                    pins16b(15, 0,  2, pin_id - 12)
+                    pins16b( 2, 0, -2, pin_id - 28)
+                    pins1b(-15, 0, -2, pin_id - 44)
+                } else if (building.bitwidth == 8) {
+                    pins12b(11, 0, -2, pin_id)
+                    pins8b( 11, 0,  2, pin_id - 12)
+                    pins8b( -2, 0, -2, pin_id - 20)
+                    pins1b(-11, 0, -2, pin_id - 28)
+                }
+            }
             break;
         case DUAL_MEMORY:
             pins8b(  4, 0, -2, pin_id)
@@ -310,6 +339,7 @@ static struct ivec3 cm2save_get_building_pin_pos(building_t building, int pin_id
     }
     #undef pins1b
     #undef pins8b
+    #undef pins12b
     #undef pins16b
     #undef pins32b
     int rx, ry, rz;
@@ -401,17 +431,33 @@ static void cm2save_add_building(stringview_t sv_building) {
         .z = building_z,
         .rotation = building_rotation
     };
-    if (SV_cmp_cstr(sv_building_type, "HugeMemory")) {
+    if (SV_cmp_cstr(sv_building_type, "MassMemory")) {
+        pins_count = 29;
+        building.bitwidth = 8;
+        building.addresswidth = 12;
+        building.id = MEMORY;
+    } else if (SV_cmp_cstr(sv_building_type, "MassiveMemory")) {
+        pins_count = 45;
+        building.bitwidth = 16;
+        building.addresswidth = 12;
+        building.id = MEMORY;
+    } else if (SV_cmp_cstr(sv_building_type, "HugeMemory")) {
         pins_count = 49;
-        building.id = HUGE_MEMORY;
+        building.bitwidth = 16;
+        building.addresswidth = 16;
+        building.id = MEMORY;
     } else if (SV_cmp_cstr(sv_building_type, "DualMemory")) {
         pins_count = 33;
+        building.bitwidth = 8;
+        building.addresswidth = 8;
         building.id = DUAL_MEMORY;
     } else if (SV_cmp_cstr(sv_building_type, "Multiplier")) {
         pins_count = 64;
+        building.bitwidth = 16;
         building.id = MULTIPLIER;
     } else if (SV_cmp_cstr(sv_building_type, "Divider")) {
         pins_count = 64;
+        building.bitwidth = 16;
         building.id = DIVIDER;
     } else {
         app_warn("building: ")
