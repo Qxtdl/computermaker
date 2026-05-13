@@ -90,6 +90,7 @@ void window_create(
 
     window.width = width;
     window.height = height;
+    window.target_fps = 60;
 }
 
 void window_loop(void) {
