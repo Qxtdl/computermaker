@@ -109,7 +109,7 @@ void input_handle(void) {
 
         switch (state.player.mode) {
             case MODE_BLOCK_PLACE: {
-                if (state.player.selected_block != AIR) {
+                if (state.player.selected_block != AIR && info.chunk->blocks[info.x][info.y][info.z].id != AIR) {
                     switch (ray_info.face) {
                         case FACE_TOP: ray_info.y++; break;
                         case FACE_BOTTOM: ray_info.y--; break;
@@ -262,14 +262,16 @@ void input_handle(void) {
             }
 
             case MODE_BUILDING_PLACE: {
-                switch (ray_info.face) {
-                    case FACE_TOP: ray_info.y++; break;
-                    case FACE_BOTTOM: ray_info.y--; break;
-                    case FACE_RIGHT: ray_info.x++; break;
-                    case FACE_LEFT: ray_info.x--; break;
-                    case FACE_FRONT: ray_info.z++; break;
-                    case FACE_BACK: ray_info.z--; break;
-                    default: break;
+                if (info.chunk->blocks[info.x][info.y][info.z].id != AIR) {
+                    switch (ray_info.face) {
+                        case FACE_TOP: ray_info.y++; break;
+                        case FACE_BOTTOM: ray_info.y--; break;
+                        case FACE_RIGHT: ray_info.x++; break;
+                        case FACE_LEFT: ray_info.x--; break;
+                        case FACE_FRONT: ray_info.z++; break;
+                        case FACE_BACK: ray_info.z--; break;
+                        default: break;
+                    }
                 }
                 int camera_rotation;
                 vec3 camera_direction;

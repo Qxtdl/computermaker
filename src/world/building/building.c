@@ -61,7 +61,7 @@ void building_create(building_t building) {
 				app_warn("addresswidth too big\n")
 				break;
 			}
-			building.state.memory.cells = scalloc(1, (1<< building.addresswidth) * bytewidth);
+			building.state.memory.cells = scalloc(1, ((uint64_t)1 << building.addresswidth) * bytewidth);
 			
 			if (building.addresswidth >= 16) memory_thickness = 3;
 			else memory_thickness = 2;
@@ -94,7 +94,7 @@ void building_create(building_t building) {
 				app_warn("addresswidth too big\n")
 				break;
 			}
-			building.state.memory.cells = scalloc(1, (1<< building.addresswidth) * bytewidth);
+			building.state.memory.cells = scalloc(1, ((uint64_t)1 << building.addresswidth) * bytewidth);
 
 			if (building.addresswidth >= 16) memory_thickness = 3;
 			else memory_thickness = 2;

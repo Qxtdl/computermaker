@@ -36,6 +36,7 @@ void world_tick(struct world *world) {
                 for (int z = 0; z < CHUNK_Z; z++) {
                     if (is_logic_block(world->chunks[i]->blocks[x][y][z])) {
                         world->chunks[i]->blocks[x][y][z].gate.poked = false;
+                        world->chunks[i]->blocks[x][y][z].gate.old_state = world->chunks[i]->blocks[x][y][z].gate.state;
                         if (world->chunks[i]->blocks[x][y][z].gate.state != world->chunks[i]->blocks[x][y][z].gate.new_state) {
                             world->chunks[i]->blocks[x][y][z].gate.state = world->chunks[i]->blocks[x][y][z].gate.new_state;
                             chunk_bake_at(world->chunks[i], x, y, z);

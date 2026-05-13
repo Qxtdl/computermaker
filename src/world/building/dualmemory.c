@@ -44,6 +44,6 @@ void _dualmemory_tick(building_t *building) {
 	}
 
 	for (i = 0; i < building->bitwidth; i++) {
-		building->pins[building->addresswidth*2+i]->gate.new_state = (output >> i) & 1;
+		building->pins[building->addresswidth*2+i]->gate.new_state |= (output >> i) & 1;
 	}
 }

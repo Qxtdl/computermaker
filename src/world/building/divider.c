@@ -17,9 +17,9 @@ void _divider_tick(building_t *building) {
         output_remainder = input_a % input_b;
     }
 	for (i = 0; i < building->bitwidth; i++) {
-		building->pins[building->bitwidth*2+i]->gate.new_state = (output_remainder >> i) & 1;
+		building->pins[building->bitwidth*2+i]->gate.new_state |= (output_remainder >> i) & 1;
 	}
 	for (i = 0; i < building->bitwidth; i++) {
-		building->pins[building->bitwidth*3+i]->gate.new_state = (output_quotient >> i) & 1;
+		building->pins[building->bitwidth*3+i]->gate.new_state |= (output_quotient >> i) & 1;
 	}
 }

@@ -15,6 +15,6 @@ void _multiplier_tick(building_t *building) {
     output = (__uint128_t)input_a*input_b;
 
 	for (i = 0; i < 2*building->bitwidth; i++) {
-		building->pins[building->bitwidth*2+i]->gate.new_state = (output >> i) & 1;
+		building->pins[building->bitwidth*2+i]->gate.new_state |= (output >> i) & 1;
 	}
 }
