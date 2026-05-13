@@ -8,11 +8,19 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#include "../world/block/block.h"
+
 typedef struct {
     const char *name;
     const char *message;
     char *formatted;
 } chat_message_t;
+
+typedef struct {
+    const char *command;
+    enum BlockId gate;
+    size_t len;
+} block_command_t;
 
 extern chat_message_t chat_messages[MAX_CHAT_MESSAGES];
 extern size_t chat_count;
@@ -21,6 +29,8 @@ extern size_t chat_head;
 extern char chat_input[CHAT_INPUT_MAX];
 extern size_t chat_input_len;
 extern bool chat_active;
+
+extern block_command_t block_commands[];
 
 void chat_render(void);
 void chat_handle_command(char *text);
