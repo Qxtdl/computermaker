@@ -90,7 +90,7 @@ static void get_model(wire_t wire, mat4 model) {
     
     //goes bottom to top
     glm_translate(m, (vec3){translation[0]+0.5,translation[1]+0.5,translation[2]+0.5});
-    if (direction[0] != 1) {
+    if (direction[1] != 1) {
         mat4 rotation1;
         mat4 rotation0;
         vec3 direction0;

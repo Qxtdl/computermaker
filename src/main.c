@@ -17,7 +17,7 @@
 void init(void) {
     config_open("res/config.comm");
     config_process();
-    renderer_init(&state.renderer, 800.0f/600.0f);
+    renderer_init(&state.renderer, (float)window.width/(float)window.height);
     skybox_init(&state.world.skybox);
     world_wire_init();
     if (!save_load(config_get("SAVELOAD")))
@@ -31,6 +31,15 @@ void destroy(void) {
 }
 
 void tick(void) {
+    if (state.restart) {
+        for (size_t i = 0; i < state.world.chunks_size; i++) {
+            free(state.world.chunks[i]);
+        }
+        state.world.chunks_size = 0;
+        config_clear();
+        window.init();
+        state.restart = false;
+    }
     input_handle();
     world_tick(&state.world);
 }

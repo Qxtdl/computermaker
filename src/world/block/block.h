@@ -20,7 +20,7 @@ typedef struct logic_gate {
     enum LogicState {
         STATE_OFF,
         STATE_ON
-    } state, new_state;
+    } state, new_state, old_state;
     bool poked;
 } logic_gate_t;
 

@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 
-#include "../world.h"
 #include "../block/block.h"
 
 #define BUILDING_MAX_PINS 256
@@ -28,10 +27,12 @@
 typedef struct {
 	enum BuildingId {
 		ASCII_KEY_INPUT,
-		HUGE_MEMORY,
+		MEMORY,
 		DUAL_MEMORY,
 		TEXT_CONSOLE,
-		LARGE_RGB_DISPLAY
+		LARGE_RGB_DISPLAY,
+		MULTIPLIER,
+		DIVIDER,
 	} id;
 	int x, y, z;
 	enum {
@@ -43,9 +44,10 @@ typedef struct {
 	block_t *pins[BUILDING_MAX_PINS];
 	union {
 		struct {
-			uint16_t *cells;
-		} hugemem;
+			void *cells;
+		} memory;
 	} state;
+	uint8_t bitwidth, addresswidth;
 } building_t;
 
 const char *building_id_name(enum BuildingId id);
@@ -53,55 +55,7 @@ void buildings_tick(void);
 void building_tick(building_t *building);
 void building_create(building_t building);
 
-BUILDING_TICK_DECLARE(hugemem)
-enum {
-	HUGEMEM_A0,
-	HUGEMEM_A1,
-	HUGEMEM_A2,
-	HUGEMEM_A3,
-	HUGEMEM_A4,
-	HUGEMEM_A5,
-	HUGEMEM_A6,
-	HUGEMEM_A7,
-	HUGEMEM_A8,
-	HUGEMEM_A9,
-	HUGEMEM_A10,
-	HUGEMEM_A11,
-	HUGEMEM_A12,
-	HUGEMEM_A13,
-	HUGEMEM_A14,
-	HUGEMEM_A15,
-	HUGEMEM_V0,
-	HUGEMEM_V1,
-	HUGEMEM_V2,
-	HUGEMEM_V3,
-	HUGEMEM_V4,
-	HUGEMEM_V5,
-	HUGEMEM_V6,
-	HUGEMEM_V7,
-	HUGEMEM_V8,
-	HUGEMEM_V9,
-	HUGEMEM_V10,
-	HUGEMEM_V11,
-	HUGEMEM_V12,
-	HUGEMEM_V13,
-	HUGEMEM_V14,
-	HUGEMEM_V15,
-	HUGEMEM_O0,
-	HUGEMEM_O1,
-	HUGEMEM_O2,
-	HUGEMEM_O3,
-	HUGEMEM_O4,
-	HUGEMEM_O5,
-	HUGEMEM_O6,
-	HUGEMEM_O7,
-	HUGEMEM_O8,
-	HUGEMEM_O9,
-	HUGEMEM_O10,
-	HUGEMEM_O11,
-	HUGEMEM_O12,
-	HUGEMEM_O13,
-	HUGEMEM_O14,
-	HUGEMEM_O15,	
-	HUGEMEM_WRITE
-};
+BUILDING_TICK_DECLARE(memory)
+BUILDING_TICK_DECLARE(dualmemory)
+BUILDING_TICK_DECLARE(multiplier)
+BUILDING_TICK_DECLARE(divider)
