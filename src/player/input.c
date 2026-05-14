@@ -295,8 +295,8 @@ void input_handle(void) {
                     .y = ray_info.y,
                     .z = ray_info.z,
                     .rotation = camera_rotation,
-                    .bitwidth = 16,
-                    .addresswidth = 16
+                    .bit_width = 16,
+                    .state.memory.address_width = 16
                 });
                 
                 break;

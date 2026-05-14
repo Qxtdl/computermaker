@@ -45,9 +45,10 @@ typedef struct {
 	union {
 		struct {
 			void *cells;
+			int address_width;
 		} memory;
 	} state;
-	uint8_t bitwidth, addresswidth;
+	int bit_width;
 } building_t;
 
 const char *building_id_name(enum BuildingId id);

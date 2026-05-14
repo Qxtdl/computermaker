@@ -46,122 +46,98 @@ void buildings_tick(void) {
 
 void building_create(building_t building) {
 	int pin_index = 0;
-	int bytewidth, memory_thickness;
-	if (building.bitwidth <= 8) bytewidth = sizeof(uint8_t);
-	else if (building.bitwidth <= 16) bytewidth = sizeof(uint16_t);
-	else if (building.bitwidth <= 32) bytewidth = sizeof(uint32_t);
-	else bytewidth = sizeof(uint64_t);
+	int byte_width, memory_thickness;
+	if (building.bit_width <= 8) byte_width = sizeof(uint8_t);
+	else if (building.bit_width <= 16) byte_width = sizeof(uint16_t);
+	else if (building.bit_width <= 32) byte_width = sizeof(uint32_t);
+	else byte_width = sizeof(uint64_t);
 	switch (building.id) {
 		case MEMORY:
-			if (building.bitwidth > 64) {
-				app_warn("bitwidth too big\n")
-				break;
-			}
-			if (building.addresswidth > 32) {
-				app_warn("addresswidth too big\n")
-				break;
-			}
-			building.state.memory.cells = scalloc(1, ((uint64_t)1 << building.addresswidth) * bytewidth);
+			building.state.memory.cells = scalloc(1, ((uint64_t)1 << building.state.memory.address_width) * byte_width);
 			
-			if (building.addresswidth >= 16) memory_thickness = 3;
+			if (building.state.memory.address_width >= 16) memory_thickness = 3;
 			else memory_thickness = 2;
 
-			int center_x = (-building.addresswidth -building.bitwidth -memory_thickness)/2;
+			int center_x = (-building.state.memory.address_width -building.bit_width -memory_thickness)/2;
 			
 			// generate a address bus
-			for (int x = 0; x < building.addresswidth; x++) {
-				BUILDING_PLACE_PIN(-center_x +x -building.addresswidth +1, 0, -memory_thickness)
+			for (int x = 0; x < building.state.memory.address_width; x++) {
+				BUILDING_PLACE_PIN(-center_x +x -building.state.memory.address_width +1, 0, -memory_thickness)
 			}
 			// generate a value bus
 			int vx;
-			for (vx = 0; vx < building.bitwidth; vx++) {
-				BUILDING_PLACE_PIN(-center_x +vx -building.addresswidth -building.bitwidth -memory_thickness +2, 0, -memory_thickness)
+			for (vx = 0; vx < building.bit_width; vx++) {
+				BUILDING_PLACE_PIN(-center_x +vx -building.state.memory.address_width -building.bit_width -memory_thickness +2, 0, -memory_thickness)
 			}
 			// generate a output bus
-			for (int x = 0; x < building.bitwidth; x++) {
-				BUILDING_PLACE_PIN(-center_x +x -building.bitwidth +1, 0, memory_thickness)
+			for (int x = 0; x < building.bit_width; x++) {
+				BUILDING_PLACE_PIN(-center_x +x -building.bit_width +1, 0, memory_thickness)
 			}
 			// place the write pin
-			BUILDING_PLACE_PIN(-center_x -building.addresswidth -building.bitwidth -memory_thickness, 0, -memory_thickness)
+			BUILDING_PLACE_PIN(-center_x -building.state.memory.address_width -building.bit_width -memory_thickness, 0, -memory_thickness)
 			break;
 		
 		case DUAL_MEMORY:
-			if (building.bitwidth > 64) {
-				app_warn("bitwidth too big\n")
-				break;
-			}
-			if (building.addresswidth > 32) {
-				app_warn("addresswidth too big\n")
-				break;
-			}
-			building.state.memory.cells = scalloc(1, ((uint64_t)1 << building.addresswidth) * bytewidth);
+			building.state.memory.cells = scalloc(1, ((uint64_t)1 << building.state.memory.address_width) * byte_width);
 
-			if (building.addresswidth >= 16) memory_thickness = 3;
+			if (building.state.memory.address_width >= 16) memory_thickness = 3;
 			else memory_thickness = 2;
 
 			// generate save address bus
-			for (int x = 0; x < building.addresswidth; x++) {
+			for (int x = 0; x < building.state.memory.address_width; x++) {
 				BUILDING_PLACE_PIN(x - 3, 0, -2)
 			}
 			// generate load address bus
-			for (int x = 0; x < building.addresswidth; x++) {
-				BUILDING_PLACE_PIN(x - 2 + building.addresswidth, 0, -2)
+			for (int x = 0; x < building.state.memory.address_width; x++) {
+				BUILDING_PLACE_PIN(x - 2 + building.state.memory.address_width, 0, -2)
 			}
 			// generate output bus
-			for (int x = 0; x < building.bitwidth; x++) {
-				BUILDING_PLACE_PIN(x - 2 + building.addresswidth, 0, 2)
+			for (int x = 0; x < building.bit_width; x++) {
+				BUILDING_PLACE_PIN(x - 2 + building.state.memory.address_width, 0, 2)
 			}
 			// generate value bus
-			for (int x = 0; x < building.bitwidth; x++) {
-				BUILDING_PLACE_PIN(x - 4 - building.bitwidth, 0, -2)
+			for (int x = 0; x < building.bit_width; x++) {
+				BUILDING_PLACE_PIN(x - 4 - building.bit_width, 0, -2)
 			}
 			// place the write pin
-			BUILDING_PLACE_PIN(-6 - building.bitwidth, 0, -2)
+			BUILDING_PLACE_PIN(-6 - building.bit_width, 0, -2)
 			break;
 
 		case MULTIPLIER:
-			if (building.bitwidth > 64) {
-				app_warn("bitwidth too big\n")
-				break;
-			}
 			// generate input a
-			for (int x = 0; x < building.bitwidth; x++) {
-				BUILDING_PLACE_PIN(x + 2 - building.bitwidth, 0, -7)
+			for (int x = 0; x < building.bit_width; x++) {
+				BUILDING_PLACE_PIN(x + 2 - building.bit_width, 0, -7)
 			}
 			// generate input b
-			for (int x = 0; x < building.bitwidth; x++) {
-				BUILDING_PLACE_PIN(x - 2*building.bitwidth, 0, -7)
+			for (int x = 0; x < building.bit_width; x++) {
+				BUILDING_PLACE_PIN(x - 2*building.bit_width, 0, -7)
 			}
 			// generate lower half of output
-			for (int x = 0; x < building.bitwidth; x++) {
-				BUILDING_PLACE_PIN(x - 2*building.bitwidth, 0, 1)
+			for (int x = 0; x < building.bit_width; x++) {
+				BUILDING_PLACE_PIN(x - 2*building.bit_width, 0, 1)
 			}
 			// generate upper half of output
-			for (int x = 0; x < building.bitwidth; x++) {
-				BUILDING_PLACE_PIN(x + 2 - building.bitwidth, 0, 1)
+			for (int x = 0; x < building.bit_width; x++) {
+				BUILDING_PLACE_PIN(x + 2 - building.bit_width, 0, 1)
 			}
 			break;
 		
 		case DIVIDER:
-			if (building.bitwidth > 64) {
-				app_warn("bitwidth too big\n")
-				break;
-			}
 			// generate input a
-			for (int x = 0; x < building.bitwidth; x++) {
-				BUILDING_PLACE_PIN(x + 2 - building.bitwidth, 0, -7)
+			for (int x = 0; x < building.bit_width; x++) {
+				BUILDING_PLACE_PIN(x + 2 - building.bit_width, 0, -7)
 			}
 			// generate input b
-			for (int x = 0; x < building.bitwidth; x++) {
-				BUILDING_PLACE_PIN(x - 2*building.bitwidth, 0, -7)
+			for (int x = 0; x < building.bit_width; x++) {
+				BUILDING_PLACE_PIN(x - 2*building.bit_width, 0, -7)
 			}
 			// generate remainder output
-			for (int x = 0; x < building.bitwidth; x++) {
-				BUILDING_PLACE_PIN(x - 2*building.bitwidth, 0, 1)
+			for (int x = 0; x < building.bit_width; x++) {
+				BUILDING_PLACE_PIN(x - 2*building.bit_width, 0, 1)
 			}
 			// generate quotient output
-			for (int x = 0; x < building.bitwidth; x++) {
-				BUILDING_PLACE_PIN(x + 2 - building.bitwidth, 0, 1)
+			for (int x = 0; x < building.bit_width; x++) {
+				BUILDING_PLACE_PIN(x + 2 - building.bit_width, 0, 1)
 			}
 			break;
 

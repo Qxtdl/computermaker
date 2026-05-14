@@ -52,7 +52,7 @@ void render(void) {
 
 int main() {    
     window_init();
-    window_create("comm", 800, 600, init, destroy, tick, render);
+    window_create("comm", 800, 600, 60, init, destroy, tick, render);
     chat_add_message("comm", APP_RELEASE_STRING);
     window_loop();
 }

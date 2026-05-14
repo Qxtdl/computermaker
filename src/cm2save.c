@@ -302,18 +302,18 @@ static struct ivec3 cm2save_get_building_pin_pos(building_t building, int pin_id
     int x=0,y=0,z=0;
     switch (building.id) {
         case MEMORY:
-            if (building.addresswidth == 16) {
+            if (building.state.memory.address_width == 16) {
                 pins16b(17, 0, -3, pin_id)
                 pins16b(17, 0,  3, pin_id - 16)
                 pins16b(-1, 0, -3, pin_id - 32)
                 pins1b(-18, 0, -3, pin_id - 48)
-            } else if (building.addresswidth == 12) {
-                if (building.bitwidth == 16) {
+            } else if (building.state.memory.address_width == 12) {
+                if (building.bit_width == 16) {
                     pins12b(15, 0, -2, pin_id)
                     pins16b(15, 0,  2, pin_id - 12)
                     pins16b( 2, 0, -2, pin_id - 28)
                     pins1b(-15, 0, -2, pin_id - 44)
-                } else if (building.bitwidth == 8) {
+                } else if (building.bit_width == 8) {
                     pins12b(11, 0, -2, pin_id)
                     pins8b( 11, 0,  2, pin_id - 12)
                     pins8b( -2, 0, -2, pin_id - 20)
@@ -433,31 +433,31 @@ static void cm2save_add_building(stringview_t sv_building) {
     };
     if (SV_cmp_cstr(sv_building_type, "MassMemory")) {
         pins_count = 29;
-        building.bitwidth = 8;
-        building.addresswidth = 12;
+        building.bit_width = 8;
+        building.state.memory.address_width = 12;
         building.id = MEMORY;
     } else if (SV_cmp_cstr(sv_building_type, "MassiveMemory")) {
         pins_count = 45;
-        building.bitwidth = 16;
-        building.addresswidth = 12;
+        building.bit_width = 16;
+        building.state.memory.address_width = 12;
         building.id = MEMORY;
     } else if (SV_cmp_cstr(sv_building_type, "HugeMemory")) {
         pins_count = 49;
-        building.bitwidth = 16;
-        building.addresswidth = 16;
+        building.bit_width = 16;
+        building.state.memory.address_width = 16;
         building.id = MEMORY;
     } else if (SV_cmp_cstr(sv_building_type, "DualMemory")) {
         pins_count = 33;
-        building.bitwidth = 8;
-        building.addresswidth = 8;
+        building.bit_width = 8;
+        building.state.memory.address_width = 8;
         building.id = DUAL_MEMORY;
     } else if (SV_cmp_cstr(sv_building_type, "Multiplier")) {
         pins_count = 64;
-        building.bitwidth = 16;
+        building.bit_width = 16;
         building.id = MULTIPLIER;
     } else if (SV_cmp_cstr(sv_building_type, "Divider")) {
         pins_count = 64;
-        building.bitwidth = 16;
+        building.bit_width = 16;
         building.id = DIVIDER;
     } else {
         app_warn("building: ")

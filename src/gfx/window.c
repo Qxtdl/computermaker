@@ -59,7 +59,7 @@ static void scroll_callback(GLFWwindow *gwindow, double x, double y) {
 }
 
 void window_create(
-    const char *title, int width, int height,
+    const char *title, int width, int height, int target_fps,
     WindowCallback init,
     WindowCallback destroy,
     WindowCallback tick,
@@ -90,7 +90,7 @@ void window_create(
 
     window.width = width;
     window.height = height;
-    window.target_fps = 60;
+    window.target_fps = target_fps;
 }
 
 void window_loop(void) {

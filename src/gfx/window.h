@@ -31,7 +31,7 @@ extern struct window {
 
 void window_init(void);
 void window_create(
-    const char *title, int width, int height,
+    const char *title, int width, int height, int target_fps,
     WindowCallback init,
     WindowCallback destroy,
     WindowCallback tick,
