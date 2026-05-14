@@ -1,10 +1,12 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <string.h>
 
 #include "window.h"
 #include "../global.h"
 #include "../state.h"
 #include "../player/chat.h"
+#include "../config.h"
 
 struct window window;
 
@@ -88,10 +90,12 @@ void window_create(
 
     window.width = width;
     window.height = height;
+    window.target_fps = 60;
 }
 
 void window_loop(void) {
     window.init();
+    state.restart = false;
     while (!glfwWindowShouldClose(window.handle)) {
         window.now = glfwGetTime();
         window.tick();

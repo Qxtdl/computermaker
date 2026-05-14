@@ -10,7 +10,6 @@
 #include "../gfx/raycast.h"
 #include "chat.h"
 #include "keybinds.h"
-#include "../global.h"
 
 #define max(x,y) ((x)>(y)?(x):(y))
 #define min(x,y) ((x)>(y)?(y):(x))
@@ -57,7 +56,7 @@ static void input_chat_handle(void) {
 void input_handle(void) {
     if (window.mouse.moved && !mouse_free) {
         camera_mouse_cb(&state.renderer.camera, window.mouse.x, window.mouse.y);
-        window.mouse.moved = true;
+        window.mouse.moved = false;
     }
 
     if (chat_active) {
@@ -110,7 +109,7 @@ void input_handle(void) {
 
         switch (state.player.mode) {
             case MODE_BLOCK_PLACE: {
-                if (state.player.selected_block != AIR) {
+                if (state.player.selected_block != AIR && info.chunk->blocks[info.x][info.y][info.z].id != AIR) {
                     switch (ray_info.face) {
                         case FACE_TOP: ray_info.y++; break;
                         case FACE_BOTTOM: ray_info.y--; break;
@@ -263,14 +262,16 @@ void input_handle(void) {
             }
 
             case MODE_BUILDING_PLACE: {
-                switch (ray_info.face) {
-                    case FACE_TOP: ray_info.y++; break;
-                    case FACE_BOTTOM: ray_info.y--; break;
-                    case FACE_RIGHT: ray_info.x++; break;
-                    case FACE_LEFT: ray_info.x--; break;
-                    case FACE_FRONT: ray_info.z++; break;
-                    case FACE_BACK: ray_info.z--; break;
-                    default: break;
+                if (info.chunk->blocks[info.x][info.y][info.z].id != AIR) {
+                    switch (ray_info.face) {
+                        case FACE_TOP: ray_info.y++; break;
+                        case FACE_BOTTOM: ray_info.y--; break;
+                        case FACE_RIGHT: ray_info.x++; break;
+                        case FACE_LEFT: ray_info.x--; break;
+                        case FACE_FRONT: ray_info.z++; break;
+                        case FACE_BACK: ray_info.z--; break;
+                        default: break;
+                    }
                 }
                 int camera_rotation;
                 vec3 camera_direction;
@@ -289,11 +290,13 @@ void input_handle(void) {
                     }
                 }
                 building_create((building_t){
-                    .id = HUGE_MEMORY,
+                    .id = MEMORY,
                     .x = ray_info.x,
                     .y = ray_info.y,
                     .z = ray_info.z,
-                    .rotation = camera_rotation
+                    .rotation = camera_rotation,
+                    .bitwidth = 16,
+                    .addresswidth = 16
                 });
                 
                 break;

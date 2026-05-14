@@ -227,72 +227,127 @@ static void cm2save_add_wire(stringview_t sv_wire) {
 }
 
 
-static struct ivec3 cm2save_get_building_pin_pos(building_t building, int port_id) {
+static struct ivec3 cm2save_get_building_pin_pos(building_t building, int pin_id) {
+    #define pins1b(_x,_y,_z,_pin_id) if ((_pin_id) == 0) {x = (_x); y = (_y); z = (_z);}
+    #define pins8b(_x,_y,_z,_pin_id) if (((_pin_id) < 8) && ((_pin_id) >= 0)) {x = (_x) - (_pin_id); y = (_y); z = (_z);}
+    #define pins12b(_x,_y,_z,_pin_id) if (((_pin_id) < 12) && ((_pin_id) >= 0)) {y = (_y); z = (_z);} \
+    switch ((_pin_id)) { \
+        case  0:x = (_x)   ;break; \
+        case  1:x = (_x) -9;break; \
+        case  2:x = (_x)-10;break; \
+        case  3:x = (_x)-11;break; \
+        case  4:x = (_x) -1;break; \
+        case  5:x = (_x) -2;break; \
+        case  6:x = (_x) -3;break; \
+        case  7:x = (_x) -4;break; \
+        case  8:x = (_x) -5;break; \
+        case  9:x = (_x) -6;break; \
+        case 10:x = (_x) -7;break; \
+        case 11:x = (_x) -8;break; \
+    }
+    #define pins16b(_x,_y,_z,_pin_id) if (((_pin_id) < 16) && ((_pin_id) >= 0)) {y = (_y); z = (_z);} \
+    switch ((_pin_id)) { \
+        case  0:x = (_x)   ;break; \
+        case  1:x = (_x) -9;break; \
+        case  2:x = (_x)-10;break; \
+        case  3:x = (_x)-11;break; \
+        case  4:x = (_x)-12;break; \
+        case  5:x = (_x)-13;break; \
+        case  6:x = (_x)-14;break; \
+        case  7:x = (_x)-15;break; \
+        case  8:x = (_x) -1;break; \
+        case  9:x = (_x) -2;break; \
+        case 10:x = (_x) -3;break; \
+        case 11:x = (_x) -4;break; \
+        case 12:x = (_x) -5;break; \
+        case 13:x = (_x) -6;break; \
+        case 14:x = (_x) -7;break; \
+        case 15:x = (_x) -8;break; \
+    }
+    #define pins32b(_x,_y,_z,_pin_id) if (((_pin_id) < 32) && ((_pin_id) >= 0)) {y = (_y); z = (_z);} \
+    switch ((_pin_id)) { \
+        case  0:x = (_x)   ;break; \
+        case  1:x = (_x) -9;break; \
+        case  2:x = (_x)-10;break; \
+        case  3:x = (_x)-11;break; \
+        case  4:x = (_x)-12;break; \
+        case  5:x = (_x)-13;break; \
+        case  6:x = (_x)-14;break; \
+        case  7:x = (_x)-15;break; \
+        case  8:x = (_x)-16;break; \
+        case  9:x = (_x)-17;break; \
+        case 10:x = (_x)-18;break; \
+        case 11:x = (_x) -1;break; \
+        case 12:x = (_x)-19;break; \
+        case 13:x = (_x)-20;break; \
+        case 14:x = (_x)-21;break; \
+        case 15:x = (_x)-22;break; \
+        case 16:x = (_x)-23;break; \
+        case 17:x = (_x)-24;break; \
+        case 18:x = (_x)-25;break; \
+        case 19:x = (_x)-26;break; \
+        case 20:x = (_x)-27;break; \
+        case 21:x = (_x)-28;break; \
+        case 22:x = (_x) -2;break; \
+        case 23:x = (_x)-29;break; \
+        case 24:x = (_x)-30;break; \
+        case 25:x = (_x)-31;break; \
+        case 26:x = (_x) -3;break; \
+        case 27:x = (_x) -4;break; \
+        case 28:x = (_x) -5;break; \
+        case 29:x = (_x) -6;break; \
+        case 30:x = (_x) -7;break; \
+        case 31:x = (_x) -8;break; \
+    }
     int x=0,y=0,z=0;
     switch (building.id) {
-        case HUGE_MEMORY:
-            switch (port_id) {
-                case 0:x = 17; y = 0; z = -3;break;
-                case 1:x = 8; y = 0; z = -3;break;
-                case 2:x = 7; y = 0; z = -3;break;
-                case 3:x = 6; y = 0; z = -3;break;
-                case 4:x = 5; y = 0; z = -3;break;
-                case 5:x = 4; y = 0; z = -3;break;
-                case 6:x = 3; y = 0; z = -3;break;
-                case 7:x = 2; y = 0; z = -3;break;
-                case 8:x = 16; y = 0; z = -3;break;
-                case 9:x = 15; y = 0; z = -3;break;
-                case 10:x = 14; y = 0; z = -3;break;
-                case 11:x = 13; y = 0; z = -3;break;
-                case 12:x = 12; y = 0; z = -3;break;
-                case 13:x = 11; y = 0; z = -3;break;
-                case 14:x = 10; y = 0; z = -3;break;
-                case 15:x = 9; y = 0; z = -3;break;
-                case 16:x = 17; y = 0; z = 3;break;
-                case 17:x = 8; y = 0; z = 3;break;
-                case 18:x = 7; y = 0; z = 3;break;
-                case 19:x = 6; y = 0; z = 3;break;
-                case 20:x = 5; y = 0; z = 3;break;
-                case 21:x = 4; y = 0; z = 3;break;
-                case 22:x = 3; y = 0; z = 3;break;
-                case 23:x = 2; y = 0; z = 3;break;
-                case 24:x = 16; y = 0; z = 3;break;
-                case 25:x = 15; y = 0; z = 3;break;
-                case 26:x = 14; y = 0; z = 3;break;
-                case 27:x = 13; y = 0; z = 3;break;
-                case 28:x = 12; y = 0; z = 3;break;
-                case 29:x = 11; y = 0; z = 3;break;
-                case 30:x = 10; y = 0; z = 3;break;
-                case 31:x = 9; y = 0; z = 3;break;
-                case 32:x = -1; y = 0; z = -3;break;
-                case 33:x = -10; y = 0; z = -3;break;
-                case 34:x = -11; y = 0; z = -3;break;
-                case 35:x = -12; y = 0; z = -3;break;
-                case 36:x = -13; y = 0; z = -3;break;
-                case 37:x = -14; y = 0; z = -3;break;
-                case 38:x = -15; y = 0; z = -3;break;
-                case 39:x = -16; y = 0; z = -3;break;
-                case 40:x = -2; y = 0; z = -3;break;
-                case 41:x = -3; y = 0; z = -3;break;
-                case 42:x = -4; y = 0; z = -3;break;
-                case 43:x = -5; y = 0; z = -3;break;
-                case 44:x = -6; y = 0; z = -3;break;
-                case 45:x = -7; y = 0; z = -3;break;
-                case 46:x = -8; y = 0; z = -3;break;
-                case 47:x = -9; y = 0; z = -3;break;
-                case 48:x = -18; y = 0; z = -3;break;
-                default:break;
+        case MEMORY:
+            if (building.addresswidth == 16) {
+                pins16b(17, 0, -3, pin_id)
+                pins16b(17, 0,  3, pin_id - 16)
+                pins16b(-1, 0, -3, pin_id - 32)
+                pins1b(-18, 0, -3, pin_id - 48)
+            } else if (building.addresswidth == 12) {
+                if (building.bitwidth == 16) {
+                    pins12b(15, 0, -2, pin_id)
+                    pins16b(15, 0,  2, pin_id - 12)
+                    pins16b( 2, 0, -2, pin_id - 28)
+                    pins1b(-15, 0, -2, pin_id - 44)
+                } else if (building.bitwidth == 8) {
+                    pins12b(11, 0, -2, pin_id)
+                    pins8b( 11, 0,  2, pin_id - 12)
+                    pins8b( -2, 0, -2, pin_id - 20)
+                    pins1b(-11, 0, -2, pin_id - 28)
+                }
             }
-        break;
+            break;
+        case DUAL_MEMORY:
+            pins8b(  4, 0, -2, pin_id)
+            pins8b( 13, 0, -2, pin_id - 8)
+            pins8b( 13, 0,  2, pin_id - 16)
+            pins8b( -5, 0, -2, pin_id - 24)
+            pins1b(-14, 0, -2, pin_id - 32)
+            break;
+        case MULTIPLIER:
+        case DIVIDER:
+            pins16b(  1, 0, -7, pin_id)
+            pins16b(-17, 0, -7, pin_id - 16)
+            pins16b(  1, 0,  1, pin_id - 32)
+            pins16b(-17, 0,  1, pin_id - 48)
+            break;
         default:break;
     }
+    #undef pins1b
+    #undef pins8b
+    #undef pins12b
+    #undef pins16b
+    #undef pins32b
     int rx, ry, rz;
     switch (building.rotation) {
         case ROTATION_FRONT: rx = building.x + x; ry = building.y + y; rz = building.z + z; break;
         case ROTATION_LEFT: rx = building.x + z; ry = building.y + y; rz = building.z - x; break;
         case ROTATION_BACK: rx = building.x - x; ry = building.y + y; rz = building.z - z; break;
         case ROTATION_RIGHT: rx = building.x - z; ry = building.y + y; rz = building.z + x; break;
-        default: rx = building.x + x, ry = building.y + y, rz = building.z + z;
     }
     return (struct ivec3){rx, ry, rz};
 }
@@ -369,47 +424,75 @@ static void cm2save_add_building(stringview_t sv_building) {
         building_rotation = CAMERA_DIRECTION_FORWARD;
     }
 
-    if (SV_cmp_cstr(sv_building_type, "HugeMemory")) {
-        building_t building = (building_t){
-            .id = HUGE_MEMORY,
-            .x = building_x,
-            .y = building_y,
-            .z = building_z,
-            .rotation = building_rotation
-        };
-        building_create(building);
-        for (size_t i = 0; i < 16+16+16+1; i++) {
-            stringview_t sv_connections = SV_chop_by_delim(&sv_building, ',');
-            struct ivec3 pin_ptr = cm2save_get_building_pin_pos(building, i);
-            while (sv_connections.size > 0) {
-                stringview_t sv_connection = SV_chop_by_delim(&sv_connections, '+');
-                char start_ch = *SV_chop_left(&sv_connection, 1).start;
-                struct ivec3 block_ptr = cm2_blocks.blocks[SV_to_int(sv_connection)-1];
-                if (start_ch == '0') {//output
-                    world_create_wire((wire_t){
-                        .ox = pin_ptr.x,
-                        .oy = pin_ptr.y,
-                        .oz = pin_ptr.z,
-                        .dx = block_ptr.x,
-                        .dy = block_ptr.y,
-                        .dz = block_ptr.z
-                    });
-                } else if (start_ch == '1') {//input
-                    world_create_wire((wire_t){
-                        .ox = block_ptr.x,
-                        .oy = block_ptr.y,
-                        .oz = block_ptr.z,
-                        .dx = pin_ptr.x,
-                        .dy = pin_ptr.y,
-                        .dz = pin_ptr.z
-                    });
-                }
-            }
-        }
+    int pins_count;
+    building_t building = {
+        .x = building_x,
+        .y = building_y,
+        .z = building_z,
+        .rotation = building_rotation
+    };
+    if (SV_cmp_cstr(sv_building_type, "MassMemory")) {
+        pins_count = 29;
+        building.bitwidth = 8;
+        building.addresswidth = 12;
+        building.id = MEMORY;
+    } else if (SV_cmp_cstr(sv_building_type, "MassiveMemory")) {
+        pins_count = 45;
+        building.bitwidth = 16;
+        building.addresswidth = 12;
+        building.id = MEMORY;
+    } else if (SV_cmp_cstr(sv_building_type, "HugeMemory")) {
+        pins_count = 49;
+        building.bitwidth = 16;
+        building.addresswidth = 16;
+        building.id = MEMORY;
+    } else if (SV_cmp_cstr(sv_building_type, "DualMemory")) {
+        pins_count = 33;
+        building.bitwidth = 8;
+        building.addresswidth = 8;
+        building.id = DUAL_MEMORY;
+    } else if (SV_cmp_cstr(sv_building_type, "Multiplier")) {
+        pins_count = 64;
+        building.bitwidth = 16;
+        building.id = MULTIPLIER;
+    } else if (SV_cmp_cstr(sv_building_type, "Divider")) {
+        pins_count = 64;
+        building.bitwidth = 16;
+        building.id = DIVIDER;
     } else {
         app_warn("building: ")
         SV_print(sv_building_type);
         printf(" not implemented\n");
+        return;
+    }
+    building_create(building);
+    for (size_t i = 0; i < pins_count; i++) {
+        stringview_t sv_connections = SV_chop_by_delim(&sv_building, ',');
+        struct ivec3 pin_ptr = cm2save_get_building_pin_pos(building, i);
+        while (sv_connections.size > 0) {
+            stringview_t sv_connection = SV_chop_by_delim(&sv_connections, '+');
+            char start_ch = *SV_chop_left(&sv_connection, 1).start;
+            struct ivec3 block_ptr = cm2_blocks.blocks[SV_to_int(sv_connection)-1];
+            if (start_ch == '0') {//output
+                world_create_wire((wire_t){
+                    .ox = pin_ptr.x,
+                    .oy = pin_ptr.y,
+                    .oz = pin_ptr.z,
+                    .dx = block_ptr.x,
+                    .dy = block_ptr.y,
+                    .dz = block_ptr.z
+                });
+            } else if (start_ch == '1') {//input
+                world_create_wire((wire_t){
+                    .ox = block_ptr.x,
+                    .oy = block_ptr.y,
+                    .oz = block_ptr.z,
+                    .dx = pin_ptr.x,
+                    .dy = pin_ptr.y,
+                    .dz = pin_ptr.z
+                });
+            }
+        }
     }
 }
 
@@ -432,4 +515,7 @@ void cm2save_process(const char *savestring) {
         cm2save_add_building(SV_chop_by_delim(&sv_buildings, ';'));
     }
     free(cm2_blocks.blocks);
+    cm2_blocks.blocks = NULL;
+    cm2_blocks.block_count = 0;
+    cm2_blocks.block_capacity = 0;
 }
