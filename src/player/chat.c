@@ -4,6 +4,7 @@
 #include "chat.h"
 #include "../util.h"
 #include "../config.h"
+#include "../state.h"
 #include "../gfx/renderer.h"
 #include "../gfx/window.h"
 #include "../world/tick.h"
@@ -17,6 +18,22 @@ size_t chat_head = 0;
 char chat_input[CHAT_INPUT_MAX];
 size_t chat_input_len = 0;
 bool chat_active = false;
+
+block_command_t block_commands[] = {
+    {"!air\0", AIR, 5},
+    {"!stud\0", STUD, 6},
+    {"!bk\0", BRICK, 4},
+    {"!and\0", AND, 5},
+    {"!or\0", OR, 4},
+    {"!xor\0", XOR, 5},
+    {"!nand\0", NAND, 6},
+    {"!nor\0", NOR, 5},
+    {"!xnor\0", XNOR, 6},
+    {"!ff\0", FLIPFLOP, 4},
+    {"!node\0", NODE, 6}
+};
+#define BLOCK_COMMANDS_COUNT (sizeof(block_commands) \
+    / sizeof(block_commands[0]))
 
 void chat_render(void) {
     for (size_t i = 0; i < chat_count; i++) {
@@ -81,6 +98,18 @@ void chat_handle_command(char *text) {
     }
     else if (!strcmp(text, "!restart")) {
         state.restart = true;
+    }  
+    else if (!strcmp(text, "!wp")) {
+        state.player.mode = MODE_WIRE_PLACE;
+    }
+    else if (!strcmp(text, "!wd")) {
+        state.player.mode = MODE_WIRE_DESTROY;
+    }
+    for (int i = 0; i < BLOCK_COMMANDS_COUNT; i++) {
+        block_command_t *bk_command = &block_commands[i];
+        if (strncmp(text, bk_command->command, bk_command->len)) continue;
+        state.player.selected_block = bk_command->gate;
+        state.player.mode = MODE_BLOCK_PLACE;
     }
 
     return;
