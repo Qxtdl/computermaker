@@ -26,6 +26,7 @@ There is a style guide to be followed:
 - **Variables**: `snake_case` (e.g., `wires_size`)
 - **Constants**: `UPPER_SNAKE_CASE` (e.g., `MAX_VERTICES`)
 - **Types/Structs**: `snake_case` (followed by a _t) (e.g., `wire_t`)
+- **Macros**: `UPPER_SNAKE_CASE` (e.g., `#define BUILDING_ADD_PIN(x, y, z, _foo)`)
 
 ### Functions
 - If your function has no parameters `void func()`, turn it into `void func(void)`
