@@ -1,5 +1,8 @@
 # Contribution
 
+> [!NOTE] 
+> This page may be updated often so please look at it after you make PR
+
 We accept everybody to contribute on the Project. \
 There is a style guide to be followed:
 
@@ -31,6 +34,15 @@ There is a style guide to be followed:
 ### Functions
 - If your function has no parameters `void func()`, turn it into `void func(void)`
 
+### Macros
+- Macro parameters used in the macro always in ()
+    ```c
+    #define EXAMPLE_MACRO(x)
+        { \
+            printf("%d\n", (x)); \
+        }
+    ```
+
 ### Formatting
 - Use 4 spaces for indentation (no tabs)
 - Opening braces on the same line: `if (condition) {`
@@ -38,6 +50,39 @@ There is a style guide to be followed:
 - One space after operators aswell. `x + y`
 - You may discard a space between operators if there is NO space on the line for your code editor. Example: `x+y`
 - Pointers are on the right side `char *ptr`
+- Pointers in typecasts like so `(uint32_t *)` not `(uint32_t*)`
+- No spaces between typecasts `(char)value` not `(char) value`
+
+### Newlines
+- Double newlines if the block of code is not related.
+    ```c
+    // example 1
+    if (condition) {
+        // do something
+    }
+    if (related_condition) {
+        // do something
+    }
+
+    if (unrelated_condition) {
+        // do something
+    }
+    ```
+    ```c
+    // example 2
+    if (condition) {
+        // do something
+    }
+
+    if (related_condition) {
+        // do something
+    }
+
+
+    if (unrelated_condition) {
+        // do something
+    }
+    ```
 
 ### Comments
 - Use `//` for single-line comments
