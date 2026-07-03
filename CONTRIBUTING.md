@@ -1,118 +1,131 @@
 # Contribution
 
 > [!NOTE] 
-> This page may be updated often so please look at it after you make PR
+> This page may be updated often so please look at it before you make a PR.
 
-We accept everybody to contribute on the Project. \
-There is a style guide to be followed:
+We accept all contributions on the Project. \
+There is a style guide to be followed.
 
 # Contributing to computermaker
 
 ## Code Style Guide
 
-### Includes
-- System includes should be at the top of the file. (e.g. those with < >)
-- Local includes should be after the system includes (e.g. those with " ")
-### Example
-```c
-#include <math.h>
+**Format**:
+1. A list of rules each might have an example (never a code block).
+2. Sometimes an example for the whole (sub-)category (always a code block).
 
-#include "../state.h"
-#include "../config.h"
-#include "../world/wire.h"
-#include "../world/save.h"
-#include "../gfx/raycast.h"
-```
+**Contents**:
+1. [Naming Conventions](#naming-conventions)
+    1. [Functions](#functions)
+    2. [Macros](#macros)
+2. [Formatting](#formatting)
+    1. [Comments](#comments)
+3. [Includes](#includes)
+4. [Newlines](#newlines)
+5. [File Organization](#file-organization)
+6. [Memory Management](#memory-management)
+7. [Headers](#headers)
+8. [Final Example](#final-example)
 
 ### Naming Conventions
-- **Functions**: `snake_case` (e.g., `world_wire_init()`)
-- **Variables**: `snake_case` (e.g., `wires_size`)
-- **Constants**: `UPPER_SNAKE_CASE` (e.g., `MAX_VERTICES`)
-- **Types/Structs**: `snake_case` (followed by a _t) (e.g., `wire_t`)
-- **Macros**: `UPPER_SNAKE_CASE` (e.g., `#define BUILDING_ADD_PIN(x, y, z, _foo)`)
 
-### Functions
-- If your function has no parameters `void func()`, turn it into `void func(void)`
+- **Functions**: `snake_case` (eg. `world_wire_init()`)
+- **Variables**: `snake_case` (eg. `wires_size`)
+- **Constants**: `SCREAMING_SNAKE_CASE` (eg. `MAX_VERTICES`)
+- **Types/Structs**: `snake_case` (followed by a \_t) (eg. `wire_t`)
+- **Macros**: `SCREAMING_SNAKE_CASE` (eg. `#define BUILDING_ADD_PIN(x, y, z, foo)`)
 
-### Macros
-- Macro parameters used in the macro always in ()
-    ```c
-    #define EXAMPLE_MACRO(x)
-        { \
-            printf("%d\n", (x)); \
-        }
-    ```
+#### Functions
+
+- Function without parameters should be declared as: `void fn(void) { /* ... */ }`.
+
+#### Macros
+
+- Macro parameters always wrapped in braces.
+
+```c
+#define EXAMPLE_MACRO(x) do { \
+    printf("%d\n", (x)); \
+} while (0)
+```
 
 ### Formatting
-- Use 4 spaces for indentation (no tabs)
+
+- 4-space indentation.
 - Opening braces on the same line: `if (condition) {`
 - One space after keywords: `if (`, `while (`
-- One space after operators aswell. `x + y`
-- You may discard a space between operators if there is NO space on the line for your code editor. Example: `x+y`
-- Pointers are on the right side `char *ptr`
-- Pointers in typecasts like so `(uint32_t *)` not `(uint32_t*)`
-- No spaces between typecasts `(char)value` not `(char) value`
-- Labels must be placed at the start of the line
+- One space around binary operators: `x + y`
+- No space after unary operators: `!a`
+- You may discard a space around operators if there is NO space on the line for your code editor: `x+y`
+- Pointers are on the right side: `char *ptr`
+- Pointers in typecasts like so: `(uint32_t *)`, not `(uint32_t*)`
+- No spaces between typecasts: `(char)value`, not `(char) value`
+- Labels should not be indentation.
 
-### Newlines
-- Double newlines if the block of code is not related.
-    ```c
-    // example 1
-    if (condition) {
-        // do something
-    }
-    if (related_condition) {
-        // do something
-    }
+#### Comments
 
-    if (unrelated_condition) {
-        // do something
-    }
-    ```
-    ```c
-    // example 2
-    if (condition) {
-        // do something
-    }
-
-    if (related_condition) {
-        // do something
-    }
-
-
-    if (unrelated_condition) {
-        // do something
-    }
-    ```
-
-### Comments
 - Use `//` for single-line comments
 - Use `/* */` for multi-line comments
 - Comment complex algorithms and non-obvious logic
-- Spaces between comments
-```diff
-// example for spaces between comments
--//bad
-+// good
+- Spaces in comments as in the example.
+
+```c
+/*
+    Multi-line comment
+ */
+// A single space before the text
+```
+
+### Includes
+
+- System includes should be at the top of the file (ie. those using `<>`).
+- Local includes should be after the system includes (ie. those using `""`).
+
+```c
+#include <stdio.h>
+
+#include "../state.h"
+#include "../config.h"
+// ...
+```
+
+### Newlines
+
+- Double newline between two blocks of code if they are not related.
+
+```c
+if (condition) {
+    // do something
+}
+
+if (related_condition) {
+    // do something
+}
+
+
+if (unrelated_condition) {
+    // do something
+}
 ```
 
 ### File Organization
-- Keep functions under 50 lines when possible
-- Group related functions together
-- Use header files (.h) for declarations, source files (.c) for implementations
+
+- Keep functions under 50 lines when possible.
+- Group related functions together.
+- Use header files (.h) for declarations, and source files (.c) for implementations.
 
 ### Memory Management
-- Always check for NULL pointers after allocation
-- Document ownership of allocated memory
-- Use consistent patterns for cleanup
-- Use the smalloc, srealloc, ..etc functions provided by util.c (header is util.h).
+
+- Always check for NULL pointers after allocation.
+    - Use the smalloc, srealloc, etc. functions provided by "src/util.h".
+- Document ownership of allocated memory.
+- Use consistent patterns for cleanup.
 
 ### Headers
-- Put `#pragma once`, no macro header guards (like `#ifndef HEADER_FILE_H`)
-- Definitions and typedefs at the top of the file
-- Function prototypes come after
 
-### Example
+- Use `#pragma` instead of header guards.
+- Type definitions and short `#define`s at the beginning.
+    - Function declarations after.
 
 ```c
 #pragma once
@@ -132,9 +145,11 @@ void world_destroy_wire(wire_t wire);
 void world_draw_wires(void);
 ```
 
-### Another example of everything summarized
+### Final Example
+
 ```c
-// Good example
+#include "wire.h"
+
 typedef struct {
     int ox, oy, oz,
         dx, dy, dz;
@@ -146,3 +161,5 @@ void render_wire(wire_t *wire) {
     }
     // the implementation
 }
+```
+
