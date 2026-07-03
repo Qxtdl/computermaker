@@ -1,12 +1,13 @@
 ## PR
 
-Before continuing, make sure you read this [CONTRIBUTING.md](https://github.com/Qxtdl/computermaker/blob/master/CONTRIBUTING.md)
+Before continuing, make sure you read this [CONTRIBUTING.md](https://github.com/Qxtdl/computermaker/blob/master/CONTRIBUTING.md).
 
-- [ ] I have read [CONTRIBUTING.md](https://github.com/Qxtdl/computermaker/blob/master/CONTRIBUTING.md)
-- [ ] My code compiles and runs without errors
-- [ ] Filled in the information below
+- [ ] I have put a descriptive title on this pull request.
+- [ ] I have read [CONTRIBUTING.md](https://github.com/Qxtdl/computermaker/blob/master/CONTRIBUTING.md).
+- [ ] My code compiles and runs without errors.
+- [ ] Filled in the information below.
 
-## Please fill in the info below!
+## Please fill out the info below!
 
 ### **What kind of change does this PR introduce?** (Bug fix, feature, docs update, ...)
 
