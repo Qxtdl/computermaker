@@ -28,6 +28,11 @@ To contribute, look at [CONTRIBUTING.md](CONTRIBUTING.md).
 
 #### To run the app
 
+Build it if not already
+```sh
+make
+```
+Then
 ```sh
 make run
 ```
